@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Course Tracker{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <h1>Welcome to Course Tracker</h1>
+    <p>University Course Management System</p>
+</div>
+
+<div class="portals">
+    <div class="portal-card">
+        <h2>Student Portal</h2>
+        <p>View courses, enroll in sections, and track your academic progress.</p>
+        <a href="{{ url_for('student.index') }}" class="btn btn-primary">Enter Student Portal</a>
+    </div>
+
+    <div class="portal-card">
+        <h2>Admin Portal</h2>
+        <p>Manage courses, students, and view enrollment statistics.</p>
+        <a href="{{ url_for('admin.index') }}" class="btn btn-secondary">Enter Admin Portal</a>
+    </div>
+</div>
+
+<div class="project-info">
+    <h3>About This Project</h3>
+    <p>
+        This is a university course tracking system built for CS:4400 Database Systems
+        at the University of Iowa. The system manages students, courses, sections,
+        employees (professors, TAs, advisors), academic requirements, and majors.
+    </p>
+    <ul>
+        <li><strong>Database:</strong> MySQL with triggers, views, stored procedures</li>
+        <li><strong>Backend:</strong> Python Flask with raw SQL queries</li>
+        <li><strong>Features:</strong> Course enrollment, prerequisite tracking, cross-listing, requirements</li>
+    </ul>
+</div>
+{% endblock %}

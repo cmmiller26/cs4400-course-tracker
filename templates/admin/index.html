@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Portal - Course Tracker{% endblock %}
+
+{% block content %}
+<h1>Admin Portal</h1>
+
+<div class="dashboard">
+    <div class="dashboard-section">
+        <h2>Quick Links</h2>
+        <ul class="link-list">
+            <!-- <li><a href="{{ url_for('admin.view_students') }}">View All Students</a></li>
+            <li><a href="{{ url_for('admin.manage_courses') }}">Manage Courses</a></li>
+            <li><a href="{{ url_for('admin.statistics') }}">Enrollment Statistics</a></li> -->
+        </ul>
+    </div>
+
+    <div class="dashboard-section">
+        <h2>Administrative Functions</h2>
+        <p>
+            As an administrator, you can:
+        </p>
+        <ul>
+            <li>View and manage student records</li>
+            <li>Manage courses, sections, and assignments</li>
+            <li>View enrollment statistics and reports</li>
+            <li>Update grades and academic information</li>
+            <li>Generate reports with database aggregations</li>
+        </ul>
+    </div>
+</div>
+
+<style>
+    .dashboard {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    .dashboard-section {
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .dashboard-section h2 {
+        color: #000;
+        margin-bottom: 1rem;
+    }
+
+    .link-list {
+        list-style: none;
+    }
+
+    .link-list li {
+        margin: 1rem 0;
+    }
+
+    .link-list a {
+        display: block;
+        padding: 0.75rem 1rem;
+        background-color: #000;
+        color: #FFCD00;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+        font-weight: 600;
+    }
+
+    .link-list a:hover {
+        background-color: #333;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Student Portal - Course Tracker{% endblock %}
+
+{% block content %}
+<h1>Student Portal</h1>
+
+<div class="dashboard">
+    <div class="dashboard-section">
+        <h2>Quick Links</h2>
+        <ul class="link-list">
+            <!-- <li><a href="{{ url_for('student.view_courses') }}">Browse Course Catalog</a></li>
+            <li><a href="{{ url_for('student.my_courses') }}">My Enrolled Courses</a></li> -->
+        </ul>
+    </div>
+
+    <div class="dashboard-section">
+        <h2>About</h2>
+        <p>
+            Welcome to the Course Tracker student portal. Here you can:
+        </p>
+        <ul>
+            <li>Browse available courses and sections</li>
+            <li>Enroll in course sections</li>
+            <li>View your current and completed courses</li>
+            <li>Check your grades and academic progress</li>
+        </ul>
+    </div>
+</div>
+
+<style>
+    .dashboard {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    .dashboard-section {
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .dashboard-section h2 {
+        color: #000;
+        margin-bottom: 1rem;
+    }
+
+    .link-list {
+        list-style: none;
+    }
+
+    .link-list li {
+        margin: 1rem 0;
+    }
+
+    .link-list a {
+        display: block;
+        padding: 0.75rem 1rem;
+        background-color: #FFCD00;
+        color: #000;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+        font-weight: 600;
+    }
+
+    .link-list a:hover {
+        background-color: #E6B800;
+    }
+</style>
+{% endblock %}
