@@ -1,14 +1,17 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from utils.db_connection import execute_query, execute_update
+from utils.auth import login_required
 
 student_bp = Blueprint('student', __name__)
 
 @student_bp.route('/')
+@login_required(role='student')
 def index():
     """Student dashboard/home page"""
     return render_template('student/index.html')
 
 @student_bp.route('/courses')
+@login_required(role='student')
 def view_courses():
     """
     Display all available courses with their sections.
@@ -41,68 +44,62 @@ def view_courses():
     return render_template('student/courses.html', courses=courses)
 
 @student_bp.route('/enroll', methods=['GET', 'POST'])
+@login_required(role='student')
 def enroll():
     """
     Handle student enrollment in a course section.
-    For demo purposes, we'll use a fixed studentId (4001).
-    In production, this would come from session/authentication.
+    Demonstrates 3 triggers: prerequisite validation, capacity enforcement, and duplicate prevention.
     """
     if request.method == 'POST':
-        student_id = request.form.get('studentId', 4001)  # Default for demo
-        course_id = request.form.get('courseId')
-        section_no = request.form.get('sectionNo')
-        
-        # Insert enrollment
+        student_id = request.form.get('student_id')
+        course_id = request.form.get('course_id')
+        section_no = request.form.get('section_no')
+
+        # Insert enrollment - triggers will automatically validate
         sql = """
             INSERT INTO enrolls_in (studentId, courseId, sectionNo, status, grade, enrolledDate)
             VALUES (%s, %s, %s, 'enrolled', NULL, CURDATE())
         """
-        
+
         result = execute_update(sql, (student_id, course_id, section_no))
-        
+
         if result > 0:
-            flash('Successfully enrolled in course!', 'success')
+            flash('✓ Successfully enrolled in course!', 'success')
         else:
-            flash('Error enrolling in course. You may already be enrolled or section is full.', 'error')
-        
-        return redirect(url_for('student.view_courses'))
-    
-    # GET request - show enrollment form
-    course_id = request.args.get('courseId')
-    section_no = request.args.get('sectionNo')
-    
-    if not course_id or not section_no:
-        flash('Invalid course or section', 'error')
-        return redirect(url_for('student.view_courses'))
-    
-    # Get course details
-    sql = """
-        SELECT c.title, c.credits, s.sectionNo, s.capacity, cl.code
-        FROM Course c
-        JOIN Section s ON c.courseId = s.courseId
-        JOIN cross_lists cl ON c.courseId = cl.courseId
-        WHERE c.courseId = %s AND s.sectionNo = %s
-        LIMIT 1
-    """
-    
-    course = execute_query(sql, (course_id, section_no), fetch_one=True)
-    
-    if not course:
-        flash('Course not found', 'error')
-        return redirect(url_for('student.view_courses'))
-    
-    return render_template('student/enroll.html', 
-                         course=course, 
-                         courseId=course_id, 
-                         sectionNo=section_no)
+            flash('✗ Enrollment failed. Check prerequisites, section capacity, or if course is already completed.', 'error')
+
+        return redirect(url_for('student.enroll'))
+
+    # GET request - show enrollment form with all students, courses, and sections
+    students_sql = "SELECT studentId, name, year FROM Student ORDER BY name"
+    students = execute_query(students_sql)
+
+    courses_sql = "SELECT courseId, title, credits FROM Course ORDER BY title"
+    courses = execute_query(courses_sql)
+
+    sections_sql = "SELECT courseId, sectionNo, capacity FROM Section ORDER BY courseId, sectionNo"
+    sections = execute_query(sections_sql)
+
+    if students is None:
+        students = []
+    if courses is None:
+        courses = []
+    if sections is None:
+        sections = []
+
+    return render_template('student/enroll.html',
+                         students=students,
+                         courses=courses,
+                         sections=sections)
 
 @student_bp.route('/my-courses')
+@login_required(role='student')
 def my_courses():
     """
     Display courses the student is enrolled in.
-    For demo purposes, we'll use studentId = 4001.
+    Uses the logged-in student's ID from session.
     """
-    student_id = 4001  # Fixed for demo
+    student_id = session.get('student_id')
     
     sql = """
         SELECT 

@@ -3,31 +3,94 @@
 {% block title %}Admin Portal - Course Tracker{% endblock %}
 
 {% block content %}
-<h1>Admin Portal</h1>
+<div style="margin-bottom: 2rem;">
+    <h1 style="color: #000; margin-bottom: 0.5rem;">Admin Portal</h1>
+    <p style="color: #666; font-size: 1.1rem;">Administrative dashboard for managing students, courses, and viewing reports.</p>
+</div>
 
-<div class="dashboard">
-    <div class="dashboard-section">
-        <h2>Quick Links</h2>
-        <ul class="link-list">
-            <!-- <li><a href="{{ url_for('admin.view_students') }}">View All Students</a></li>
-            <li><a href="{{ url_for('admin.manage_courses') }}">Manage Courses</a></li>
-            <li><a href="{{ url_for('admin.statistics') }}">Enrollment Statistics</a></li> -->
-        </ul>
-    </div>
+<div style="margin-bottom: 2rem;">
+    <h2 style="color: #000; border-bottom: 2px solid #FFCD00; padding-bottom: 0.5rem; margin-bottom: 1rem;">📊 Data Management</h2>
+    <div class="dashboard" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+        <!-- Students Card -->
+        <div class="portal-card">
+            <h3 style="color: #000; margin-bottom: 0.75rem;">👥 Students</h3>
+            <p style="color: #666; margin-bottom: 1.25rem; font-size: 0.95rem;">
+                View all students with their majors and advisors.
+            </p>
+            <a href="{{ url_for('admin.view_students') }}" class="btn btn-secondary">View Students</a>
+        </div>
 
-    <div class="dashboard-section">
-        <h2>Administrative Functions</h2>
-        <p>
-            As an administrator, you can:
-        </p>
-        <ul>
-            <li>View and manage student records</li>
-            <li>Manage courses, sections, and assignments</li>
-            <li>View enrollment statistics and reports</li>
-            <li>Update grades and academic information</li>
-            <li>Generate reports with database aggregations</li>
-        </ul>
+        <!-- Courses Card -->
+        <div class="portal-card">
+            <h3 style="color: #000; margin-bottom: 0.75rem;">📚 Courses</h3>
+            <p style="color: #666; margin-bottom: 1.25rem; font-size: 0.95rem;">
+                Manage all courses and their assigned professors.
+            </p>
+            <a href="{{ url_for('admin.manage_courses') }}" class="btn btn-secondary">Manage Courses</a>
+        </div>
+
+        <!-- Statistics Card -->
+        <div class="portal-card">
+            <h3 style="color: #000; margin-bottom: 0.75rem;">📈 Statistics</h3>
+            <p style="color: #666; margin-bottom: 1.25rem; font-size: 0.95rem;">
+                View enrollment statistics by department.
+            </p>
+            <a href="{{ url_for('admin.statistics') }}" class="btn btn-secondary">View Statistics</a>
+        </div>
     </div>
+</div>
+
+<div style="margin-bottom: 2rem;">
+    <h2 style="color: #000; border-bottom: 2px solid #FFCD00; padding-bottom: 0.5rem; margin-bottom: 1rem;">🔍 Database Views</h2>
+    <div class="dashboard" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+        <!-- Current Enrollments Card -->
+        <div class="portal-card">
+            <h3 style="color: #000; margin-bottom: 0.75rem;">✓ Current Enrollments</h3>
+            <p style="color: #666; margin-bottom: 1.25rem; font-size: 0.95rem;">
+                View all currently enrolled students (demonstrates database view).
+            </p>
+            <a href="{{ url_for('admin.current_enrollments') }}" class="btn btn-primary">View Enrollments</a>
+        </div>
+
+        <!-- Completed Courses Card -->
+        <div class="portal-card">
+            <h3 style="color: #000; margin-bottom: 0.75rem;">🎓 Completed Courses</h3>
+            <p style="color: #666; margin-bottom: 1.25rem; font-size: 0.95rem;">
+                View all completed courses with grades (demonstrates database view).
+            </p>
+            <a href="{{ url_for('admin.completed_courses') }}" class="btn btn-primary">View Completed</a>
+        </div>
+    </div>
+</div>
+
+<div style="margin-bottom: 2rem;">
+    <h2 style="color: #000; border-bottom: 2px solid #FFCD00; padding-bottom: 0.5rem; margin-bottom: 1rem;">💻 SQL Demonstrations</h2>
+    <div class="dashboard" style="display: grid; grid-template-columns: 1fr;">
+        <!-- Queries Showcase Card -->
+        <div class="portal-card" style="background: linear-gradient(135deg, #FFCD00 0%, #FFD633 100%);">
+            <h3 style="color: #000; margin-bottom: 0.75rem;">⚡ SQL Queries Showcase</h3>
+            <p style="color: #000; margin-bottom: 1.25rem; font-size: 0.95rem; font-weight: 500;">
+                View demonstrations of complex SQL queries including JOINs, aggregations, subqueries, and views.
+            </p>
+            <a href="{{ url_for('admin.queries') }}" class="btn" style="background: #000; color: #FFCD00; display: inline-block; padding: 0.75rem 1.5rem; text-decoration: none; border-radius: 5px; font-weight: 600;">View Queries</a>
+        </div>
+    </div>
+</div>
+
+<div class="info-box">
+    <h3 style="color: #FFCD00; background: #000; padding: 0.5rem 1rem; margin: -1.5rem -1.5rem 1rem -1.5rem; border-radius: 8px 8px 0 0;">
+        ℹ️ About the Admin Portal
+    </h3>
+    <p style="margin-bottom: 1rem;">
+        As an administrator, you can:
+    </p>
+    <ul style="margin-left: 2rem; line-height: 1.8;">
+        <li>View and manage student records with their majors and advisors</li>
+        <li>Manage courses, sections, and professor assignments</li>
+        <li>View enrollment statistics and reports with aggregations</li>
+        <li>Access database views for current enrollments and completed courses</li>
+        <li>Explore SQL query demonstrations for the project requirements</li>
+    </ul>
 </div>
 
 <style>

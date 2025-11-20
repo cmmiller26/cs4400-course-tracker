@@ -3,29 +3,53 @@
 {% block title %}Student Portal - Course Tracker{% endblock %}
 
 {% block content %}
-<h1>Student Portal</h1>
+<div style="margin-bottom: 2rem;">
+    <h1 style="color: #000; margin-bottom: 0.5rem;">Student Portal</h1>
+    <p style="color: #666; font-size: 1.1rem;">Welcome! Use the navigation cards below to get started.</p>
+</div>
 
-<div class="dashboard">
-    <div class="dashboard-section">
-        <h2>Quick Links</h2>
-        <ul class="link-list">
-            <!-- <li><a href="{{ url_for('student.view_courses') }}">Browse Course Catalog</a></li>
-            <li><a href="{{ url_for('student.my_courses') }}">My Enrolled Courses</a></li> -->
-        </ul>
-    </div>
-
-    <div class="dashboard-section">
-        <h2>About</h2>
-        <p>
-            Welcome to the Course Tracker student portal. Here you can:
+<div class="dashboard" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+    <!-- Browse Courses Card -->
+    <div class="portal-card">
+        <h2 style="color: #000; margin-bottom: 1rem;">📚 Browse Courses</h2>
+        <p style="color: #666; margin-bottom: 1.5rem;">
+            View all available courses with their sections, departments, and details.
         </p>
-        <ul>
-            <li>Browse available courses and sections</li>
-            <li>Enroll in course sections</li>
-            <li>View your current and completed courses</li>
-            <li>Check your grades and academic progress</li>
-        </ul>
+        <a href="{{ url_for('student.view_courses') }}" class="btn btn-primary">View Course Catalog</a>
     </div>
+
+    <!-- Enroll in Course Card -->
+    <div class="portal-card">
+        <h2 style="color: #000; margin-bottom: 1rem;">✏️ Enroll in Course</h2>
+        <p style="color: #666; margin-bottom: 1.5rem;">
+            Enroll in a course section. System validates prerequisites, capacity, and more!
+        </p>
+        <a href="{{ url_for('student.enroll') }}" class="btn btn-primary">Enroll Now</a>
+    </div>
+
+    <!-- My Courses Card -->
+    <div class="portal-card">
+        <h2 style="color: #000; margin-bottom: 1rem;">🎓 My Courses</h2>
+        <p style="color: #666; margin-bottom: 1.5rem;">
+            View your enrolled and completed courses, grades, and academic progress.
+        </p>
+        <a href="{{ url_for('student.my_courses') }}" class="btn btn-primary">View My Courses</a>
+    </div>
+</div>
+
+<div class="info-box">
+    <h3 style="color: #FFCD00; background: #000; padding: 0.5rem 1rem; margin: -1.5rem -1.5rem 1rem -1.5rem; border-radius: 8px 8px 0 0;">
+        ℹ️ About the Student Portal
+    </h3>
+    <p style="margin-bottom: 1rem;">
+        Welcome to the Course Tracker student portal. Here you can:
+    </p>
+    <ul style="margin-left: 2rem; line-height: 1.8;">
+        <li>Browse available courses and sections across all departments</li>
+        <li>Enroll in course sections with automatic validation</li>
+        <li>View your current and completed courses</li>
+        <li>Check your grades and academic progress</li>
+    </ul>
 </div>
 
 <style>

@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Course Tracker{% endblock %}
+
+{% block content %}
+<div style="max-width: 500px; margin: 3rem auto;">
+    <div style="background: white; padding: 2.5rem; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);">
+        <!-- Header -->
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <h1 style="color: #000; margin-bottom: 0.5rem; font-size: 2rem;">Welcome to CourseTracker</h1>
+            <p style="color: #666; font-size: 1rem;">Please log in to continue</p>
+        </div>
+
+        <!-- Login Form -->
+        <form method="POST" action="{{ url_for('auth.login') }}">
+            <!-- Username Field -->
+            <div style="margin-bottom: 1.5rem;">
+                <label for="username" style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #333;">
+                    Username
+                </label>
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    required
+                    autocomplete="username"
+                    autofocus
+                    style="width: 100%; padding: 0.875rem; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem; transition: border-color 0.3s;"
+                    onfocus="this.style.borderColor='#FFCD00'"
+                    onblur="this.style.borderColor='#ddd'"
+                    placeholder="Enter your username"
+                />
+            </div>
+
+            <!-- Password Field -->
+            <div style="margin-bottom: 2rem;">
+                <label for="password" style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #333;">
+                    Password
+                </label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    required
+                    autocomplete="current-password"
+                    style="width: 100%; padding: 0.875rem; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem; transition: border-color 0.3s;"
+                    onfocus="this.style.borderColor='#FFCD00'"
+                    onblur="this.style.borderColor='#ddd'"
+                    placeholder="Enter your password"
+                />
+            </div>
+
+            <!-- Submit Button -->
+            <button
+                type="submit"
+                style="width: 100%; padding: 1rem; background: #FFCD00; color: #000; border: none; border-radius: 5px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s;"
+                onmouseover="this.style.background='#E6B800'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.2)'"
+                onmouseout="this.style.background='#FFCD00'; this.style.transform='translateY(0)'; this.style.boxShadow='none'"
+            >
+                Log In
+            </button>
+        </form>
+
+        <!-- Test Accounts Information -->
+        <div style="margin-top: 2rem; padding: 1.5rem; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #17a2b8;">
+            <h3 style="color: #000; margin-bottom: 1rem; font-size: 1rem; font-weight: 600;">📋 Test Accounts</h3>
+            <div style="font-size: 0.9rem; line-height: 1.8; color: #333;">
+                <div style="margin-bottom: 0.75rem;">
+                    <strong>Student Account:</strong><br>
+                    Username: <code style="background: #fff; padding: 0.2rem 0.5rem; border-radius: 3px;">teststudent</code><br>
+                    Password: <code style="background: #fff; padding: 0.2rem 0.5rem; border-radius: 3px;">student123</code>
+                </div>
+                <div>
+                    <strong>Admin Account:</strong><br>
+                    Username: <code style="background: #fff; padding: 0.2rem 0.5rem; border-radius: 3px;">testadmin</code><br>
+                    Password: <code style="background: #fff; padding: 0.2rem 0.5rem; border-radius: 3px;">admin123</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- University of Iowa Colors Info -->
+        <div style="text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #eee;">
+            <p style="color: #666; font-size: 0.875rem;">
+                CS:4400 Database Systems - University of Iowa
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Additional styling for login page */
+    input:focus {
+        outline: none;
+    }
+
+    code {
+        font-family: 'Courier New', monospace;
+        font-size: 0.95em;
+    }
+
+    /* Form validation styling */
+    input:invalid:not(:placeholder-shown) {
+        border-color: #dc3545;
+    }
+
+    input:valid:not(:placeholder-shown) {
+        border-color: #28a745;
+    }
+</style>
+
+<script>
+    // Auto-focus on username field when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('username').focus();
+    });
+
+    // Enter key in username field moves to password
+    document.getElementById('username').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            document.getElementById('password').focus();
+        }
+    });
+</script>
+{% endblock %}

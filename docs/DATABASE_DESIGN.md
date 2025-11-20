@@ -345,6 +345,34 @@ Unary many-to-many relationship on Course for prerequisites.
 
 ---
 
+### Authentication Table
+
+#### app_users
+
+Application user accounts for authentication (not part of original ER diagram).
+
+**Columns**:
+
+- `userId` (INTEGER, PRIMARY KEY AUTO_INCREMENT): Unique identifier
+- `username` (VARCHAR(50), UNIQUE NOT NULL): Login username
+- `password_hash` (VARCHAR(255), NOT NULL): Hashed password (scrypt)
+- `role` (ENUM('student', 'admin'), NOT NULL): User role
+- `linked_id` (INTEGER, FOREIGN KEY): Links to Student.studentId for students, NULL for admins
+
+**Relationships**:
+
+- Many-to-one with Student (optional, only for student role)
+- Foreign key with CASCADE DELETE: If student deleted, app_users record also deleted
+
+**Design Note**: This table enables simple authentication for demo purposes. Students have linked_id to Student table, admins have NULL linked_id. Application layer enforces this constraint.
+
+**Test Data**:
+
+- teststudent/student123 (role: student, linked to Student ID 4001)
+- testadmin/admin123 (role: admin, no student link)
+
+---
+
 ## Key Constraints
 
 ### Foreign Key Constraints

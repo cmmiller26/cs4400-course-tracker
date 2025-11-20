@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}Enroll in Course - Course Tracker{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto;">
+    <h2 style="color: #000; margin-bottom: 1.5rem;">Enroll in Course Section</h2>
+
+    <div class="info-box" style="background: #fff; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3 style="color: #FFCD00; background: #000; padding: 0.5rem 1rem; margin: -1.5rem -1.5rem 1rem -1.5rem; border-radius: 8px 8px 0 0;">🎯 Trigger Demonstration</h3>
+        <p style="margin-bottom: 1rem;">This enrollment form demonstrates <strong>3 database triggers</strong> that automatically enforce business rules:</p>
+        <ul style="margin-left: 2rem; line-height: 2;">
+            <li><strong>Prerequisite Validation:</strong> Prevents enrollment if prerequisites haven't been completed</li>
+            <li><strong>Capacity Enforcement:</strong> Blocks enrollment when section is at maximum capacity</li>
+            <li><strong>Duplicate Prevention:</strong> Ensures students can't enroll in courses they've already completed</li>
+        </ul>
+        <p style="margin-top: 1rem; padding: 0.75rem; background: #FFF9E6; border-left: 4px solid #FFCD00; border-radius: 4px;">
+            <strong>💡 Try it out:</strong> Attempt to enroll in various courses to see these triggers in action!
+        </p>
+    </div>
+
+    <form method="POST" style="background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <div style="margin-bottom: 1.5rem;">
+            <label for="student_id" style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #333;">
+                Select Student:
+            </label>
+            <select name="student_id" id="student_id" required
+                    style="width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem; background: white;">
+                {% for student in students %}
+                    <option value="{{ student.studentId }}">
+                        {{ student.studentId }} - {{ student.name }} ({{ student.year }})
+                    </option>
+                {% endfor %}
+            </select>
+            <small style="color: #666; display: block; margin-top: 0.25rem;">Choose which student is enrolling</small>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+            <label for="course_id" style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #333;">
+                Select Course:
+            </label>
+            <select name="course_id" id="course_id" required
+                    style="width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem; background: white;"
+                    onchange="filterSections()">
+                <option value="">-- Choose a course --</option>
+                {% for course in courses %}
+                    <option value="{{ course.courseId }}"
+                            data-title="{{ course.title }}"
+                            data-credits="{{ course.credits }}">
+                        {{ course.courseId }} - {{ course.title }} ({{ course.credits }} credits)
+                    </option>
+                {% endfor %}
+            </select>
+            <small style="color: #666; display: block; margin-top: 0.25rem;">Select the course you want to enroll in</small>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+            <label for="section_no" style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #333;">
+                Select Section:
+            </label>
+            <select name="section_no" id="section_no" required
+                    style="width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem; background: white;">
+                <option value="">-- First select a course --</option>
+                {% for section in sections %}
+                    <option value="{{ section.sectionNo }}"
+                            data-course="{{ section.courseId }}"
+                            data-capacity="{{ section.capacity }}"
+                            style="display: none;">
+                        Section {{ section.sectionNo }} (Capacity: {{ section.capacity }} students)
+                    </option>
+                {% endfor %}
+            </select>
+            <small style="color: #666; display: block; margin-top: 0.25rem;">Choose a section with available capacity</small>
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <button type="submit"
+                    style="flex: 1; padding: 0.875rem 2rem; background: #FFCD00; color: #000; border: none; border-radius: 5px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+                Enroll in Course
+            </button>
+            <a href="{{ url_for('student.view_courses') }}"
+               style="flex: 1; padding: 0.875rem 2rem; background: #000; color: #FFCD00; text-align: center; text-decoration: none; border-radius: 5px; font-size: 1rem; font-weight: 600; display: block; transition: all 0.3s;">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+<script>
+function filterSections() {
+    const courseSelect = document.getElementById('course_id');
+    const sectionSelect = document.getElementById('section_no');
+    const selectedCourse = courseSelect.value;
+
+    // Reset section dropdown
+    sectionSelect.innerHTML = '<option value="">-- Select a section --</option>';
+
+    if (!selectedCourse) {
+        return;
+    }
+
+    // Show only sections for the selected course
+    const allOptions = document.querySelectorAll('#section_no option[data-course]');
+    allOptions.forEach(option => {
+        if (option.dataset.course === selectedCourse) {
+            const newOption = option.cloneNode(true);
+            newOption.style.display = 'block';
+            sectionSelect.appendChild(newOption);
+        }
+    });
+}
+
+// Hover effects
+document.querySelectorAll('button[type="submit"]').forEach(btn => {
+    btn.addEventListener('mouseenter', function() {
+        this.style.background = '#E6B800';
+        this.style.transform = 'translateY(-2px)';
+        this.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
+    });
+    btn.addEventListener('mouseleave', function() {
+        this.style.background = '#FFCD00';
+        this.style.transform = 'translateY(0)';
+        this.style.boxShadow = 'none';
+    });
+});
+
+document.querySelectorAll('a[href*="cancel"]').forEach(link => {
+    link.addEventListener('mouseenter', function() {
+        this.style.background = '#333';
+        this.style.transform = 'translateY(-2px)';
+        this.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
+    });
+    link.addEventListener('mouseleave', function() {
+        this.style.background = '#000';
+        this.style.transform = 'translateY(0)';
+        this.style.boxShadow = 'none';
+    });
+});
+</script>
+{% endblock %}

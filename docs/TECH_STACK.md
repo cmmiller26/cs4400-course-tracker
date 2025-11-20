@@ -32,15 +32,18 @@ This project uses Python with Flask for the web framework, MySQL for the databas
 - Routing decorators (`@app.route()`, `@blueprint.route()`)
 - Request handling (`request.args`, `request.form`)
 - Template rendering (`render_template()`)
-- Blueprints for organizing routes by user role
-- Session management for user state
+- Blueprints for organizing routes by user role (auth, student, admin)
+- Session management for authentication state
+- Flash messages for user feedback
 - Jinja2 templating (built-in)
+- werkzeug.security for password hashing (scrypt algorithm)
 
 **Configuration**:
 
 - Debug mode enabled for development
-- Secret key for session management
-- Blueprint structure for modularity (student_routes, admin_routes)
+- SECRET_KEY for session security and cookie signing
+- Blueprint structure for modularity (auth_routes, student_routes, admin_routes)
+- Session-based authentication with role-based access control
 
 ---
 

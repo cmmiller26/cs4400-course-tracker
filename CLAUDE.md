@@ -13,6 +13,7 @@ When you need information about:
 - **System architecture and component structure** → `docs/ARCHITECTURE.md`
 - **Technology choices and stack details** → `docs/TECH_STACK.md`
 - **Database schema, tables, and relationships** → `docs/DATABASE_DESIGN.md`
+- **Authentication setup and testing** → `docs/AUTH_SETUP.md`
 - **API routes and endpoints** → `docs/API_ROUTES.md` (not yet created)
 - **SQL query documentation** → `docs/QUERY_DOCUMENTATION.md` (not yet created)
 - **Development setup and workflow** → `docs/DEVELOPMENT.md` (not yet created)
@@ -28,26 +29,31 @@ cs4400-course-tracker/
 ├── config.py                     # Configuration (DB credentials, Flask config)
 ├── app.py                        # Main Flask application entry point
 ├── docs/                         # Documentation
+│   ├── AUTH_SETUP.md            # Authentication setup and testing guide
 │   ├── ARCHITECTURE.md           # System design and component interaction
 │   ├── TECH_STACK.md            # Technology stack documentation
 │   └── DATABASE_DESIGN.md       # Database schema and design decisions
 ├── database/                     # SQL files
 │   ├── schema.sql               # DDL (CREATE TABLE statements)
 │   ├── data.sql                 # DML (INSERT statements with sample data)
-│   ├── triggers.sql             # Trigger definitions (to be created)
-│   ├── views.sql                # View definitions (to be created)
+│   ├── auth_table.sql           # Authentication table and test accounts
+│   ├── triggers.sql             # Trigger definitions (completed)
+│   ├── views.sql                # View definitions (completed)
 │   ├── procedures_functions.sql # Stored procedures and functions (to be created)
 │   └── queries.sql              # Main application queries (to be created)
 ├── routes/                       # Flask route handlers
 │   ├── __init__.py
-│   ├── student_routes.py        # Student-facing routes
-│   └── admin_routes.py          # Admin-facing routes
+│   ├── auth_routes.py           # Authentication (login/logout)
+│   ├── student_routes.py        # Student-facing routes (protected)
+│   └── admin_routes.py          # Admin-facing routes (protected)
 ├── utils/                        # Utility modules
 │   ├── __init__.py
+│   ├── auth.py                  # Authentication utilities and decorators
 │   └── db_connection.py         # Database connection management
 ├── templates/                    # Jinja2 HTML templates
 │   ├── base.html                # Base template with common layout
 │   ├── index.html               # Homepage
+│   ├── login.html               # Login form
 │   ├── student/                 # Student view templates
 │   └── admin/                   # Admin view templates
 └── static/                       # Static assets
@@ -104,3 +110,35 @@ cs4400-course-tracker/
 - Must provide .zip file with website and setup instructions
 - Graders must be able to run on local server
 - Must showcase at least one trigger in action during demo
+
+## Authentication System
+
+The system implements a simple session-based authentication with two user roles:
+
+### Test Accounts
+
+- **Student**: username `teststudent`, password `student123` (linked to Student ID 4001)
+- **Admin**: username `testadmin`, password `admin123`
+
+### Setup
+
+1. Run `database/auth_table.sql` to create the `app_users` table
+2. Ensure Student ID 4001 exists in the Student table
+3. Access login at `/auth/login`
+
+### Key Files
+
+- **database/auth_table.sql**: Creates app_users table with test accounts
+- **utils/auth.py**: Password hashing, authentication, and @login_required decorator
+- **routes/auth_routes.py**: Login/logout routes
+- **templates/login.html**: Login form
+
+### Security Features
+
+- Passwords hashed using werkzeug.security (scrypt)
+- Session-based authentication with Flask sessions
+- Role-based access control (@login_required decorator)
+- Protected routes redirect to login if not authenticated
+- Foreign key CASCADE delete for data integrity
+
+See **docs/AUTH_SETUP.md** for detailed setup instructions and testing guide.

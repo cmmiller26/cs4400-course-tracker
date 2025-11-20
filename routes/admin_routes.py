@@ -1,14 +1,17 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from utils.db_connection import execute_query, execute_update
+from utils.auth import login_required
 
 admin_bp = Blueprint('admin', __name__)
 
 @admin_bp.route('/')
+@login_required(role='admin')
 def index():
     """Admin dashboard/home page"""
     return render_template('admin/index.html')
 
 @admin_bp.route('/statistics')
+@login_required(role='admin')
 def statistics():
     """
     Display enrollment statistics.
@@ -38,6 +41,7 @@ def statistics():
     return render_template('admin/statistics.html', stats=stats)
 
 @admin_bp.route('/students')
+@login_required(role='admin')
 def view_students():
     """
     Display all students with their majors and advisors.
@@ -69,10 +73,11 @@ def view_students():
     return render_template('admin/students.html', students=students)
 
 @admin_bp.route('/courses')
+@login_required(role='admin')
 def manage_courses():
     """Display all courses for management"""
     sql = """
-        SELECT 
+        SELECT
             c.courseId,
             c.title,
             c.credits,
@@ -83,11 +88,54 @@ def manage_courses():
         LEFT JOIN Employee e ON t.employeeId = e.employeeId
         ORDER BY c.title
     """
-    
+
     courses = execute_query(sql)
-    
+
     if courses is None:
         flash('Error loading courses', 'error')
         courses = []
-    
+
     return render_template('admin/courses.html', courses=courses)
+
+@admin_bp.route('/current-enrollments')
+@login_required(role='admin')
+def current_enrollments():
+    """
+    Display all current student enrollments using the current_student_enrollments view.
+    This demonstrates the use of database views for simplified data access.
+    """
+    sql = "SELECT * FROM current_student_enrollments ORDER BY studentId, title"
+
+    enrollments = execute_query(sql)
+
+    if enrollments is None:
+        flash('Error loading current enrollments', 'error')
+        enrollments = []
+
+    return render_template('admin/current_enrollments.html', enrollments=enrollments)
+
+@admin_bp.route('/completed-courses')
+@login_required(role='admin')
+def completed_courses():
+    """
+    Display all completed student courses using the completed_student_courses view.
+    This demonstrates the use of database views for filtered data access.
+    """
+    sql = "SELECT * FROM completed_student_courses ORDER BY studentId, title"
+
+    courses = execute_query(sql)
+
+    if courses is None:
+        flash('Error loading completed courses', 'error')
+        courses = []
+
+    return render_template('admin/completed_courses.html', courses=courses)
+
+@admin_bp.route('/queries')
+@login_required(role='admin')
+def queries():
+    """
+    Display the SQL queries showcase page.
+    This is a placeholder until queries.sql is completed.
+    """
+    return render_template('admin/queries.html')

@@ -91,26 +91,37 @@ The CourseTracker is a Flask-based web application that provides direct access t
 
 ### routes/ (Blueprint Modules)
 
-- **student_routes.py**: Handle student-facing functionality
+- **auth_routes.py**: Handle authentication
+  - Display login form
+  - Process login credentials
+  - Create and manage user sessions
+  - Handle logout
+  - Redirect users based on role (student/admin)
+
+- **student_routes.py**: Handle student-facing functionality (protected)
   - View available courses and sections
   - Enroll in sections
   - View enrolled courses and grades
   - Declare majors
   - View requirements and progress
-  
-- **admin_routes.py**: Handle administrative functionality
+  - **All routes protected with @login_required(role='student')**
+
+- **admin_routes.py**: Handle administrative functionality (protected)
   - Manage courses, sections, and employees
   - Update student grades
   - View enrollment statistics
   - Generate reports with aggregations
+  - **All routes protected with @login_required(role='admin')**
 
 **Responsibilities of route handlers**:
 
+- Check authentication and authorization (via @login_required decorator)
 - Parse request parameters (query strings, form data)
 - Call database queries via `utils/db_connection.py`
 - Handle query results (transform, filter, aggregate)
 - Pass data to templates for rendering
 - Handle errors and validation
+- Manage user sessions
 
 ### utils/db_connection.py
 
@@ -234,3 +245,84 @@ def view_courses():
 4. **Student views enrolled courses**: GET `/student/my-courses`
    - Route queries enrolls_in JOIN Section JOIN Course
    - Template displays enrolled courses with status and grades
+
+## Authentication Flow
+
+The system implements session-based authentication with role-based access control.
+
+### Login Flow
+
+1. **User visits login page**: GET `/auth/login`
+   - If already logged in, redirect to appropriate dashboard
+   - Otherwise, display login form (templates/login.html)
+
+2. **User submits credentials**: POST `/auth/login`
+   - Route extracts username and password from form
+   - Calls `authenticate_user()` from utils/auth.py
+   - Authentication function:
+     - Queries app_users table for username
+     - Verifies password using werkzeug check_password_hash()
+     - Joins with Student table if role is 'student' to get name
+   - On success:
+     - Creates session with user data (user_id, username, role, student_id, student_name)
+     - Redirects to appropriate dashboard based on role
+   - On failure:
+     - Re-renders login form with error message
+
+3. **Accessing protected routes**:
+   - @login_required decorator intercepts request
+   - Checks if 'user_id' exists in session
+   - If not authenticated: redirect to login with error message
+   - If authenticated but wrong role: redirect to appropriate dashboard with error
+   - If authorized: allows request to proceed
+
+4. **Logout**: GET `/auth/logout`
+   - Clears all session data
+   - Redirects to homepage with goodbye message
+
+### Session Data Structure
+
+When user logs in, session contains:
+
+```python
+{
+    'user_id': int,           # Primary key from app_users
+    'username': str,          # Username
+    'role': 'student'|'admin',# User role
+    'student_id': int|None,   # Student.studentId if role='student'
+    'student_name': str|None  # Student.name if role='student'
+}
+```
+
+### Route Protection
+
+All student and admin routes are protected:
+
+```python
+# Student routes - only accessible to logged-in students
+@student_bp.route('/courses')
+@login_required(role='student')
+def view_courses():
+    # Uses session.get('student_id') for queries
+    pass
+
+# Admin routes - only accessible to logged-in admins
+@admin_bp.route('/statistics')
+@login_required(role='admin')
+def statistics():
+    pass
+```
+
+### Database Integration
+
+Authentication table (app_users):
+
+- Stores username, password_hash, role, linked_id
+- Foreign key: linked_id → Student.studentId (CASCADE DELETE)
+- Students must have linked_id, admins must not
+- Passwords hashed with scrypt algorithm (werkzeug.security)
+
+Test Accounts:
+
+- Student: teststudent/student123 (linked to Student ID 4001)
+- Admin: testadmin/admin123 (no student link)
