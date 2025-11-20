@@ -138,10 +138,95 @@ def execute_transaction(queries):
         if connection and connection.is_connected():
             connection.close()
 
+def call_procedure(proc_name, params=None):
+    """
+    Call a stored procedure and return results.
+
+    Args:
+        proc_name (str): Name of the stored procedure
+        params (tuple/list): Parameters for the procedure
+
+    Returns:
+        list: List of result sets (each result set is a list of dictionaries)
+        None: If procedure call fails
+    """
+    connection = None
+    cursor = None
+    try:
+        connection = get_connection()
+        if not connection:
+            return None
+
+        cursor = connection.cursor(dictionary=True)
+        cursor.callproc(proc_name, params or ())
+
+        # Stored procedures can return multiple result sets
+        results = []
+        for result in cursor.stored_results():
+            results.append(result.fetchall())
+
+        connection.commit()
+        return results
+
+    except Error as e:
+        if connection:
+            connection.rollback()
+        print(f"Error calling procedure: {e}")
+        print(f"Procedure: {proc_name}")
+        print(f"Params: {params}")
+        return None
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection and connection.is_connected():
+            connection.close()
+
+def call_function(func_name, params):
+    """
+    Call a stored function and return the result.
+
+    Args:
+        func_name (str): Name of the stored function
+        params (tuple/list): Parameters for the function
+
+    Returns:
+        The result of the function, or None if call fails
+    """
+    connection = None
+    cursor = None
+    try:
+        connection = get_connection()
+        if not connection:
+            return None
+
+        cursor = connection.cursor()
+
+        # Build the SQL to call the function
+        placeholders = ', '.join(['%s'] * len(params))
+        sql = f"SELECT {func_name}({placeholders}) AS result"
+
+        cursor.execute(sql, params)
+        result = cursor.fetchone()
+
+        return result[0] if result else None
+
+    except Error as e:
+        print(f"Error calling function: {e}")
+        print(f"Function: {func_name}")
+        print(f"Params: {params}")
+        return None
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection and connection.is_connected():
+            connection.close()
+
 def test_connection():
     """
     Test database connection and print connection info.
-    
+
     Returns:
         bool: True if connection successful, False otherwise
     """

@@ -29,8 +29,8 @@ A university course tracking system built for CS:4400 Database Systems at the Un
 
 - ✅ **3 Triggers**: Prerequisite validation, capacity enforcement, duplicate prevention
 - ✅ **2 Views**: Current enrollments, completed courses
-- 🔄 **Stored Procedure & Function**: In progress
-- 🔄 **5 SQL Queries**: In progress (JOINs, aggregations, subqueries)
+- ✅ **Stored Procedure & Function**: Available with helper utilities
+- ✅ **5 SQL Queries**: JOINs, aggregations, subqueries, view usage
 
 ### Authentication Schema
 
@@ -58,11 +58,12 @@ A university course tracking system built for CS:4400 Database Systems at the Un
    cd cs4400-course-tracker
    ```
 
-2. **Create virtual environment**:
+2. **Create and activate virtual environment**:
 
    ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   python3 -m venv venv
+   source venv/bin/activate  # On macOS/Linux
+   # On Windows: venv\Scripts\activate
    ```
 
 3. **Install dependencies**:
@@ -71,28 +72,58 @@ A university course tracking system built for CS:4400 Database Systems at the Un
    pip install -r requirements.txt
    ```
 
-4. **Configure database** (edit `config.py`):
+4. **Configure database**:
 
-   ```python
-   DB_CONFIG = {
-       'host': 'localhost',
-       'user': 'your_username',
-       'password': 'your_password',
-       'database': 'CourseTracker'
-   }
-   ```
-
-5. **Create database and load schema**:
+   Copy the example environment file and edit with your MySQL credentials:
 
    ```bash
-   mysql -u your_username -p < database/schema.sql
-   mysql -u your_username -p CourseTracker < database/data.sql
-   mysql -u your_username -p CourseTracker < database/auth_table.sql
-   mysql -u your_username -p CourseTracker < database/triggers.sql
-   mysql -u your_username -p CourseTracker < database/views.sql
+   cp .env.example .env
+   ```
+
+   Edit `.env` file:
+
+   ```bash
+   SECRET_KEY=your-random-secret-key-here
+   DB_HOST=localhost
+   DB_USER=root
+   DB_PASSWORD=YOUR_MYSQL_PASSWORD_HERE
+   DB_NAME=CourseTracker
+   ```
+
+5. **Initialize the database**:
+
+   The automated initialization script will create the database and execute all SQL files:
+
+   ```bash
+   python -m utils.init_db
+   ```
+
+   This script will:
+   - Drop and recreate the `CourseTracker` database
+   - Execute all SQL files in the correct order (schema, auth, data, views, triggers, procedures)
+   - Create test accounts (teststudent/student123, testadmin/admin123)
+   - Provide clear feedback on success or errors
+
+   **Alternative - Manual Setup**:
+
+   If you prefer to initialize manually:
+
+   ```bash
+   mysql -u root -p < database/schema.sql
+   mysql -u root -p CourseTracker < database/auth_table.sql
+   mysql -u root -p CourseTracker < database/data.sql
+   mysql -u root -p CourseTracker < database/views.sql
+   mysql -u root -p CourseTracker < database/triggers.sql
+   mysql -u root -p CourseTracker < database/procedures_functions.sql
    ```
 
 6. **Run the application**:
+
+   ```bash
+   python run.py
+   ```
+
+   Or alternatively:
 
    ```bash
    python app.py
@@ -101,6 +132,69 @@ A university course tracking system built for CS:4400 Database Systems at the Un
 7. **Access the application**:
    - Homepage: `http://localhost:5001`
    - Login: `http://localhost:5001/auth/login`
+
+---
+
+## Database Utilities
+
+The project includes comprehensive database utility functions in [utils/db_connection.py](utils/db_connection.py):
+
+### Connection Management
+
+```python
+from utils.db_connection import get_connection
+
+# Get a connection (automatically uses config from .env)
+connection = get_connection()
+```
+
+### Query Execution
+
+```python
+from utils.db_connection import execute_query, execute_update
+
+# SELECT queries - returns list of dictionaries
+students = execute_query("SELECT * FROM Student WHERE year = %s", (2024,))
+student = execute_query("SELECT * FROM Student WHERE id = %s", (4001,), fetch_one=True)
+
+# INSERT/UPDATE/DELETE - returns affected row count
+rows_affected = execute_update(
+    "UPDATE Student SET year = %s WHERE id = %s",
+    (2025, 4001)
+)
+```
+
+### Stored Procedures & Functions
+
+```python
+from utils.db_connection import call_procedure, call_function
+
+# Call stored procedure (returns list of result sets)
+results = call_procedure('GetStudentEnrollments', (4001,))
+
+# Call stored function (returns scalar result)
+gpa = call_function('CalculateGPA', (4001,))
+```
+
+### Transaction Management
+
+```python
+from utils.db_connection import execute_transaction
+
+# Execute multiple queries in a transaction
+queries = [
+    ("INSERT INTO Student VALUES (%s, %s, %s, %s, %s)", (5001, 'John', 'Doe', 2024, 'M')),
+    ("INSERT INTO enrolls_in VALUES (%s, %s, %s, %s, NULL)", (5001, 'CS', 4400, 1))
+]
+success = execute_transaction(queries)
+```
+
+### Security Features
+
+- All queries use **parameterized statements** with `%s` placeholders
+- Automatic **connection pooling** and cleanup
+- Built-in **error handling** and logging
+- **Transaction rollback** on errors
 
 ---
 
@@ -124,33 +218,42 @@ A university course tracking system built for CS:4400 Database Systems at the Un
 
 ```text
 cs4400-course-tracker/
-├── app.py                   # Main Flask application
-├── config.py                # Configuration settings
-├── requirements.txt         # Python dependencies
-├── database/               # SQL files
-│   ├── schema.sql         # Table definitions
-│   ├── data.sql           # Sample data
-│   ├── auth_table.sql     # Authentication table
-│   ├── triggers.sql       # Trigger definitions
-│   └── views.sql          # View definitions
-├── routes/                # Flask blueprints
-│   ├── auth_routes.py     # Login/logout
-│   ├── student_routes.py  # Student functionality
-│   └── admin_routes.py    # Admin functionality
-├── utils/                 # Utility modules
-│   ├── auth.py            # Authentication utilities
-│   └── db_connection.py   # Database connection
-├── templates/             # Jinja2 templates
-│   ├── base.html
-│   ├── login.html
-│   ├── student/
-│   └── admin/
-├── static/                # CSS, JavaScript
-└── docs/                  # Documentation
-    ├── AUTH_SETUP.md      # Authentication setup guide
-    ├── ARCHITECTURE.md
-    ├── TECH_STACK.md
-    └── DATABASE_DESIGN.md
+├── run.py                      # Application entry point (NEW - recommended)
+├── app.py                      # Main Flask application (app factory)
+├── config.py                   # Configuration settings
+├── requirements.txt            # Python dependencies
+├── .env.example                # Environment variables template
+├── .env                        # Your local config (not in git)
+├── database/                   # SQL files
+│   ├── schema.sql             # Table definitions
+│   ├── auth_table.sql         # Authentication table
+│   ├── data.sql               # Sample data
+│   ├── views.sql              # View definitions
+│   ├── triggers.sql           # Trigger definitions
+│   ├── procedures_functions.sql  # Stored procedures & functions
+│   └── queries.sql            # Main application queries
+├── routes/                    # Flask blueprints
+│   ├── auth_routes.py         # Login/logout
+│   ├── student_routes.py      # Student functionality
+│   └── admin_routes.py        # Admin functionality
+├── utils/                     # Utility modules
+│   ├── auth.py                # Authentication utilities
+│   ├── db_connection.py       # Database connection & query functions
+│   └── init_db.py             # Database initialization script (NEW)
+├── templates/                 # Jinja2 templates
+│   ├── base.html              # Base template with Iowa branding
+│   ├── index.html             # Landing page
+│   ├── login.html             # Login form
+│   ├── student/               # Student portal templates
+│   └── admin/                 # Admin portal templates
+├── static/                    # CSS, JavaScript
+│   └── css/
+│       └── style.css          # Iowa gold & black styling
+└── docs/                      # Documentation
+    ├── AUTH_SETUP.md          # Authentication setup guide
+    ├── ARCHITECTURE.md        # System architecture
+    ├── TECH_STACK.md          # Technology stack details
+    └── DATABASE_DESIGN.md     # Database schema & design
 ```
 
 ---
