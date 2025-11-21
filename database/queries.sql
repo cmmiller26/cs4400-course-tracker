@@ -33,36 +33,32 @@ ORDER BY c.title ASC, s.sectionNo ASC;
 -- Insert query for enrollment
 INSERT INTO enrolls_in (studentId, courseId, sectionNo, status, grade, enrolledDate) VALUES
 (4005, 5003, '0001', 'enrolled', NULL, CURRENT_DATE);
+
 -- Delete a student when they drop a class
 DELETE FROM enrolls_in
 WHERE (studentId = '4005' AND courseId = '5003' AND sectionNo = '0001' AND 
 status = 'enrolled' AND status = NULL AND enrollmentDate IS NOT NULL);
--- Update query to change student grade
-UPDATE enrolls_in
-SET grade = ''
-WHERE (studentId = '' AND courseId = '' AND sectionNo = '' AND 
-status = '' AND status = '' AND enrollmentDate IS NOT NULL);
+
 -- Aggregate to calculate GPA
-SELECT studentId, SUM(
-	CASE e.grade
-		WHEN 'A+' THEN 4.3
-        WHEN 'A' THEN 4.0
-        WHEN 'A-' THEN 3.7
-        WHEN 'B+' THEN 3.3
-        WHEN 'B' THEN 3.0
-        WHEN 'B-' THEN 2.7
-        WHEN 'C+' THEN 2.3
-        WHEN 'C' THEN 2.0
-        WHEN 'C-' THEN 1.7
-        WHEN 'D+' THEN 1.3
-        WHEN 'D' THEN 1.0
-        WHEN 'D-' THEN 0.3
-        WHEN 'F' THEN 0.0
-	END * credits) / SUM(credits) AS GPA
-FROM enrolls_in e
-JOIN course c
-ON e.courseId = c.courseId
-GROUP BY studentId;
+SELECT
+	s.studentId,
+	s.name,
+	SUM(CASE e.grade
+		WHEN 'A+' THEN 4.33 WHEN 'A' THEN 4.0 WHEN 'A-' THEN 3.67
+		WHEN 'B+' THEN 3.33 WHEN 'B' THEN 3.0 WHEN 'B-' THEN 2.67
+		WHEN 'C+' THEN 2.33 WHEN 'C' THEN 2.0 WHEN 'C-' THEN 1.67
+		WHEN 'D+' THEN 1.33 WHEN 'D' THEN 1.0 WHEN 'D-' THEN 0.67
+		WHEN 'F' THEN 0.0
+		ELSE 0.0
+	END * c.credits) / NULLIF(SUM(c.credits), 0) AS gpa,
+	COUNT(e.courseId) AS courses_completed,
+	SUM(c.credits) AS total_credits
+FROM Student s
+JOIN enrolls_in e ON s.studentId = e.studentId
+JOIN Course c ON e.courseId = c.courseId
+WHERE s.studentId = %s AND e.status = 'completed' AND e.grade IS NOT NULL
+GROUP BY s.studentId, s.name;
+
 -- Aggregate to show individual and average salary
 SELECT e.name, e.role, e.salary, S.average_salary
 FROM (
@@ -72,6 +68,7 @@ FROM (
     ) AS S
 JOIN Employee e
 ON S.role = e.role;
+
 -- Aggregate to show average grade per class
 SELECT  DISTINCT c.title, S.average_grade
 FROM (
@@ -96,6 +93,7 @@ JOIN enrolls_in e
 ON S.courseId = e.courseId
 JOIN Course c
 ON e.courseId = c.courseId;
+
 -- Aggregate to show average grade each professor gives
 SELECT  DISTINCT p.employeeId, e1.name, S.average_grade
 FROM (SELECT courseId, AVG(CASE 

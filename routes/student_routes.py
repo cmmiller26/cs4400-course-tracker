@@ -246,14 +246,18 @@ def gpa():
 
         student_data = execute_query(sql, (student_id,), fetch_one=True)
 
-        # Also get the student's completed courses for detailed view
-        courses_sql = """
+        # Get completed courses for detailed view
+        completed_courses_sql = """
             SELECT
                 c.courseId,
                 c.title,
                 c.credits,
+                e.sectionNo,
                 e.grade,
                 e.enrolledDate,
+                (SELECT GROUP_CONCAT(cl2.code SEPARATOR ', ')
+                 FROM cross_lists cl2
+                 WHERE cl2.courseId = c.courseId) AS code,
                 CASE e.grade
                     WHEN 'A+' THEN 4.33 WHEN 'A' THEN 4.0 WHEN 'A-' THEN 3.67
                     WHEN 'B+' THEN 3.33 WHEN 'B' THEN 3.0 WHEN 'B-' THEN 2.67
@@ -268,7 +272,7 @@ def gpa():
             ORDER BY e.enrolledDate DESC
         """
 
-        completed_courses = execute_query(courses_sql, (student_id,))
+        completed_courses = execute_query(completed_courses_sql, (student_id,))
 
         if completed_courses is None:
             completed_courses = []

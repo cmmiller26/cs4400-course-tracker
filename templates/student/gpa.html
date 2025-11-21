@@ -144,6 +144,28 @@
     font-size: 0.9rem;
   }
 
+  .course-title {
+    font-weight: 600;
+    color: #000;
+  }
+
+  .course-id {
+    font-family: monospace;
+    background: #f0f0f0;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    font-size: 0.9rem;
+  }
+
+  .credits-badge {
+    background: #e3f2fd;
+    color: #1976d2;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
   .empty-state {
     text-align: center;
     padding: 3rem;
@@ -162,21 +184,16 @@
 <div class="page-header">
   <h1>📊 My GPA Dashboard</h1>
   <p>Your weighted GPA based on completed courses</p>
-  <span class="sql-badge">SQL QUERY #3: JOIN</span>
-  <span class="sql-badge">AGGREGATION</span>
-  <span class="sql-badge">GROUP BY</span>
+  <span class="sql-badge">QUERY: JOIN, AGGREGATION, & CASE</span>
 </div>
 
-<div
-  class="query-description"
-  style="
+<div class="query-description" style="
     background: #f5f5f5;
     padding: 1.5rem;
     border-radius: 8px;
     margin-bottom: 2rem;
     border-left: 4px solid #ffcd00;
-  "
->
+  ">
   <h3 style="margin-top: 0">📊 Query Description</h3>
   <p>
     This dashboard calculates your weighted GPA using multiple SQL concepts:
@@ -242,104 +259,78 @@
 </div>
 
 {% if completed_courses %}
-<div
-  style="
+<div style="
     background: white;
     padding: 2rem;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  "
->
+  ">
   <h2 style="margin-top: 0">📚 Completed Courses</h2>
   <table class="courses-table">
     <thead>
       <tr>
-        <th>Course ID</th>
-        <th>Course Title</th>
-        <th>Credits</th>
+        <th>Course</th>
+        <th>Code</th>
         <th>Grade</th>
-        <th>Grade Points</th>
+        <th>Credits</th>
         <th>Completed Date</th>
       </tr>
     </thead>
     <tbody>
       {% for course in completed_courses %}
       <tr>
-        <td><code>{{ course.courseId }}</code></td>
-        <td style="font-weight: 600">{{ course.title }}</td>
-        <td>{{ course.credits }}</td>
+        <td class="course-title">{{ course.title }}</td>
         <td>
-          <span class="grade-badge" style="background: #e3f2fd; color: #1976d2"
-            >{{ course.grade }}</span
-          >
+          <span class="course-id">
+            {# If the course code contains a comma, it's cross-listed. Wrap it in parentheses. #}
+            {% if course.code and ',' in course.code %}
+            ({{ course.code }})
+            {%- else -%}
+            {{ course.code or course.courseId }}
+            {%- endif -%}
+            :{{ course.sectionNo }}
+          </span>
         </td>
-        <td>{{ "%.2f"|format(course.grade_points) }}</td>
+        <td>
+          <span class="grade-badge" style="background: #e3f2fd; color: #1976d2">{{ course.grade }}</span>
+        </td>
+        <td><span class="credits-badge">{{ course.credits }} credits</span></td>
         <td>{{ course.enrolledDate }}</td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
+  <div style="
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: #f5f5f5;
+      border-radius: 8px;
+      border-left: 4px solid #ffcd00;
+    ">
+    <h4 style="margin-top: 0">💡 Query Details</h4>
+    <p style="margin-bottom: 0; font-size: 0.9rem">
+      This completed courses table uses a query similar to the one in
+      <a href="{{ url_for('student.courses') }}" style="color: #1976d2; font-weight: 600">Browse Courses</a>,
+      featuring <strong>JOINs</strong> between <code>enrolls_in</code> and <code>Course</code> tables,
+      and <strong>subqueries</strong> to fetch cross-listed course codes. Additionally, it uses a
+      <strong>CASE</strong> statement to calculate grade points from letter grades.
+    </p>
+  </div>
 </div>
 {% endif %} {% else %}
 <div class="empty-state">
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    style="width: 64px; height: 64px; margin-bottom: 1rem; opacity: 0.5"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-  >
-    <path
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="2"
-      d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-    />
+  <svg xmlns="http://www.w3.org/2000/svg" style="width: 64px; height: 64px; margin-bottom: 1rem; opacity: 0.5"
+    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+      d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
   </svg>
   <h3>No GPA Data Available</h3>
   <p>You haven't completed any courses with grades yet.</p>
   <p style="margin-top: 1rem">
-    <a
-      href="{{ url_for('student.enroll') }}"
-      style="color: #1976d2; font-weight: 600"
-      >Enroll in courses</a
-    >
+    <a href="{{ url_for('student.enroll') }}" style="color: #1976d2; font-weight: 600">Enroll in courses</a>
     to start building your academic record.
   </p>
 </div>
 {% endif %}
 
-<div
-  style="
-    margin-top: 2rem;
-    padding: 1rem;
-    background: #e3f2fd;
-    border-radius: 8px;
-    border-left: 4px solid #1976d2;
-  "
->
-  <h4 style="margin-top: 0">ℹ️ Grade Point Values</h4>
-  <div
-    style="
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 0.75rem;
-      font-size: 0.9rem;
-    "
-  >
-    <div><strong>A+:</strong> 4.33</div>
-    <div><strong>A:</strong> 4.00</div>
-    <div><strong>A-:</strong> 3.67</div>
-    <div><strong>B+:</strong> 3.33</div>
-    <div><strong>B:</strong> 3.00</div>
-    <div><strong>B-:</strong> 2.67</div>
-    <div><strong>C+:</strong> 2.33</div>
-    <div><strong>C:</strong> 2.00</div>
-    <div><strong>C-:</strong> 1.67</div>
-    <div><strong>D+:</strong> 1.33</div>
-    <div><strong>D:</strong> 1.00</div>
-    <div><strong>D-:</strong> 0.67</div>
-    <div><strong>F:</strong> 0.00</div>
-  </div>
-</div>
 {% endblock %}
