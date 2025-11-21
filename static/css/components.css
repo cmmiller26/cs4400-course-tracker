@@ -621,6 +621,33 @@
     margin: 0;
 }
 
+/* ===== ER Diagram Section ===== */
+.er-diagram-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.er-diagram-title {
+    color: #000;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #ffcd00;
+    padding-bottom: 0.5rem;
+}
+
+.er-diagram {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
     .data-table {

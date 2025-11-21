@@ -25,13 +25,6 @@ A university course tracking system built for CS:4400 Database Systems at the Un
 - Access database views for reporting
 - SQL queries showcase
 
-### Database Features
-
-- ✅ **3 Triggers**: Prerequisite validation, capacity enforcement, duplicate prevention
-- ✅ **2 Views**: Current enrollments, completed courses
-- ✅ **Stored Procedure & Function**: Available with helper utilities
-- ✅ **5 SQL Queries**: JOINs, aggregations, subqueries, view usage
-
 ### Authentication Schema
 
 - Session-based authentication with role-based access control
@@ -103,19 +96,6 @@ A university course tracking system built for CS:4400 Database Systems at the Un
    - Execute all SQL files in the correct order (schema, auth, data, views, triggers, procedures)
    - Create test accounts (teststudent/student123, testadmin/admin123)
    - Provide clear feedback on success or errors
-
-   **Alternative - Manual Setup**:
-
-   If you prefer to initialize manually:
-
-   ```bash
-   mysql -u root -p < database/schema.sql
-   mysql -u root -p CourseTracker < database/auth_table.sql
-   mysql -u root -p CourseTracker < database/data.sql
-   mysql -u root -p CourseTracker < database/views.sql
-   mysql -u root -p CourseTracker < database/triggers.sql
-   mysql -u root -p CourseTracker < database/procedures_functions.sql
-   ```
 
 6. **Run the application**:
 
@@ -212,49 +192,64 @@ success = execute_transaction(queries)
 
 ```text
 cs4400-course-tracker/
-├── run.py                      # Application entry point (NEW - recommended)
-├── app.py                      # Main Flask application (app factory)
-├── config.py                   # Configuration settings
-├── requirements.txt            # Python dependencies
-├── .env.example                # Environment variables template
-├── .env                        # Your local config (not in git)
-├── database/                   # SQL files
-│   ├── schema.sql             # Table definitions
-│   ├── auth_table.sql         # Authentication table
-│   ├── data.sql               # Sample data
-│   ├── views.sql              # View definitions
-│   ├── triggers.sql           # Trigger definitions
+├── run.py                        # Application entry point
+├── app.py                        # Main Flask application (app factory)
+├── config.py                     # Configuration settings
+├── requirements.txt              # Python dependencies
+├── .env.example                  # Environment variables template
+├── .env                          # Your local config (not in git)
+├── database/                     # SQL files
+│   ├── schema.sql                # Table definitions
+│   ├── auth_table.sql            # Authentication table
+│   ├── data.sql                  # Sample data
+│   ├── views.sql                 # View definitions
+│   ├── triggers.sql              # Trigger definitions
 │   ├── procedures_functions.sql  # Stored procedures & functions
-│   └── queries.sql            # Main application queries
-├── routes/                    # Flask blueprints
-│   ├── auth_routes.py         # Login/logout
-│   ├── student_routes.py      # Student functionality
-│   └── admin_routes.py        # Admin functionality
-├── utils/                     # Utility modules
-│   ├── auth.py                # Authentication utilities
-│   ├── db_connection.py       # Database connection & query functions
-│   └── init_db.py             # Database initialization script (NEW)
-├── templates/                 # Jinja2 templates
-│   ├── base.html              # Base template with Iowa branding
-│   ├── index.html             # Landing page
-│   ├── login.html             # Login form
-│   ├── student/               # Student portal templates
-│   └── admin/                 # Admin portal templates
-├── static/                    # CSS, JavaScript
+│   └── queries.sql               # Main application queries
+├── routes/                       # Flask blueprints
+│   ├── __init__.py
+│   ├── auth_routes.py            # Login/logout
+│   ├── student_routes.py         # Student functionality
+│   └── admin_routes.py           # Admin functionality
+├── utils/                        # Utility modules
+│   ├── __init__.py
+│   ├── auth.py                   # Authentication utilities
+│   ├── db_connection.py          # Database connection & query functions
+│   └── init_db.py                # Database initialization script
+├── templates/                    # Jinja2 templates
+│   ├── base.html                 # Base template with Iowa branding
+│   ├── index.html                # Landing page
+│   ├── login.html                # Login form
+│   ├── student/                  # Student portal templates
+│   │   ├── index.html            # Student dashboard
+│   │   ├── courses.html          # Course catalog
+│   │   ├── enroll.html           # Enrollment page
+│   │   └── gpa.html              # GPA calculator
+│   └── admin/                    # Admin portal templates
+│       ├── index.html            # Admin dashboard
+│       ├── analytics.html        # Grade analytics
+│       └── salary_report.html    # Salary report
+├── static/                       # Static assets
 │   └── css/
-│       └── style.css          # Iowa gold & black styling
-└── docs/                      # Documentation
-    ├── AUTH_SETUP.md          # Authentication setup guide
-    ├── ARCHITECTURE.md        # System architecture
-    ├── TECH_STACK.md          # Technology stack details
-    └── DATABASE_DESIGN.md     # Database schema & design
+│       ├── style.css             # Base styles
+│       ├── components.css        # Reusable components
+│       ├── theme-student.css     # Student portal theme
+│       ├── theme-admin.css       # Admin portal theme
+│       ├── admin_dashboard.css   # Admin dashboard styles
+│       ├── analytics.css         # Analytics page styles
+│       ├── salary_report.css     # Salary report styles
+│       └── gpa.css               # GPA calculator styles
+└── docs/                         # Documentation
+    ├── AUTH_SETUP.md             # Authentication setup guide
+    ├── ARCHITECTURE.md           # System architecture
+    ├── TECH_STACK.md             # Technology stack details
+    └── DATABASE_DESIGN.md        # Database schema & design
 ```
 
 ---
 
 ## Documentation
 
-- **[CLAUDE.md](CLAUDE.md)**: Project overview and navigation for AI assistants
 - **[docs/AUTH_SETUP.md](docs/AUTH_SETUP.md)**: Detailed authentication setup and testing
 - **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**: System architecture and request flow
 - **[docs/TECH_STACK.md](docs/TECH_STACK.md)**: Technology choices and stack details
@@ -273,29 +268,9 @@ cs4400-course-tracker/
 
 ---
 
-## Key Design Decisions
+## ER Diagram
 
-### No ORM
-
-The project intentionally avoids SQLAlchemy or other ORMs to demonstrate explicit SQL queries (joins, aggregations, subqueries) as required by the course.
-
-### Raw SQL Queries
-
-All database interactions use parameterized SQL queries via mysql-connector-python with `%s` placeholders for security.
-
-### Role-Based Access Control
-
-- Student routes: `/student/*` - requires student login
-- Admin routes: `/admin/*` - requires admin login
-- Protected using `@login_required(role='student')` or `@login_required(role='admin')` decorators
-
-### Session Management
-
-- Server-side Flask sessions
-- User data stored: user_id, username, role, student_id, student_name
-- SECRET_KEY in config.py protects session cookies
-
----
+![ER Diagram](static/images/er-diagram.svg)
 
 ## Database Schema Highlights
 
@@ -327,15 +302,3 @@ All database interactions use parameterized SQL queries via mysql-connector-pyth
 ## License
 
 This project is for educational purposes as part of CS:4400 Database Systems at the University of Iowa.
-
----
-
-## Team
-
-- Colin Miller
-- Manthan Shah
-- Jack Janik
-
-**Institution**: University of Iowa
-**Course**: CS:4400 Database Systems
-**Semester**: Fall 2025
