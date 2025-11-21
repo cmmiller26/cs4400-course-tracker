@@ -1,13 +1,18 @@
+-- ================================================================================
+-- SECTION 3: Views (CREATE VIEW)
+--
+-- This section creates 2 relational views as required by Deliverable 5.
+-- These views simplify common queries and demonstrate view creation skills.
+-- ================================================================================
+
 USE CourseTracker;
 
 -- ==================================================
--- View Creation
+-- VIEW 1: current_student_enrollments
 -- ==================================================
--- There are 2 views created in this file:
--- current_student_enrollments: Shows the current enrollments of all students.
--- completed_student_courses: Shows the completed courses of all students.
--- Both views are created from the admin's perspective.
--- Students can query these views to see their own data.
+-- Purpose: Shows all currently enrolled students with course details
+-- Used by: Student dashboard to display current schedule
+-- Demonstrates: JOINs across 4 tables, correlated subqueries
 
 CREATE VIEW current_student_enrollments AS
 SELECT
@@ -43,7 +48,12 @@ JOIN Section se ON e.courseId = se.courseId AND e.sectionNo = se.sectionNo
 JOIN Course c ON se.courseId = c.courseId
 WHERE e.status = 'enrolled';
 
-SELECT * FROM current_student_enrollments;
+-- ==================================================
+-- VIEW 2: completed_student_courses
+-- ==================================================
+-- Purpose: Shows all completed courses with grades and grade points
+-- Used by: GPA calculator and transcript generation
+-- Demonstrates: JOINs, CASE expression for grade point conversion
 
 CREATE VIEW completed_student_courses AS
 SELECT
@@ -74,5 +84,3 @@ JOIN enrolls_in e ON s.studentId = e.studentId
 JOIN Section se ON e.courseId = se.courseId AND e.sectionNo = se.sectionNo
 JOIN Course c ON se.courseId = c.courseId
 WHERE e.status = 'completed';
-
-SELECT * FROM completed_student_courses;

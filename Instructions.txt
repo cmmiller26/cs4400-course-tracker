@@ -1,0 +1,159 @@
+================================================================================
+CS:4400 Database Systems - CourseTracker Setup Instructions
+================================================================================
+
+Team: Colin Miller, Manthan Shah, Jack Janik
+Project: Deliverable 5 - Database Implementation with Web Interface
+
+================================================================================
+PREREQUISITES
+================================================================================
+
+- Python 3.11 or higher
+- MySQL 8.0 or higher
+- pip (Python package manager)
+
+================================================================================
+SETUP INSTRUCTIONS
+================================================================================
+
+1. EXTRACT THE ZIP FILE
+   ---------------------
+   Extract the contents of the zip file to a directory of your choice.
+
+
+2. OPEN A TERMINAL
+   ----------------
+   Navigate to the extracted directory:
+
+   cd CourseTracker_Application
+
+
+3. CREATE A VIRTUAL ENVIRONMENT (Recommended)
+   -------------------------------------------
+   python3 -m venv venv
+
+   Activate it:
+   - macOS/Linux:  source venv/bin/activate
+   - Windows:      venv\Scripts\activate
+
+
+4. INSTALL DEPENDENCIES
+   ---------------------
+   pip install -r requirements.txt
+
+
+5. CONFIGURE DATABASE CREDENTIALS
+   -------------------------------
+   Copy the example environment file:
+
+   cp .env.example .env
+
+   Edit the .env file and set your MySQL password:
+
+   SECRET_KEY=change-this-to-a-random-secret-key
+   DB_HOST=localhost
+   DB_USER=root
+   DB_PASSWORD=YOUR_MYSQL_PASSWORD    <-- Change this to your MySQL password
+   DB_NAME=CourseTracker
+
+
+6. INITIALIZE THE DATABASE
+   ------------------------
+   Run the database initialization script:
+
+   python -m utils.init_db
+
+   This will:
+   - Create the CourseTracker database
+   - Create all tables (schema.sql)
+   - Insert sample data (data.sql)
+   - Create authentication tables and test accounts (auth_table.sql)
+   - Create views (views.sql)
+   - Create triggers (triggers.sql)
+   - Create stored procedures and functions (procedures_functions.sql)
+
+   When prompted, type 'yes' to confirm.
+
+
+7. START THE APPLICATION
+   ----------------------
+   python run.py
+
+   The server will start on port 5001.
+
+
+8. ACCESS THE APPLICATION
+   -----------------------
+   Open a web browser and go to:
+
+   http://localhost:5001
+
+================================================================================
+TEST ACCOUNTS
+================================================================================
+
+Student Account:
+   Username: teststudent
+   Password: student123
+   Access:   Student portal (view courses, enroll, manage majors)
+
+Admin Account:
+   Username: testadmin
+   Password: admin123
+   Access:   Admin portal (manage students, courses, view reports)
+
+================================================================================
+PROJECT FEATURES
+================================================================================
+
+Student Portal (/student/...):
+   - Browse course catalog with sections
+   - Enroll in course sections
+   - View enrolled and completed courses with grades
+   - Declare majors and track requirements
+
+Admin Portal (/admin/...):
+   - View and manage student records
+   - Manage courses and professor assignments
+   - View enrollment statistics by department
+   - Access database views for reporting
+   - SQL queries showcase
+
+================================================================================
+DATABASE REQUIREMENTS DEMONSTRATED
+================================================================================
+
+Triggers (3):
+   - See database/triggers.sql
+
+Views (2):
+   - See database/views.sql
+
+SQL Queries (5+):
+   - JOINs, aggregations, subqueries, and view usage
+   - See database/queries.sql
+
+Stored Procedure and Function:
+   - See database/procedures_functions.sql
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+"Access denied" error:
+   - Verify your MySQL password in the .env file
+   - Ensure MySQL server is running
+
+"Module not found" error:
+   - Make sure you activated the virtual environment
+   - Run: pip install -r requirements.txt
+
+"Database does not exist" error:
+   - Run: python -m utils.init_db
+
+Port 5001 already in use:
+   - Stop any other process using port 5001, or
+   - Edit run.py to use a different port
+
+================================================================================

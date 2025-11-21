@@ -1,20 +1,14 @@
 -- ================================================================================
--- CS:4400 Database Systems - Deliverable 5
--- CourseTracker Database Implementation
--- Team: Colin Miller, Manthan Shah, Jack Janik
--- ================================================================================
+-- SECTION 2: DML (Data Manipulation Language) - Sample Data
 --
--- This file contains DML (Data Manipulation Language) statements for populating
--- the database with sample data. Each table has at least 5 tuples to demonstrate
--- joins, aggregations, and other SQL operations.
---
--- REQUIREMENT: Task 2 - Add sample data for each relation (>= 5 tuples)
+-- This section populates the database with sample data. Each table has at least
+-- 5 tuples to demonstrate joins, aggregations, and other SQL operations.
 -- ================================================================================
 
 USE CourseTracker;
 
 -- ==================================================
--- DML: Sample Data (>= 5 rows per table)
+-- 2.1 Base Entity Data
 -- ==================================================
 
 -- ---------- College ----------
