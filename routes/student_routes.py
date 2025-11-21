@@ -18,11 +18,8 @@ def index():
 @login_required(role='student')
 def courses():
     """
-    Display all available course sections with title, course ID, section number,
-    capacity, and credit hours using JOIN between Section and Course tables.
-
-    SQL Requirements Met:
-    - JOIN ✓
+    Display all available course sections with detailed information including
+    course code, professor, TAs, and enrollment numbers.
     """
     try:
         sql = """
@@ -31,25 +28,55 @@ def courses():
                 s.courseId,
                 s.sectionNo,
                 s.capacity,
-                c.credits
+                c.credits,
+                -- Cross-listed codes
+                (SELECT GROUP_CONCAT(cl2.code SEPARATOR ', ') 
+                FROM cross_lists cl2 
+                WHERE cl2.courseId = c.courseId) AS code,
+                -- Professor name
+                (SELECT prof_emp2.name 
+                FROM teaches t2 
+                JOIN Professor p2 ON t2.employeeId = p2.employeeId
+                JOIN Employee prof_emp2 ON p2.employeeId = prof_emp2.employeeId
+                WHERE t2.courseId = s.courseId
+                LIMIT 1) AS professor,
+                -- TA names
+                (SELECT GROUP_CONCAT(ta_emp2.name SEPARATOR ', ')
+                FROM assists a2
+                JOIN TA ta2 ON a2.employeeId = ta2.employeeId
+                JOIN Employee ta_emp2 ON ta2.employeeId = ta_emp2.employeeId
+                WHERE a2.courseId = s.courseId AND a2.sectionNo = s.sectionNo) AS tas,
+                -- Enrolled students count
+                (SELECT COUNT(*) 
+                FROM enrolls_in e2 
+                WHERE e2.courseId = s.courseId AND e2.sectionNo = s.sectionNo) AS num_enrolled
             FROM Section s
             JOIN Course c ON c.courseId = s.courseId
-            ORDER BY c.title ASC
+            ORDER BY c.title ASC, s.sectionNo ASC
         """
 
         courses = execute_query(sql)
-
+        
+        # Debug: Print what we got back
+        print(f"DEBUG: courses = {courses}")
+        print(f"DEBUG: type = {type(courses)}")
+        
         if courses is None:
-            flash('Error loading courses. Please try again.', 'error')
+            flash('Error loading courses. Database query returned None.', 'error')
             courses = []
+        elif isinstance(courses, list) and len(courses) == 0:
+            flash('No courses found in the database.', 'info')
+        elif isinstance(courses, list):
+            flash(f'Successfully loaded {len(courses)} courses.', 'success')
 
-        return render_template('student/courses.html', courses=courses)
+        return render_template('student/courses.html', courses=courses or [])
 
     except Exception as e:
-        flash('An unexpected error occurred while loading courses.', 'error')
+        flash(f'Database error: {str(e)}', 'error')
         print(f"Error in courses route: {e}")
+        import traceback
+        traceback.print_exc()
         return render_template('student/courses.html', courses=[])
-
 # ============================================================================
 # QUERY 2: Student Enrollment (INSERT + Trigger Demo + Procedure)
 # Requirements: INSERT, Demonstrates 3 triggers, Calls stored procedure

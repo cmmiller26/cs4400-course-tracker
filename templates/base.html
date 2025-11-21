@@ -1,57 +1,46 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{% block title %}Course Tracker{% endblock %}</title>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/style.css') }}"
-    />
-    {% block extra_css %}{% endblock %}
-  </head>
 
-  <body>
-    <header>
-      <nav>
-        <div
-          class="container"
-          style="
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Course Tracker{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+  <header>
+    <nav>
+      <div class="container" style="
             display: flex;
             justify-content: space-between;
             align-items: center;
-          "
-        >
-          <h1>
-            <a
-              href="{% if session.get('user_id') %}{% if session.get('role') == 'student' %}{{ url_for('student.index') }}{% else %}{{ url_for('admin.index') }}{% endif %}{% else %}{{ url_for('index') }}{% endif %}"
-            >
-              Course Tracker
-            </a>
-          </h1>
-          <ul
-            class="nav-links"
-            style="
+          ">
+        <h1>
+          <a
+            href="{% if session.get('user_id') %}{% if session.get('role') == 'student' %}{{ url_for('student.index') }}{% else %}{{ url_for('admin.index') }}{% endif %}{% else %}{{ url_for('index') }}{% endif %}">
+            Course Tracker
+          </a>
+        </h1>
+        <ul class="nav-links" style="
               display: flex;
               list-style: none;
               margin: 0;
               gap: 2rem;
               align-items: center;
-            "
-          >
-            {% if session.get('user_id') %}
-            <!-- User is logged in - show portal links -->
+            ">
+          {% if session.get('user_id') %}
+          <!-- User is logged in - show portal links -->
 
-            <!-- Logged in user info -->
-            <li style="color: white; font-weight: 500">
-              👤 {{ session.get('student_name') or session.get('username') }}
-            </li>
+          <!-- Logged in user info -->
+          <li style="color: white; font-weight: 500">
+            👤 {{ session.get('student_name') or session.get('username') }}
+          </li>
 
-            <!-- Logout link -->
-            <li>
-              <a
-                href="{{ url_for('auth.logout') }}"
-                style="
+          <!-- Logout link -->
+          <li>
+            <a href="{{ url_for('auth.logout') }}" style="
                   color: white;
                   text-decoration: none;
                   font-weight: 500;
@@ -59,17 +48,14 @@
                   background: rgba(255, 255, 255, 0.1);
                   border-radius: 5px;
                   transition: all 0.3s;
-                "
-              >
-                Logout
-              </a>
-            </li>
-            {% else %}
-            <!-- User is not logged in - show login link -->
-            <li>
-              <a
-                href="{{ url_for('auth.login') }}"
-                style="
+                ">
+              Logout
+            </a>
+          </li>
+          {% else %}
+          <!-- User is not logged in - show login link -->
+          <li>
+            <a href="{{ url_for('auth.login') }}" style="
                   color: white;
                   text-decoration: none;
                   font-weight: 500;
@@ -78,35 +64,35 @@
                   color: #000;
                   border-radius: 5px;
                   transition: all 0.3s;
-                "
-              >
-                Login
-              </a>
-            </li>
-            {% endif %}
-          </ul>
-        </div>
-      </nav>
-    </header>
-
-    <main class="container">
-      {% with messages = get_flashed_messages(with_categories=true) %} {% if
-      messages %}
-      <div class="flash-messages">
-        {% for category, message in messages %}
-        <div class="alert alert-{{ category }}">{{ message }}</div>
-        {% endfor %}
+                ">
+              Login
+            </a>
+          </li>
+          {% endif %}
+        </ul>
       </div>
-      {% endif %} {% endwith %} {% block content %}{% endblock %}
-    </main>
+    </nav>
+  </header>
 
-    <footer>
-      <div class="container">
-        <p>&copy; 2024 CS:4400 Database Systems - Course Tracker</p>
-        <p>Team: Colin Miller, Manthan Shah, Jack Janik</p>
-      </div>
-    </footer>
+  <main class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %} {% endwith %} {% block content %}{% endblock %}
+  </main>
 
-    {% block extra_js %}{% endblock %}
-  </body>
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 CS:4400 Database Systems - Course Tracker</p>
+      <p>Team: Colin Miller, Manthan Shah, Jack Janik</p>
+    </div>
+  </footer>
+
+  {% block extra_js %}{% endblock %}
+</body>
+
 </html>

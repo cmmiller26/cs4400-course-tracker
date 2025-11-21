@@ -1,9 +1,35 @@
 -- Select query to look for classes
-SELECT c.title, s.courseId, s.sectionNo, s.capacity, c.credits
+SELECT
+	c.title,
+	s.courseId,
+	s.sectionNo,
+	s.capacity,
+	c.credits,
+	-- Cross-listed codes
+	(SELECT GROUP_CONCAT(cl2.code SEPARATOR ', ') 
+	FROM cross_lists cl2 
+	WHERE cl2.courseId = c.courseId) AS code,
+	-- Professor name
+	(SELECT prof_emp2.name 
+	FROM teaches t2 
+	JOIN Professor p2 ON t2.employeeId = p2.employeeId
+	JOIN Employee prof_emp2 ON p2.employeeId = prof_emp2.employeeId
+	WHERE t2.courseId = s.courseId
+	LIMIT 1) AS professor,
+	-- TA names
+	(SELECT GROUP_CONCAT(ta_emp2.name SEPARATOR ', ')
+	FROM assists a2
+	JOIN TA ta2 ON a2.employeeId = ta2.employeeId
+	JOIN Employee ta_emp2 ON ta2.employeeId = ta_emp2.employeeId
+	WHERE a2.courseId = s.courseId AND a2.sectionNo = s.sectionNo) AS tas,
+	-- Enrolled students count
+	(SELECT COUNT(*) 
+	FROM enrolls_in e2 
+	WHERE e2.courseId = s.courseId AND e2.sectionNo = s.sectionNo) AS num_enrolled
 FROM Section s
-JOIN Course c
-ON c.courseId = s.courseId
-ORDER BY c.title ASC;
+JOIN Course c ON c.courseId = s.courseId
+ORDER BY c.title ASC, s.sectionNo ASC;
+
 -- Insert query for enrollment
 INSERT INTO enrolls_in (studentId, courseId, sectionNo, status, grade, enrolledDate) VALUES
 (4005, 5003, '0001', 'enrolled', NULL, CURRENT_DATE);
