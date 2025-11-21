@@ -38,6 +38,7 @@
 <!-- Current Enrollments Section -->
 <div class="content-card" style="margin-top: 2rem;">
   <h2>All Current Enrollments</h2>
+  <p class="section-hint">Click on a row to edit the enrollment.</p>
 
   {% if current_enrollments and current_enrollments|length > 0 %}
   <table class="data-table">
@@ -50,12 +51,11 @@
         <th>Professor</th>
         <th>Credits</th>
         <th>Grade</th>
-        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
       {% for enrollment in current_enrollments %}
-      <tr>
+      <tr class="clickable-row" data-popup-index="{{ loop.index0 }}">
         <td>
           <span class="id-badge">{{ enrollment.studentId }}</span>
         </td>
@@ -76,32 +76,48 @@
           <span class="credits-badge">{{ enrollment.credits }} credits</span>
         </td>
         <td>
-          <form method="POST"
-            action="{{ url_for('admin.update_grade', student_id=enrollment.studentId, course_id=enrollment.courseId, section_no=enrollment.sectionNo) }}"
-            style="display: flex; gap: 0.5rem; align-items: center;">
-            <select name="grade" class="grade-select">
-              <option value="" {% if not enrollment.grade %}selected{% endif %}>--</option>
-              {% for g in grades %}
-              <option value="{{ g }}" {% if enrollment.grade==g %}selected{% endif %}>{{ g }}</option>
-              {% endfor %}
-            </select>
-            <button type="submit" class="btn-save">Save</button>
-          </form>
-        </td>
-        <td>
-          <form method="POST"
-            action="{{ url_for('admin.drop_enrollment', student_id=enrollment.studentId, course_id=enrollment.courseId, section_no=enrollment.sectionNo) }}"
-            style="display: inline">
-            <button type="submit" class="btn-drop"
-              onclick="return confirm('Are you sure you want to drop {{ enrollment.studentName }} from {{ enrollment.title }}?')">
-              Drop
-            </button>
-          </form>
+          <span
+            class="grade-badge {% if enrollment.grade %}grade-{{ enrollment.grade[0]|lower }}{% else %}grade-none{% endif %}">
+            {{ enrollment.grade or '--' }}
+          </span>
         </td>
       </tr>
+      <!-- Hidden popup menu for this row -->
+      <div class="enrollment-popup" id="popup-{{ loop.index0 }}" style="display: none;">
+        <div class="popup-header">
+          <strong>{{ enrollment.studentName }}</strong> - {{ enrollment.title }}
+          <button class="popup-close" data-popup-index="{{ loop.index0 }}">&times;</button>
+        </div>
+        <div class="popup-content">
+          <form method="POST"
+            action="{{ url_for('admin.update_grade', student_id=enrollment.studentId, course_id=enrollment.courseId, section_no=enrollment.sectionNo) }}"
+            class="popup-form">
+            <label>Set Grade:</label>
+            <div class="popup-form-row">
+              <select name="grade" class="grade-select">
+                <option value="" {% if not enrollment.grade %}selected{% endif %}>--</option>
+                {% for g in grades %}
+                <option value="{{ g }}" {% if enrollment.grade==g %}selected{% endif %}>{{ g }}</option>
+                {% endfor %}
+              </select>
+              <button type="submit" class="btn-save">Save</button>
+            </div>
+          </form>
+          <hr>
+          <form method="POST"
+            action="{{ url_for('admin.drop_enrollment', student_id=enrollment.studentId, course_id=enrollment.courseId, section_no=enrollment.sectionNo) }}">
+            <button type="submit" class="btn-drop"
+              onclick="return confirm('Are you sure you want to drop {{ enrollment.studentName }} from {{ enrollment.title }}?')">
+              Drop Course
+            </button>
+          </form>
+        </div>
+      </div>
       {% endfor %}
     </tbody>
   </table>
+  <!-- Popup overlay -->
+  <div class="popup-overlay" id="popup-overlay"></div>
   <div class="info-box">
     <h4>Database View</h4>
     <p>
@@ -118,4 +134,8 @@
   </div>
   {% endif %}
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/enrollment-popup.js') }}"></script>
 {% endblock %}

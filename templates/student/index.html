@@ -81,11 +81,9 @@
           <span class="credits-badge">{{ enrollment.credits }} credits</span>
         </td>
         <td>
-          {% if enrollment.grade %}
-          <span class="grade-badge-inline grade-badge-success">{{ enrollment.grade }}</span>
-          {% else %}
-          <span class="cell-muted" style="font-style: italic;">--</span>
-          {% endif %}
+          <span class="grade-badge {% if enrollment.grade %}grade-{{ enrollment.grade[0]|lower }}{% else %}grade-none{% endif %}">
+            {{ enrollment.grade or '--' }}
+          </span>
         </td>
         <td>
           <form method="POST" action="{{ url_for('student.drop_course', course_id=enrollment.courseId, section_no=enrollment.sectionNo) }}" style="display: inline">

@@ -189,36 +189,49 @@
 
 /* ===== Grade Badges ===== */
 .grade-badge {
-    font-size: 1.1rem;
-    font-weight: bold;
-    padding: 0.3rem 0.8rem;
-    border-radius: 8px;
     display: inline-block;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    background: #f0f0f0;
+    color: #333;
 }
 
-.grade-excellent {
+/* A grades - Green */
+.grade-badge.grade-a {
     background: #4caf50;
     color: white;
 }
 
-.grade-good {
-    background: #8bc34a;
+/* B grades - Blue-green */
+.grade-badge.grade-b {
+    background: #26a69a;
     color: white;
 }
 
-.grade-average {
+/* C grades - Yellow/Amber */
+.grade-badge.grade-c {
     background: #ffc107;
     color: #000;
 }
 
-.grade-fair {
+/* D grades - Orange */
+.grade-badge.grade-d {
     background: #ff9800;
     color: white;
 }
 
-.grade-poor {
+/* F grade - Red */
+.grade-badge.grade-f {
     background: #f44336;
     color: white;
+}
+
+/* No grade set */
+.grade-badge.grade-none {
+    background: #e0e0e0;
+    color: #666;
 }
 
 /* ===== Empty State ===== */

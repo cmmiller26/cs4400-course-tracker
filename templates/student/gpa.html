@@ -107,7 +107,7 @@
         </td>
         <td><span class="credits-badge">{{ course.credits }} credits</span></td>
         <td>
-          <span class="grade-badge-inline">{{ course.grade }}</span>
+          <span class="grade-badge grade-{{ course.grade[0]|lower }}">{{ course.grade }}</span>
         </td>
         <td>{{ course.enrolledDate }}</td>
       </tr>

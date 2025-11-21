@@ -57,17 +57,10 @@
       <td><span class="id-badge">{{ course.courseId }}</span></td>
       <td class="cell-title">{{ course.title }}</td>
       <td>
-        {% set avg = course.avg_grade|float %} {% if avg >= 3.7 %}
-        <span class="grade-badge grade-excellent">{{ "%.2f"|format(avg) }}</span>
-        {% elif avg >= 3.0 %}
-        <span class="grade-badge grade-good">{{ "%.2f"|format(avg) }}</span>
-        {% elif avg >= 2.5 %}
-        <span class="grade-badge grade-average">{{ "%.2f"|format(avg) }}</span>
-        {% elif avg >= 2.0 %}
-        <span class="grade-badge grade-fair">{{ "%.2f"|format(avg) }}</span>
-        {% else %}
-        <span class="grade-badge grade-poor">{{ "%.2f"|format(avg) }}</span>
-        {% endif %}
+        {% set avg = course.avg_grade|float %}
+        <span class="grade-badge {% if avg >= 3.7 %}grade-a{% elif avg >= 2.7 %}grade-b{% elif avg >= 1.7 %}grade-c{% elif avg >= 0.7 %}grade-d{% else %}grade-f{% endif %}">
+          {{ "%.2f"|format(avg) }}
+        </span>
       </td>
       <td>
         <span class="stats-badge">{{ course.student_count }} students</span>
@@ -125,17 +118,10 @@
       <td><span class="id-badge">{{ prof.employeeId }}</span></td>
       <td class="cell-title">{{ prof.name }}</td>
       <td>
-        {% set avg = prof.avg_grade|float %} {% if avg >= 3.7 %}
-        <span class="grade-badge grade-excellent">{{ "%.2f"|format(avg) }}</span>
-        {% elif avg >= 3.0 %}
-        <span class="grade-badge grade-good">{{ "%.2f"|format(avg) }}</span>
-        {% elif avg >= 2.5 %}
-        <span class="grade-badge grade-average">{{ "%.2f"|format(avg) }}</span>
-        {% elif avg >= 2.0 %}
-        <span class="grade-badge grade-fair">{{ "%.2f"|format(avg) }}</span>
-        {% else %}
-        <span class="grade-badge grade-poor">{{ "%.2f"|format(avg) }}</span>
-        {% endif %}
+        {% set avg = prof.avg_grade|float %}
+        <span class="grade-badge {% if avg >= 3.7 %}grade-a{% elif avg >= 2.7 %}grade-b{% elif avg >= 1.7 %}grade-c{% elif avg >= 0.7 %}grade-d{% else %}grade-f{% endif %}">
+          {{ "%.2f"|format(avg) }}
+        </span>
       </td>
       <td>
         <span class="stats-badge stats-badge-students">{{ prof.student_count }} students</span>
@@ -195,7 +181,7 @@
       <td>{{ course.title }}</td>
       <td>{{ course.sectionNo }}</td>
       <td>
-        <span class="grade-badge-inline">{{ course.grade }}</span>
+        <span class="grade-badge grade-{{ course.grade[0]|lower }}">{{ course.grade }}</span>
       </td>
       <td>{{ course.enrolledDate }}</td>
     </tr>
