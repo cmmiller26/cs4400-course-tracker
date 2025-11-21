@@ -1,161 +1,22 @@
-{% extends "base.html" %} {% block title %}Enroll in Course - Course Tracker{%
-endblock %} {% block extra_css %}
-<style>
-  .page-header {
-    background: linear-gradient(135deg, #ffcd00 0%, #ffb700 100%);
-    color: #000;
-    padding: 2rem;
-    border-radius: 10px;
-    margin-bottom: 2rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-
-  .page-header h1 {
-    margin: 0 0 0.5rem 0;
-    font-size: 2rem;
-  }
-
-  .page-header p {
-    margin: 0;
-    opacity: 0.9;
-    font-size: 1rem;
-  }
-
-  .sql-badge {
-    display: inline-block;
-    background: #000;
-    color: #ffcd00;
-    padding: 0.3rem 0.8rem;
-    border-radius: 5px;
-    font-size: 0.85rem;
-    font-weight: bold;
-    margin-top: 0.5rem;
-    margin-right: 0.5rem;
-  }
-
-  .info-box {
-    background: #fff;
-    padding: 1.5rem;
-    border-radius: 8px;
-    margin-bottom: 2rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-
-  .info-box h3 {
-    color: #ffcd00;
-    background: #000;
-    padding: 0.5rem 1rem;
-    margin: -1.5rem -1.5rem 1rem -1.5rem;
-    border-radius: 8px 8px 0 0;
-  }
-
-  .enrollment-form {
-    background: white;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-
-  .form-group {
-    margin-bottom: 1.5rem;
-  }
-
-  .form-group label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    color: #333;
-  }
-
-  .form-group select {
-    width: 100%;
-    padding: 0.75rem;
-    border: 2px solid #ddd;
-    border-radius: 5px;
-    font-size: 1rem;
-    background: white;
-    transition: border-color 0.3s ease;
-  }
-
-  .form-group select:focus {
-    outline: none;
-    border-color: #ffcd00;
-  }
-
-  .form-group small {
-    color: #666;
-    display: block;
-    margin-top: 0.25rem;
-    font-size: 0.9rem;
-  }
-
-  .btn-submit {
-    flex: 1;
-    padding: 0.875rem 2rem;
-    background: #ffcd00;
-    color: #000;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s;
-  }
-
-  .btn-submit:hover {
-    background: #e6b800;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-
-  .btn-cancel {
-    flex: 1;
-    padding: 0.875rem 2rem;
-    background: #000;
-    color: #ffcd00;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    font-weight: 600;
-    display: block;
-    transition: all 0.3s;
-  }
-
-  .btn-cancel:hover {
-    background: #333;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-
-  .trigger-list {
-    margin-left: 2rem;
-    line-height: 2;
-  }
-
-  .trigger-list li {
-    margin-bottom: 0.5rem;
-  }
-</style>
-{% endblock %} {% block content %}
+{% extends "base.html" %}
+{% block title %}Enroll in Course - Course Tracker{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/theme-student.css') }}">
+{% endblock %}
+{% block content %}
 <div class="page-header">
-  <h1>📝 Enroll in Course Section</h1>
+  <h1>Enroll in Course Section</h1>
   <p>Demonstrates triggers, stored procedures, and data validation</p>
   <span class="sql-badge">QUERY: INSERT</span>
   <span class="sql-badge">3 TRIGGERS</span>
   <span class="sql-badge">STORED PROCEDURE</span>
 </div>
 
-<div class="query-description" style="
-      background: #f5f5f5;
-      padding: 1.5rem;
-      border-radius: 8px;
-      margin-bottom: 2rem;
-      border-left: 4px solid #ffcd00;
-    ">
-  <h3 style="margin-top: 0">📊 Query Description</h3>
+<div class="query-description">
+  <h3>Query Description</h3>
   <p>This enrollment process demonstrates multiple database concepts:</p>
-  <ul style="margin-left: 2rem">
+  <ul>
     <li><strong>INSERT</strong> statement to add enrollment records</li>
     <li>
       <strong>3 Triggers</strong> that fire on INSERT to validate business
@@ -168,8 +29,8 @@ endblock %} {% block extra_css %}
   </ul>
 </div>
 
-<div class="info-box">
-  <h3>🎯 Database Triggers in Action</h3>
+<div class="trigger-box">
+  <h3>Database Triggers in Action</h3>
   <p style="margin-bottom: 1rem">
     This form demonstrates <strong>3 database triggers</strong> that
     automatically enforce business rules:
@@ -189,14 +50,8 @@ endblock %} {% block extra_css %}
       enrollments and re-enrollment in courses that have already been completed
     </li>
   </ul>
-  <div style="
-        margin-top: 1rem;
-        padding: 0.75rem;
-        background: #fff9e6;
-        border-left: 4px solid #ffcd00;
-        border-radius: 4px;
-      ">
-    <strong>💡 Demo Tip:</strong> Try enrolling in different courses to see
+  <div class="tip-box">
+    <strong>Demo Tip:</strong> Try enrolling in different courses to see
     these triggers validate your enrollment! The system will automatically
     check prerequisites, capacity, and completion status.
   </div>
@@ -233,22 +88,16 @@ endblock %} {% block extra_css %}
   </div>
 
   <div style="display: flex; gap: 1rem; margin-top: 2rem">
-    <button type="submit" class="btn-submit">✓ Enroll in Course</button>
-    <a href="{{ url_for('student.courses') }}" class="btn-cancel">
-      ✗ Cancel
+    <button type="submit" class="btn-submit" style="flex: 1;">Enroll in Course</button>
+    <a href="{{ url_for('student.courses') }}" class="btn-cancel" style="flex: 1;">
+      Cancel
     </a>
   </div>
 </form>
 
-<div style="
-      margin-top: 2rem;
-      padding: 1rem;
-      background: #e3f2fd;
-      border-radius: 8px;
-      border-left: 4px solid #1976d2;
-    ">
-  <h4 style="margin-top: 0">ℹ️ How It Works</h4>
-  <ol style="margin-left: 1.5rem; line-height: 1.8">
+<div class="how-it-works">
+  <h4>How It Works</h4>
+  <ol>
     <li>
       An INSERT statement adds the enrollment record to the
       <code>enrolls_in</code> table

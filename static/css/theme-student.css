@@ -1,0 +1,28 @@
+/* Student portal theme - gold/dark color scheme */
+
+/* Page header: gold background with dark text */
+.page-header {
+    background: linear-gradient(135deg, #ffcd00 0%, #ffb700 100%);
+    color: #000;
+}
+
+/* SQL badges: dark on gold (inverted from admin) */
+.sql-badge {
+    background: #000;
+    color: #ffcd00;
+}
+
+/* Query description: gold left border for student */
+.query-description {
+    border-left-color: #ffcd00;
+}
+
+/* Data tables: gold header with dark text */
+.data-table thead {
+    background: #ffcd00;
+    color: #000;
+}
+
+.data-table th {
+    border-bottom: 2px solid #000;
+}

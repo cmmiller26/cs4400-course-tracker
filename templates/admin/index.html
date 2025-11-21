@@ -1,120 +1,68 @@
-{% extends "base.html" %} {% block title %}Admin Portal - Course Tracker{%
-endblock %} {% block content %}
-<div style="margin-bottom: 2rem">
-  <h1 style="color: #000; margin-bottom: 0.5rem">Admin Portal</h1>
-  <p style="color: #666; font-size: 1.1rem">
+{% extends "base.html" %}
+{% block title %}Admin Portal - Course Tracker{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/theme-student.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
+{% endblock %}
+{% block content %}
+<div class="dashboard-header">
+  <h1>Admin Portal</h1>
+  <p>
     Administrative hub for enrollment management, salary reporting, and grade analysis.
   </p>
 </div>
 
-<div class="dashboard" style="
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 2rem;
-    ">
+<div class="dashboard">
   <!-- Salary Report Card -->
-  <div class="portal-card" style="
-        background: white;
-        padding: 2rem;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      ">
-    <h3 style="color: #000; margin-bottom: 0.75rem">💰 Salary Report</h3>
-    <p style="color: #666; margin-bottom: 1.25rem; font-size: 0.95rem">
+  <div class="portal-card">
+    <h3>Salary Report</h3>
+    <p>
       Employee salary analysis with subqueries and stored functions for
       department averages.
     </p>
-    <a href="{{ url_for('admin.salary_report') }}" class="btn btn-primary" style="
-          display: inline-block;
-          padding: 0.75rem 1.5rem;
-          background: #ffcd00;
-          color: #000;
-          text-decoration: none;
-          border-radius: 5px;
-          font-weight: 600;
-        ">View Report</a>
+    <a href="{{ url_for('admin.salary_report') }}" class="btn btn-primary">View Report</a>
   </div>
 
   <!-- Grade Analytics Card -->
-  <div class="portal-card" style="
-        background: white;
-        padding: 2rem;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      ">
-    <h3 style="color: #000; margin-bottom: 0.75rem">📈 Grade Analytics</h3>
-    <p style="color: #666; margin-bottom: 1.25rem; font-size: 0.95rem">
+  <div class="portal-card">
+    <h3>Grade Analytics</h3>
+    <p>
       Course and professor performance analysis using aggregation and both
       database views (current enrollments & completed courses).
     </p>
-    <a href="{{ url_for('admin.analytics') }}" class="btn btn-primary" style="
-          display: inline-block;
-          padding: 0.75rem 1.5rem;
-          background: #ffcd00;
-          color: #000;
-          text-decoration: none;
-          border-radius: 5px;
-          font-weight: 600;
-        ">View Analytics</a>
+    <a href="{{ url_for('admin.analytics') }}" class="btn btn-primary">View Analytics</a>
   </div>
 </div>
 
 <!-- Current Enrollments Section -->
-<div style="
-    margin-top: 2rem;
-    background: white;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  ">
-  <h2 style="color: #000; margin-bottom: 1rem">📋 All Current Enrollments</h2>
+<div class="content-card" style="margin-top: 2rem;">
+  <h2>All Current Enrollments</h2>
 
   {% if current_enrollments and current_enrollments|length > 0 %}
-  <table class="enrollments-table" style="
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1rem;
-      background: white;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
-      overflow: hidden;
-    ">
-    <thead style="background: #ffcd00; color: #000">
+  <table class="data-table">
+    <thead>
       <tr>
-        <th style="padding: 1rem; text-align: left; font-weight: bold; border-bottom: 2px solid #000">ID</th>
-        <th style="padding: 1rem; text-align: left; font-weight: bold; border-bottom: 2px solid #000">Student</th>
-        <th style="padding: 1rem; text-align: left; font-weight: bold; border-bottom: 2px solid #000">Course Title</th>
-        <th style="padding: 1rem; text-align: left; font-weight: bold; border-bottom: 2px solid #000">Course Code</th>
-        <th style="padding: 1rem; text-align: left; font-weight: bold; border-bottom: 2px solid #000">Professor</th>
-        <th style="padding: 1rem; text-align: left; font-weight: bold; border-bottom: 2px solid #000">Credits</th>
-        <th style="padding: 1rem; text-align: left; font-weight: bold; border-bottom: 2px solid #000">Grade</th>
-        <th style="padding: 1rem; text-align: left; font-weight: bold; border-bottom: 2px solid #000">Actions</th>
+        <th>ID</th>
+        <th>Student</th>
+        <th>Course Title</th>
+        <th>Course Code</th>
+        <th>Professor</th>
+        <th>Credits</th>
+        <th>Grade</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
       {% for enrollment in current_enrollments %}
-      <tr style="border-bottom: 1px solid #e0e0e0">
-        <td style="padding: 1rem">
-          <span style="
-              font-family: monospace; 
-              background: #f0f0f0; 
-              padding: 0.2rem 0.5rem; 
-              border-radius: 3px; 
-              font-size: 0.9rem;
-            ">
-            {{ enrollment.studentId }}
-          </span>
+      <tr>
+        <td>
+          <span class="id-badge">{{ enrollment.studentId }}</span>
         </td>
-        <td style="padding: 1rem; font-weight: 600; color: #000">{{ enrollment.studentName }}</td>
-        <td style="padding: 1rem; color: #000">{{ enrollment.title }}</td>
-        <td style="padding: 1rem">
-          <span style="
-              font-family: monospace;
-              background: #f0f0f0;
-              padding: 0.2rem 0.5rem;
-              border-radius: 3px;
-              font-size: 0.9rem;
-            ">
+        <td class="cell-title">{{ enrollment.studentName }}</td>
+        <td>{{ enrollment.title }}</td>
+        <td>
+          <span class="id-badge">
             {% if enrollment.code and ',' in enrollment.code %}
             ({{ enrollment.code }})
             {%- else -%}
@@ -123,44 +71,24 @@ endblock %} {% block content %}
             :{{ enrollment.sectionNo }}
           </span>
         </td>
-        <td style="padding: 1rem; color: #666">{{ enrollment.professor or 'TBA' }}</td>
-        <td style="padding: 1rem">
-          <span style="
-              background: #e3f2fd;
-              color: #1976d2;
-              padding: 0.2rem 0.6rem;
-              border-radius: 12px;
-              font-size: 0.85rem;
-              font-weight: 600;
-            ">{{ enrollment.credits }} credits</span>
+        <td class="cell-muted">{{ enrollment.professor or 'TBA' }}</td>
+        <td>
+          <span class="credits-badge">{{ enrollment.credits }} credits</span>
         </td>
-        <td style="padding: 1rem">
+        <td>
           <form method="POST"
             action="{{ url_for('admin.update_grade', student_id=enrollment.studentId, course_id=enrollment.courseId, section_no=enrollment.sectionNo) }}"
             style="display: flex; gap: 0.5rem; align-items: center;">
-            <select name="grade" class="grade-select" style="
-                padding: 0.4rem;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-                font-size: 0.9rem;
-              ">
+            <select name="grade" class="grade-select">
               <option value="" {% if not enrollment.grade %}selected{% endif %}>--</option>
               {% for g in grades %}
               <option value="{{ g }}" {% if enrollment.grade==g %}selected{% endif %}>{{ g }}</option>
               {% endfor %}
             </select>
-            <button type="submit" class="btn-save" style="
-                background: #4caf50;
-                color: white;
-                border: none;
-                padding: 0.4rem 0.8rem;
-                border-radius: 4px;
-                cursor: pointer;
-                font-size: 0.85rem;
-              ">Save</button>
+            <button type="submit" class="btn-save">Save</button>
           </form>
         </td>
-        <td style="padding: 1rem">
+        <td>
           <form method="POST"
             action="{{ url_for('admin.drop_enrollment', student_id=enrollment.studentId, course_id=enrollment.courseId, section_no=enrollment.sectionNo) }}"
             style="display: inline">
@@ -174,102 +102,20 @@ endblock %} {% block content %}
       {% endfor %}
     </tbody>
   </table>
-  <div style="
-      margin-top: 1.5rem;
-      padding: 1rem;
-      background: #e3f2fd;
-      border-radius: 8px;
-      border-left: 4px solid #1976d2;
-    ">
-    <h4 style="margin-top: 0">🗃️ Database View</h4>
-    <p style="margin-bottom: 0">
-      This table is populated using the <code
-        style="background: #bbdefb; padding: 0.2rem 0.5rem; border-radius: 3px;">current_student_enrollments</code>
+  <div class="info-box">
+    <h4>Database View</h4>
+    <p>
+      This table is populated using the <code>current_student_enrollments</code>
       database view,
       which joins <code>Student</code>, <code>enrolls_in</code>, <code>Section</code>, and <code>Course</code> tables
       to display all active student enrollments with course and instructor details.
     </p>
   </div>
   {% else %}
-  <div style="
-      text-align: center;
-      padding: 3rem;
-      color: #666;
-      background: #f9f9f9;
-      border-radius: 8px;
-      margin-top: 1rem;
-    ">
-    <h3 style="margin: 0.5rem 0">No Current Enrollments</h3>
-    <p style="margin: 0.5rem 0">There are no students currently enrolled in any courses.</p>
+  <div class="empty-state">
+    <h3>No Current Enrollments</h3>
+    <p>There are no students currently enrolled in any courses.</p>
   </div>
   {% endif %}
 </div>
-
-<style>
-  .btn-primary {
-    display: inline-block;
-    padding: 0.75rem 1.5rem;
-    background: #ffcd00;
-    color: #000;
-    text-decoration: none;
-    border-radius: 5px;
-    font-weight: 600;
-    transition: all 0.3s;
-  }
-
-  .btn-primary:hover {
-    background: #e6b800;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-
-  .portal-card {
-    transition:
-      transform 0.3s,
-      box-shadow 0.3s;
-  }
-
-  .portal-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  }
-
-  .enrollments-table tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-
-  .enrollments-table tbody tr:hover {
-    background-color: #fff8e1;
-    transition: background-color 0.3s ease;
-  }
-
-  .btn-drop {
-    background: #f44336;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 0.9rem;
-  }
-
-  .btn-drop:hover {
-    background: #d32f2f;
-    transform: translateY(-2px);
-    box-shadow: 0 2px 6px rgba(244, 67, 54, 0.4);
-  }
-
-  .btn-save:hover {
-    background: #388e3c;
-    transform: translateY(-1px);
-  }
-
-  .grade-select:focus {
-    outline: none;
-    border-color: #ffcd00;
-    box-shadow: 0 0 0 2px rgba(255, 205, 0, 0.3);
-  }
-</style>
 {% endblock %}

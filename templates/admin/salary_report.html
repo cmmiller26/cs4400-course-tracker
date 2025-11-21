@@ -1,167 +1,13 @@
-{% extends "base.html" %} {% block title %}Salary Report - Admin Portal{%
-endblock %} {% block extra_css %}
-<style>
-  .page-header {
-    background: linear-gradient(135deg, #000 0%, #333 100%);
-    color: #ffcd00;
-    padding: 2rem;
-    border-radius: 10px;
-    margin-bottom: 2rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-
-  .page-header h1 {
-    margin: 0 0 0.5rem 0;
-    font-size: 2rem;
-  }
-
-  .page-header p {
-    margin: 0;
-    opacity: 0.9;
-    font-size: 1rem;
-  }
-
-  .sql-badge {
-    display: inline-block;
-    background: #ffcd00;
-    color: #000;
-    padding: 0.3rem 0.8rem;
-    border-radius: 5px;
-    font-size: 0.85rem;
-    font-weight: bold;
-    margin-top: 0.5rem;
-    margin-right: 0.5rem;
-  }
-
-  .section-header {
-    background: #f5f5f5;
-    padding: 1rem 1.5rem;
-    border-radius: 8px;
-    margin: 2rem 0 1rem 0;
-    border-left: 4px solid #ffcd00;
-  }
-
-  .section-header h2 {
-    margin: 0;
-    color: #000;
-    font-size: 1.5rem;
-  }
-
-  .data-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 1rem;
-    background: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-
-  .data-table thead {
-    background: #000;
-    color: #ffcd00;
-  }
-
-  .data-table th {
-    padding: 1rem;
-    text-align: left;
-    font-weight: bold;
-    border-bottom: 2px solid #ffcd00;
-  }
-
-  .data-table td {
-    padding: 1rem;
-    border-bottom: 1px solid #e0e0e0;
-  }
-
-  .data-table tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-
-  .data-table tbody tr:hover {
-    background-color: #fff8e1;
-    transition: background-color 0.3s ease;
-  }
-
-  .salary-positive {
-    color: #4caf50;
-    font-weight: 600;
-  }
-
-  .salary-negative {
-    color: #f44336;
-    font-weight: 600;
-  }
-
-  .salary-neutral {
-    color: #666;
-    font-weight: 600;
-  }
-
-  .role-badge {
-    background: #e3f2fd;
-    color: #1976d2;
-    padding: 0.3rem 0.8rem;
-    border-radius: 12px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    text-transform: capitalize;
-  }
-
-  .role-professor {
-    background: #fff0f0;
-    color: #c62828;
-  }
-
-  .role-ta {
-    background: #e8f5e9;
-    color: #2e7d32;
-  }
-
-  .role-advisor {
-    background: #e3f2fd;
-    color: #1565c0;
-  }
-
-  /* Fallback for any other roles */
-  .role-badge:not(.role-professor):not(.role-ta):not(.role-advisor) {
-    background: #f3e5f5;
-    color: #6a1b9a;
-  }
-
-
-
-
-  .employee-id {
-    font-family: monospace;
-    background: #f0f0f0;
-    padding: 0.2rem 0.5rem;
-    border-radius: 3px;
-    font-size: 0.9rem;
-  }
-
-  .empty-state {
-    text-align: center;
-    padding: 3rem;
-    color: #666;
-    background: white;
-    border-radius: 8px;
-  }
-
-  @media (max-width: 768px) {
-    .data-table {
-      font-size: 0.9rem;
-    }
-
-    .data-table th,
-    .data-table td {
-      padding: 0.75rem 0.5rem;
-    }
-  }
-</style>
-{% endblock %} {% block content %}
+{% extends "base.html" %}
+{% block title %}Salary Report - Admin Portal{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/theme-admin.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/salary_report.css') }}">
+{% endblock %}
+{% block content %}
 <div class="page-header">
-  <h1>💰 Employee Salary Analysis Report</h1>
+  <h1>Employee Salary Analysis Report</h1>
   <p>Comprehensive salary comparison using subqueries and stored functions</p>
   <span class="sql-badge">QUERY: SUBQUERY, AGGREGATION, & JOIN</span>
   <span class="sql-badge">FUNCTION</span>
@@ -169,19 +15,13 @@ endblock %} {% block extra_css %}
 
 <!-- Section 1: Employee Salary vs Role Average -->
 <div class="section-header">
-  <h2>📊 Employee Salaries vs Role Average</h2>
+  <h2>Employee Salaries vs Role Average</h2>
 </div>
 
-<div class="query-description" style="
-    background: #f5f5f5;
-    padding: 1.5rem;
-    border-radius: 8px;
-    margin-bottom: 2rem;
-    border-left: 4px solid #000;
-  ">
-  <h3 style="margin-top: 0">⚙️ SQL Concepts Used</h3>
+<div class="query-description">
+  <h3>SQL Concepts Used</h3>
   <p>This analysis demonstrates the following SQL concepts:</p>
-  <ul style="margin-left: 2rem; margin-bottom: 0">
+  <ul>
     <li>
       <strong>SUBQUERY:</strong> A nested <code>SELECT</code> statement calculates the average salary for each role.
       This subquery is treated like a temporary table.
@@ -198,7 +38,7 @@ endblock %} {% block extra_css %}
 </div>
 
 {% if employees %}
-<div style="margin-bottom: 1rem; color: #666">
+<div class="result-count">
   <strong>{{ employees|length }}</strong> employees analyzed
 </div>
 
@@ -227,8 +67,8 @@ endblock %} {% block extra_css %}
         <span class="role-badge">{{ emp.role }}</span>
         {% endif %}
       </td>
-      <td><span class="employee-id">{{ emp.employeeId }}</span></td>
-      <td style="font-weight: 600">{{ emp.name }}</td>
+      <td><span class="id-badge">{{ emp.employeeId }}</span></td>
+      <td class="cell-title">{{ emp.name }}</td>
       <td>${{ "{:,.2f}".format(emp.salary) }}</td>
       <td>${{ "{:,.2f}".format(emp.average_salary) }}</td>
       <td>
@@ -251,19 +91,13 @@ endblock %} {% block extra_css %}
 
 <!-- Section 2: Department Average Salaries -->
 <div class="section-header">
-  <h2>🏢 Department Average Salaries</h2>
+  <h2>Department Average Salaries</h2>
 </div>
 
-<div class="query-description" style="
-    background: #f5f5f5;
-    padding: 1.5rem;
-    border-radius: 8px;
-    margin-bottom: 2rem;
-    border-left: 4px solid #000;
-  ">
-  <h3 style="margin-top: 0">⚙️ SQL Concept Used</h3>
+<div class="query-description">
+  <h3>SQL Concept Used</h3>
   <p>This analysis demonstrates a powerful database feature:</p>
-  <ul style="margin-left: 2rem; margin-bottom: 0">
+  <ul>
     <li>
       <strong>STORED FUNCTION:</strong> The Python backend calls the custom SQL function
       <code>average_department_salary(deptId)</code> for each department. This function encapsulates the logic to
@@ -273,7 +107,7 @@ endblock %} {% block extra_css %}
 </div>
 
 {% if department_averages %}
-<div style="margin-bottom: 1rem; color: #666">
+<div class="result-count">
   <strong>{{ department_averages|length }}</strong> departments analyzed
 </div>
 
@@ -288,12 +122,12 @@ endblock %} {% block extra_css %}
   <tbody>
     {% for dept in department_averages %}
     <tr>
-      <td><span class="employee-id">{{ dept.deptId }}</span></td>
-      <td style="font-weight: 600">{{ dept.name }}</td>
+      <td><span class="id-badge">{{ dept.deptId }}</span></td>
+      <td class="cell-title">{{ dept.name }}</td>
       <td>
         {% if dept.average_salary %} ${{ "{:,.2f}".format(dept.average_salary)
         }} {% else %}
-        <span style="color: #999">No employees</span>
+        <span class="cell-muted">No employees</span>
         {% endif %}
       </td>
     </tr>

@@ -12,61 +12,23 @@
 <body>
   <header>
     <nav>
-      <div class="container" style="
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-          ">
+      <div class="container">
         <h1>
-          <a
-            href="{% if session.get('user_id') %}{% if session.get('role') == 'student' %}{{ url_for('student.index') }}{% else %}{{ url_for('admin.index') }}{% endif %}{% else %}{{ url_for('index') }}{% endif %}">
+          <a href="{% if session.get('user_id') %}{% if session.get('role') == 'student' %}{{ url_for('student.index') }}{% else %}{{ url_for('admin.index') }}{% endif %}{% else %}{{ url_for('index') }}{% endif %}">
             Course Tracker
           </a>
         </h1>
-        <ul class="nav-links" style="
-              display: flex;
-              list-style: none;
-              margin: 0;
-              gap: 2rem;
-              align-items: center;
-            ">
+        <ul class="nav-links">
           {% if session.get('user_id') %}
-          <!-- User is logged in - show portal links -->
-
-          <!-- Logged in user info -->
-          <li style="color: white; font-weight: 500">
-            👤 {{ session.get('student_name') or session.get('username') }}
+          <li class="nav-user">
+            {{ session.get('student_name') or session.get('username') }}
           </li>
-
-          <!-- Logout link -->
           <li>
-            <a href="{{ url_for('auth.logout') }}" style="
-                  color: white;
-                  text-decoration: none;
-                  font-weight: 500;
-                  padding: 0.5rem 1rem;
-                  background: rgba(255, 255, 255, 0.1);
-                  border-radius: 5px;
-                  transition: all 0.3s;
-                ">
-              Logout
-            </a>
+            <a href="{{ url_for('auth.logout') }}" class="nav-btn">Logout</a>
           </li>
           {% else %}
-          <!-- User is not logged in - show login link -->
           <li>
-            <a href="{{ url_for('auth.login') }}" style="
-                  color: white;
-                  text-decoration: none;
-                  font-weight: 500;
-                  padding: 0.5rem 1.5rem;
-                  background: #ffcd00;
-                  color: #000;
-                  border-radius: 5px;
-                  transition: all 0.3s;
-                ">
-              Login
-            </a>
+            <a href="{{ url_for('auth.login') }}" class="nav-btn nav-btn-primary">Login</a>
           </li>
           {% endif %}
         </ul>
@@ -75,14 +37,16 @@
   </header>
 
   <main class="container">
-    {% with messages = get_flashed_messages(with_categories=true) %} {% if
-    messages %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
     <div class="flash-messages">
       {% for category, message in messages %}
       <div class="alert alert-{{ category }}">{{ message }}</div>
       {% endfor %}
     </div>
-    {% endif %} {% endwith %} {% block content %}{% endblock %}
+    {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
   </main>
 
   <footer>

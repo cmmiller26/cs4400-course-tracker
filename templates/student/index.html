@@ -1,130 +1,72 @@
-{% extends "base.html" %} {% block title %}Student Portal - Course Tracker{%
-endblock %} {% block content %}
-<div style="margin-bottom: 2rem">
-  <h1 style="color: #000; margin-bottom: 0.5rem">Student Portal</h1>
-  <p style="color: #666; font-size: 1.1rem">
+{% extends "base.html" %}
+{% block title %}Student Portal - Course Tracker{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/theme-student.css') }}">
+{% endblock %}
+{% block content %}
+<div class="dashboard-header">
+  <h1>Student Portal</h1>
+  <p>
     Welcome! Use the navigation below to manage your courses and view your
     academic progress.
   </p>
 </div>
 
-<div class="dashboard" style="
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-  ">
+<div class="dashboard">
   <!-- Browse Courses Card -->
-  <div class="portal-card" style="
-      background: white;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    ">
-    <h2 style="color: #000; margin-bottom: 1rem">📚 Browse Courses</h2>
-    <p style="color: #666; margin-bottom: 1.5rem">
+  <div class="portal-card">
+    <h2>Browse Courses</h2>
+    <p>
       View all available course sections with capacity and credit information.
     </p>
-    <a href="{{ url_for('student.courses') }}" class="btn btn-primary" style="
-        display: inline-block;
-        padding: 0.75rem 1.5rem;
-        background: #ffcd00;
-        color: #000;
-        text-decoration: none;
-        border-radius: 5px;
-        font-weight: 600;
-      ">View Course Catalog</a>
+    <a href="{{ url_for('student.courses') }}" class="btn btn-primary">View Course Catalog</a>
   </div>
 
   <!-- Enroll in Course Card -->
-  <div class="portal-card" style="
-      background: white;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    ">
-    <h2 style="color: #000; margin-bottom: 1rem">✏️ Enroll in Course</h2>
-    <p style="color: #666; margin-bottom: 1.5rem">
+  <div class="portal-card">
+    <h2>Enroll in Course</h2>
+    <p>
       Enroll in a course section with automatic validation of prerequisites and
       capacity.
     </p>
-    <a href="{{ url_for('student.enroll') }}" class="btn btn-primary" style="
-        display: inline-block;
-        padding: 0.75rem 1.5rem;
-        background: #ffcd00;
-        color: #000;
-        text-decoration: none;
-        border-radius: 5px;
-        font-weight: 600;
-      ">Enroll Now</a>
+    <a href="{{ url_for('student.enroll') }}" class="btn btn-primary">Enroll Now</a>
   </div>
 
   <!-- My GPA Card -->
-  <div class="portal-card" style="
-      background: white;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    ">
-    <h2 style="color: #000; margin-bottom: 1rem">📊 My GPA</h2>
-    <p style="color: #666; margin-bottom: 1.5rem">
+  <div class="portal-card">
+    <h2>My GPA</h2>
+    <p>
       View your weighted GPA and completed courses with detailed grade
       breakdown.
     </p>
-    <a href="{{ url_for('student.gpa') }}" class="btn btn-primary" style="
-        display: inline-block;
-        padding: 0.75rem 1.5rem;
-        background: #ffcd00;
-        color: #000;
-        text-decoration: none;
-        border-radius: 5px;
-        font-weight: 600;
-      ">View My GPA</a>
+    <a href="{{ url_for('student.gpa') }}" class="btn btn-primary">View My GPA</a>
   </div>
 </div>
 
 <!-- Current Enrollments Section -->
-<div style="
-    margin-top: 2rem;
-    background: white;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  ">
-  <h2 style="color: #000; margin-bottom: 1rem">📋 My Current Enrollments</h2>
+<div class="content-card" style="margin-top: 2rem;">
+  <h2>My Current Enrollments</h2>
 
   {% if current_enrollments and current_enrollments|length > 0 %}
-  <table class="enrollments-table" style="
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1rem;
-      background: white;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
-      overflow: hidden;
-    ">
-    <thead style="background: #ffcd00; color: #000">
+  <table class="data-table">
+    <thead>
       <tr>
-        <th style="padding: 1rem; text-align: left; font-weight: bold; border-bottom: 2px solid #000">Course Title</th>
-        <th style="padding: 1rem; text-align: left; font-weight: bold; border-bottom: 2px solid #000">Course Code</th>
-        <th style="padding: 1rem; text-align: left; font-weight: bold; border-bottom: 2px solid #000">Professor</th>
-        <th style="padding: 1rem; text-align: left; font-weight: bold; border-bottom: 2px solid #000">TAs</th>
-        <th style="padding: 1rem; text-align: left; font-weight: bold; border-bottom: 2px solid #000">Credits</th>
-        <th style="padding: 1rem; text-align: left; font-weight: bold; border-bottom: 2px solid #000">Grade</th>
-        <th style="padding: 1rem; text-align: left; font-weight: bold; border-bottom: 2px solid #000">Actions</th>
+        <th>Course Title</th>
+        <th>Course Code</th>
+        <th>Professor</th>
+        <th>TAs</th>
+        <th>Credits</th>
+        <th>Grade</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
       {% for enrollment in current_enrollments %}
-      <tr style="border-bottom: 1px solid #e0e0e0">
-        <td style="padding: 1rem; font-weight: 600; color: #000">{{ enrollment.title }}</td>
-        <td style="padding: 1rem">
-          <span style="
-              font-family: monospace;
-              background: #f0f0f0;
-              padding: 0.2rem 0.5rem;
-              border-radius: 3px;
-              font-size: 0.9rem;
-            ">
+      <tr>
+        <td class="cell-title">{{ enrollment.title }}</td>
+        <td>
+          <span class="id-badge">
             {% if enrollment.code and ',' in enrollment.code %}
             ({{ enrollment.code }})
             {%- else -%}
@@ -133,33 +75,19 @@ endblock %} {% block content %}
             :{{ enrollment.sectionNo }}
           </span>
         </td>
-        <td style="padding: 1rem; color: #666">{{ enrollment.professor or 'TBA' }}</td>
-        <td style="padding: 1rem; color: #666">{{ enrollment.tas or 'None' }}</td>
-        <td style="padding: 1rem">
-          <span style="
-              background: #e3f2fd;
-              color: #1976d2;
-              padding: 0.2rem 0.6rem;
-              border-radius: 12px;
-              font-size: 0.85rem;
-              font-weight: 600;
-            ">{{ enrollment.credits }} credits</span>
+        <td class="cell-muted">{{ enrollment.professor or 'TBA' }}</td>
+        <td class="cell-muted">{{ enrollment.tas or 'None' }}</td>
+        <td>
+          <span class="credits-badge">{{ enrollment.credits }} credits</span>
         </td>
-        <td style="padding: 1rem">
+        <td>
           {% if enrollment.grade %}
-          <span style="
-              background: #e8f5e9;
-              color: #2e7d32;
-              padding: 0.2rem 0.6rem;
-              border-radius: 12px;
-              font-size: 0.85rem;
-              font-weight: 600;
-            ">{{ enrollment.grade }}</span>
+          <span class="grade-badge-inline grade-badge-success">{{ enrollment.grade }}</span>
           {% else %}
-          <span style="color: #999; font-style: italic;">--</span>
+          <span class="cell-muted" style="font-style: italic;">--</span>
           {% endif %}
         </td>
-        <td style="padding: 1rem">
+        <td>
           <form method="POST" action="{{ url_for('student.drop_course', course_id=enrollment.courseId, section_no=enrollment.sectionNo) }}" style="display: inline">
             <button type="submit" class="btn-drop" onclick="return confirm('Are you sure you want to drop {{ enrollment.title }}?')">
               Drop Course
@@ -170,36 +98,22 @@ endblock %} {% block content %}
       {% endfor %}
     </tbody>
   </table>
-  <div style="
-      margin-top: 1.5rem;
-      padding: 1rem;
-      background: #e3f2fd;
-      border-radius: 8px;
-      border-left: 4px solid #1976d2;
-    ">
-    <h4 style="margin-top: 0">🗃️ Database View</h4>
-    <p style="margin-bottom: 0">
-      This table is populated using the <code style="background: #bbdefb; padding: 0.2rem 0.5rem; border-radius: 3px;">current_student_enrollments</code> database view,
+  <div class="info-box">
+    <h4>Database View</h4>
+    <p>
+      This table is populated using the <code>current_student_enrollments</code> database view,
       which joins <code>Student</code>, <code>enrolls_in</code>, <code>Section</code>, and <code>Course</code> tables
       to display your active enrollments with professor and TA information.
     </p>
   </div>
   {% else %}
-  <div style="
-      text-align: center;
-      padding: 3rem;
-      color: #666;
-      background: #f9f9f9;
-      border-radius: 8px;
-      margin-top: 1rem;
-    ">
-    <svg xmlns="http://www.w3.org/2000/svg" style="width: 48px; height: 48px; margin-bottom: 1rem; opacity: 0.5"
-      fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <div class="empty-state">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
         d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
     </svg>
-    <h3 style="margin: 0.5rem 0">No Current Enrollments</h3>
-    <p style="margin: 0.5rem 0">You are not currently enrolled in any courses.</p>
+    <h3>No Current Enrollments</h3>
+    <p>You are not currently enrolled in any courses.</p>
     <p style="margin-top: 1rem">
       <a href="{{ url_for('student.enroll') }}" style="color: #1976d2; font-weight: 600">Enroll in a course</a>
       to get started.
@@ -207,61 +121,4 @@ endblock %} {% block content %}
   </div>
   {% endif %}
 </div>
-
-<style>
-  .btn-primary {
-    display: inline-block;
-    padding: 0.75rem 1.5rem;
-    background: #ffcd00;
-    color: #000;
-    text-decoration: none;
-    border-radius: 5px;
-    font-weight: 600;
-    transition: all 0.3s;
-  }
-
-  .btn-primary:hover {
-    background: #e6b800;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-
-  .portal-card {
-    transition:
-      transform 0.3s,
-      box-shadow 0.3s;
-  }
-
-  .portal-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  }
-
-  .enrollments-table tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-
-  .enrollments-table tbody tr:hover {
-    background-color: #fff8e1;
-    transition: background-color 0.3s ease;
-  }
-
-  .btn-drop {
-    background: #f44336;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 0.9rem;
-  }
-
-  .btn-drop:hover {
-    background: #d32f2f;
-    transform: translateY(-2px);
-    box-shadow: 0 2px 6px rgba(244, 67, 54, 0.4);
-  }
-</style>
 {% endblock %}

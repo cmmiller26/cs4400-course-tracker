@@ -1,0 +1,638 @@
+/* Reusable component styles shared across admin and student portals */
+
+/* ===== Page Header ===== */
+.page-header {
+    padding: 2rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.page-header h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2rem;
+}
+
+.page-header p {
+    margin: 0;
+    opacity: 0.9;
+    font-size: 1rem;
+}
+
+/* ===== Dashboard Layout ===== */
+.dashboard-header {
+    margin-bottom: 2rem;
+}
+
+.dashboard-header h1 {
+    color: #000;
+    margin-bottom: 0.5rem;
+}
+
+.dashboard-header p {
+    color: #666;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+/* ===== Portal Cards ===== */
+.portal-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.portal-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.portal-card h2,
+.portal-card h3 {
+    color: #000;
+    margin-bottom: 0.75rem;
+}
+
+.portal-card p {
+    color: #666;
+    margin-bottom: 1.25rem;
+    font-size: 0.95rem;
+}
+
+.portal-card .btn-primary {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background: #ffcd00;
+    color: #000;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.portal-card .btn-primary:hover {
+    background: #e6b800;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ===== Section Headers ===== */
+.section-header {
+    background: #f5f5f5;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    margin: 2rem 0 1rem 0;
+    border-left: 4px solid #ffcd00;
+}
+
+.section-header h2 {
+    margin: 0;
+    color: #000;
+    font-size: 1.5rem;
+}
+
+/* ===== SQL Badges ===== */
+.sql-badge {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 5px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-top: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+/* ===== Query Description Box ===== */
+.query-description {
+    background: #f5f5f5;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    border-left: 4px solid #ffcd00;
+}
+
+.query-description h3 {
+    margin-top: 0;
+}
+
+.query-description ul {
+    margin-left: 2rem;
+    margin-bottom: 0;
+    padding-left: 0;
+}
+
+/* ===== Data Tables ===== */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.data-table th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: bold;
+}
+
+.data-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.data-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.data-table tbody tr:hover {
+    background-color: #fff8e1;
+    transition: background-color 0.3s ease;
+}
+
+/* ===== Badge Components ===== */
+.id-badge {
+    font-family: monospace;
+    background: #f0f0f0;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    font-size: 0.9rem;
+}
+
+.credits-badge {
+    background: #e3f2fd;
+    color: #1976d2;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.capacity-badge {
+    background: #e8f5e9;
+    color: #388e3c;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* ===== Grade Badges ===== */
+.grade-badge {
+    font-size: 1.1rem;
+    font-weight: bold;
+    padding: 0.3rem 0.8rem;
+    border-radius: 8px;
+    display: inline-block;
+}
+
+.grade-excellent {
+    background: #4caf50;
+    color: white;
+}
+
+.grade-good {
+    background: #8bc34a;
+    color: white;
+}
+
+.grade-average {
+    background: #ffc107;
+    color: #000;
+}
+
+.grade-fair {
+    background: #ff9800;
+    color: white;
+}
+
+.grade-poor {
+    background: #f44336;
+    color: white;
+}
+
+/* ===== Empty State ===== */
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: #666;
+    background: white;
+    border-radius: 8px;
+}
+
+.empty-state svg {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+/* ===== Content Card ===== */
+.content-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.content-card h2 {
+    margin-top: 0;
+    color: #000;
+}
+
+/* ===== Info Box ===== */
+.info-box {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: #e3f2fd;
+    border-radius: 8px;
+    border-left: 4px solid #1976d2;
+}
+
+.info-box h4 {
+    margin-top: 0;
+}
+
+.info-box p {
+    margin-bottom: 0;
+}
+
+.info-box code {
+    background: #bbdefb;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+}
+
+/* ===== Result Count ===== */
+.result-count {
+    margin-bottom: 1rem;
+    color: #666;
+}
+
+/* ===== Cell Utilities ===== */
+.cell-title {
+    font-weight: 600;
+    color: #000;
+}
+
+.cell-muted {
+    color: #666;
+}
+
+/* ===== Inline Grade Badge (smaller, for tables) ===== */
+.grade-badge-inline {
+    background: #e3f2fd;
+    color: #1976d2;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.grade-badge-success {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+/* ===== Button Variants ===== */
+.btn-drop {
+    background: #f44336;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.btn-drop:hover {
+    background: #d32f2f;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 6px rgba(244, 67, 54, 0.4);
+}
+
+.btn-submit {
+    padding: 0.875rem 2rem;
+    background: #ffcd00;
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-submit:hover {
+    background: #e6b800;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-cancel {
+    padding: 0.875rem 2rem;
+    background: #000;
+    color: #ffcd00;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 600;
+    display: inline-block;
+    transition: all 0.3s;
+}
+
+.btn-cancel:hover {
+    background: #333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ===== Enrollment Form ===== */
+.enrollment-form {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== Trigger Info Box ===== */
+.trigger-box {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.trigger-box h3 {
+    color: #ffcd00;
+    background: #000;
+    padding: 0.5rem 1rem;
+    margin: -1.5rem -1.5rem 1rem -1.5rem;
+    border-radius: 8px 8px 0 0;
+}
+
+.trigger-list {
+    margin-left: 2rem;
+    line-height: 2;
+}
+
+.trigger-list li {
+    margin-bottom: 0.5rem;
+}
+
+/* ===== Tip Box ===== */
+.tip-box {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background: #fff9e6;
+    border-left: 4px solid #ffcd00;
+    border-radius: 4px;
+}
+
+/* ===== How It Works Box ===== */
+.how-it-works {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: #e3f2fd;
+    border-radius: 8px;
+    border-left: 4px solid #1976d2;
+}
+
+.how-it-works h4 {
+    margin-top: 0;
+}
+
+.how-it-works ol {
+    margin-left: 1.5rem;
+    line-height: 1.8;
+}
+
+/* ===== Homepage Hero ===== */
+.hero-home {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, #ffcd00 0%, #ffb700 100%);
+    border-radius: 15px;
+    margin-bottom: 3rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.hero-home h1 {
+    font-size: 3rem;
+    color: #000;
+    margin: 0 0 1rem 0;
+}
+
+.hero-home p {
+    font-size: 1.5rem;
+    color: #000;
+    opacity: 0.9;
+    margin: 0 0 2rem 0;
+}
+
+.btn-hero {
+    display: inline-block;
+    padding: 1rem 3rem;
+    background: #000;
+    color: #ffcd00;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: all 0.3s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-hero:hover {
+    background: #333;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* ===== Feature Cards ===== */
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.feature-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.feature-card .icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+    color: #000;
+    margin-bottom: 0.75rem;
+}
+
+.feature-card p {
+    color: #666;
+    line-height: 1.6;
+}
+
+/* ===== Project Info Section ===== */
+.project-info-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.project-info-section h3 {
+    color: #000;
+    margin-top: 0;
+    border-bottom: 2px solid #ffcd00;
+    padding-bottom: 0.5rem;
+}
+
+.project-info-section > p {
+    color: #666;
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+}
+
+.info-columns {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.info-columns h4 {
+    color: #000;
+    margin-bottom: 0.5rem;
+}
+
+.info-columns ul {
+    margin-left: 1.5rem;
+    color: #666;
+    line-height: 1.8;
+}
+
+.team-info {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: #fff9e6;
+    border-left: 4px solid #ffcd00;
+    border-radius: 4px;
+}
+
+.team-info p {
+    margin: 0;
+    color: #000;
+}
+
+/* ===== Login Page ===== */
+.login-container {
+    max-width: 500px;
+    margin: 3rem auto;
+}
+
+.login-card {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.login-header h1 {
+    color: #000;
+    margin-bottom: 0.5rem;
+    font-size: 2rem;
+}
+
+.login-header p {
+    color: #666;
+    font-size: 1rem;
+}
+
+.test-accounts {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #17a2b8;
+}
+
+.test-accounts h3 {
+    color: #000;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.test-accounts .account {
+    font-size: 0.9rem;
+    line-height: 1.8;
+    color: #333;
+    margin-bottom: 0.75rem;
+}
+
+.test-accounts .account:last-child {
+    margin-bottom: 0;
+}
+
+.test-accounts code {
+    background: #fff;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    font-family: "Courier New", monospace;
+    font-size: 0.95em;
+}
+
+.login-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #eee;
+}
+
+.login-footer p {
+    color: #666;
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+    .data-table {
+        font-size: 0.9rem;
+    }
+
+    .data-table th,
+    .data-table td {
+        padding: 0.75rem 0.5rem;
+    }
+
+    .page-header h1 {
+        font-size: 1.5rem;
+    }
+}
