@@ -38,6 +38,11 @@ VALUES (%s, %s, %s, 'enrolled', NULL, CURDATE());
 DELETE FROM enrolls_in
 WHERE studentId = %s AND courseId = %s AND sectionNo = %s AND status = 'enrolled';
 
+-- Update query for assigning a grade
+UPDATE enrolls_in
+SET grade = %s
+WHERE studentId = %s AND courseId = %s AND sectionNo = %s
+
 -- Aggregate to calculate GPA
 SELECT
 	s.studentId,
@@ -75,54 +80,42 @@ JOIN (
 ORDER BY e.role, e.salary DESC;
 
 -- Aggregate to show average grade per class
-SELECT  DISTINCT c.title, S.average_grade
-FROM (
-	SELECT courseId, AVG(CASE 
-		WHEN grade = 'A+' THEN 4.3
-		WHEN grade = 'A' THEN 4
-		WHEN grade = 'A-' THEN 3.7
-		WHEN grade = 'B+' THEN 3.3
-		WHEN grade = 'B' THEN 3.0
-		WHEN grade = 'B-' THEN 2.7
-		WHEN grade = 'C+' THEN 2.3
-		WHEN grade = 'C' THEN 2.0
-		WHEN grade = 'C-' THEN 1.7
-		WHEN grade = 'D+' THEN 1.3
-		WHEN grade = 'D' THEN 1.0
-		WHEN grade = 'D-' THEN 0.3
-		WHEN grade = 'F' THEN 0.0
-	END) AS average_grade
-FROM enrolls_in
-GROUP BY courseId) AS S
-JOIN enrolls_in e
-ON S.courseId = e.courseId
-JOIN Course c
-ON e.courseId = c.courseId;
+SELECT
+	c.courseId,
+	c.title,
+	AVG(CASE e.grade
+		WHEN 'A+' THEN 4.33 WHEN 'A' THEN 4.0 WHEN 'A-' THEN 3.67
+		WHEN 'B+' THEN 3.33 WHEN 'B' THEN 3.0 WHEN 'B-' THEN 2.67
+		WHEN 'C+' THEN 2.33 WHEN 'C' THEN 2.0 WHEN 'C-' THEN 1.67
+		WHEN 'D+' THEN 1.33 WHEN 'D' THEN 1.0 WHEN 'D-' THEN 0.67
+		WHEN 'F' THEN 0.0
+		ELSE 0.0
+	END) AS avg_grade,
+	COUNT(e.studentId) AS student_count
+FROM Course c
+JOIN enrolls_in e ON c.courseId = e.courseId
+WHERE e.status = 'completed' AND e.grade IS NOT NULL
+GROUP BY c.courseId, c.title
+ORDER BY avg_grade DESC;
 
 -- Aggregate to show average grade each professor gives
-SELECT  DISTINCT p.employeeId, e1.name, S.average_grade
-FROM (SELECT courseId, AVG(CASE 
-		WHEN grade = 'A+' THEN 4.3
-		WHEN grade = 'A' THEN 4
-		WHEN grade = 'A-' THEN 3.7
-		WHEN grade = 'B+' THEN 3.3
-		WHEN grade = 'B' THEN 3.0
-		WHEN grade = 'B-' THEN 2.7
-		WHEN grade = 'C+' THEN 2.3
-		WHEN grade = 'C' THEN 2.0
-		WHEN grade = 'C-' THEN 1.7
-		WHEN grade = 'D+' THEN 1.3
-		WHEN grade = 'D' THEN 1.0
-		WHEN grade = 'D-' THEN 0.3
-		WHEN grade = 'F' THEN 0.0
-	END) AS average_grade
-FROM enrolls_in
-GROUP BY courseId) AS S
-JOIN enrolls_in e
-ON S.courseId = e.courseId
-JOIN Teaches t
-ON e.courseId = t.courseId
-JOIN Professor p
-ON t.employeeId = p.employeeId
-JOIN Employee e1
-ON e1.employeeId = p.employeeId;
+SELECT
+	p.employeeId,
+	emp.name,
+	AVG(CASE e.grade
+		WHEN 'A+' THEN 4.33 WHEN 'A' THEN 4.0 WHEN 'A-' THEN 3.67
+		WHEN 'B+' THEN 3.33 WHEN 'B' THEN 3.0 WHEN 'B-' THEN 2.67
+		WHEN 'C+' THEN 2.33 WHEN 'C' THEN 2.0 WHEN 'C-' THEN 1.67
+		WHEN 'D+' THEN 1.33 WHEN 'D' THEN 1.0 WHEN 'D-' THEN 0.67
+		WHEN 'F' THEN 0.0
+		ELSE 0.0
+	END) AS avg_grade,
+	COUNT(DISTINCT e.studentId) AS student_count,
+	COUNT(DISTINCT t.courseId) AS courses_taught
+FROM Professor p
+JOIN Employee emp ON p.employeeId = emp.employeeId
+JOIN teaches t ON p.employeeId = t.employeeId
+JOIN enrolls_in e ON t.courseId = e.courseId
+WHERE e.status = 'completed' AND e.grade IS NOT NULL
+GROUP BY p.employeeId, emp.name
+ORDER BY avg_grade DESC;

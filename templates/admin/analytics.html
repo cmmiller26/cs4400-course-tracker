@@ -133,6 +133,22 @@ endblock %} {% block extra_css %}
     font-weight: 600;
   }
 
+  .stats-badge-students {
+    background: #e3f2fd;
+    color: #1976d2;
+  }
+
+  .stats-badge-courses {
+    background: #e8f5e9;
+    color: #2e7d32;
+  }
+
+  .stats-badge:not(.stats-badge-students):not(.stats-badge-courses) {
+    background: #f3e5f5;
+    /* Fallback color */
+    color: #6a1b9a;
+  }
+
   .empty-state {
     text-align: center;
     padding: 3rem;
@@ -156,62 +172,38 @@ endblock %} {% block extra_css %}
 <div class="page-header">
   <h1>📈 Course Grade Analytics</h1>
   <p>Performance analysis using aggregation and database views</p>
-  <span class="sql-badge">SQL QUERY #5: AGGREGATION</span>
-  <span class="sql-badge">JOIN</span>
+  <span class="sql-badge">QUERY: AGGREGATION, CASE & JOIN</span>
   <span class="sql-badge">VIEW</span>
 </div>
 
-<div
-  class="query-description"
-  style="
+<!-- Section 1: Average Grade by Course -->
+<div class="section-header">
+  <h2>📚 Average Grade by Course</h2>
+</div>
+
+<div class="query-description" style="
     background: #f5f5f5;
     padding: 1.5rem;
     border-radius: 8px;
     margin-bottom: 2rem;
     border-left: 4px solid #000;
-  "
->
-  <h3 style="margin-top: 0">📊 Query Description</h3>
-  <p>This analytics page demonstrates SQL aggregation and database views:</p>
-  <ul style="margin-left: 2rem">
+  ">
+  <h3 style="margin-top: 0">⚙️ SQL Concepts Used</h3>
+  <p>This analysis demonstrates the following SQL concepts:</p>
+  <ul style="margin-left: 2rem; margin-bottom: 0">
     <li>
-      <strong>AGGREGATION:</strong> Uses AVG() and COUNT() with GROUP BY to
-      analyze grade distributions
+      <strong>AGGREGATION:</strong> The <code>AVG()</code> and <code>COUNT()</code> functions are used with
+      <code>GROUP BY courseId</code> to calculate the average grade and total number of graded students for each course.
     </li>
     <li>
-      <strong>JOIN:</strong> Combines data from Course, Professor, Employee,
-      teaches, and enrolls_in tables
+      <strong>CASE Statement:</strong> Converts letter grades (e.g., 'A', 'B-') into numeric grade points (e.g., 4.0,
+      2.67) within the <code>AVG()</code> function to enable mathematical calculation.
     </li>
     <li>
-      <strong>CASE:</strong> Converts letter grades to numeric values for
-      averaging
-    </li>
-    <li>
-      <strong>2 VIEWS:</strong> Displays data from both
-      <code>current_student_enrollments</code> and
-      <code>completed_student_courses</code> views
+      <strong>JOIN:</strong> The <code>Course</code> table is joined with the <code>enrolls_in</code> table to link
+      grades to course titles.
     </li>
   </ul>
-</div>
-
-<!-- Section 1: Average Grade by Course -->
-<div class="section-header">
-  <h2>📚 Part 1: Average Grade by Course (AGGREGATION + JOIN)</h2>
-</div>
-
-<div
-  style="
-    margin-bottom: 1rem;
-    padding: 1rem;
-    background: #fff3cd;
-    border-radius: 5px;
-    border-left: 4px solid #ffc107;
-  "
->
-  <strong>SQL Concept:</strong> This analysis uses
-  <strong>AVG()</strong> aggregation with a <strong>CASE</strong>
-  statement to convert letter grades to numeric values, then groups by course to
-  show average performance across all sections.
 </div>
 
 {% if course_grades %}
@@ -235,9 +227,7 @@ endblock %} {% block extra_css %}
       <td style="font-weight: 600">{{ course.title }}</td>
       <td>
         {% set avg = course.avg_grade|float %} {% if avg >= 3.7 %}
-        <span class="grade-badge grade-excellent"
-          >{{ "%.2f"|format(avg) }}</span
-        >
+        <span class="grade-badge grade-excellent">{{ "%.2f"|format(avg) }}</span>
         {% elif avg >= 3.0 %}
         <span class="grade-badge grade-good">{{ "%.2f"|format(avg) }}</span>
         {% elif avg >= 2.5 %}
@@ -264,22 +254,29 @@ endblock %} {% block extra_css %}
 
 <!-- Section 2: Average Grade by Professor -->
 <div class="section-header">
-  <h2>👨‍🏫 Part 2: Average Grade by Professor (JOIN + AGGREGATION)</h2>
+  <h2>👨‍🏫 Average Grade by Professor</h2>
 </div>
 
-<div
-  style="
-    margin-bottom: 1rem;
-    padding: 1rem;
-    background: #fff3cd;
-    border-radius: 5px;
-    border-left: 4px solid #ffc107;
-  "
->
-  <strong>SQL Concept:</strong> This analysis <strong>JOINs</strong> Professor,
-  Employee, teaches, and enrolls_in tables, then uses
-  <strong>AVG()</strong> aggregation to calculate the average grade across all
-  courses taught by each professor.
+<div class="query-description" style="
+    background: #f5f5f5;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    border-left: 4px solid #000;
+  ">
+  <h3 style="margin-top: 0">⚙️ SQL Concepts Used</h3>
+  <p>This analysis demonstrates a more complex query involving multiple tables:</p>
+  <ul style="margin-left: 2rem; margin-bottom: 0">
+    <li>
+      <strong>Multi-Table JOIN:</strong> Combines data from <code>Professor</code>, <code>Employee</code>,
+      <code>teaches</code>, and <code>enrolls_in</code> to link professors to the grades given in the courses they
+      teach.
+    </li>
+    <li>
+      <strong>AGGREGATION:</strong> Uses <code>AVG()</code> to calculate the average grade and
+      <code>COUNT(DISTINCT)</code> to count unique students and courses, all grouped by professor.
+    </li>
+  </ul>
 </div>
 
 {% if professor_grades %}
@@ -304,9 +301,7 @@ endblock %} {% block extra_css %}
       <td style="font-weight: 600">{{ prof.name }}</td>
       <td>
         {% set avg = prof.avg_grade|float %} {% if avg >= 3.7 %}
-        <span class="grade-badge grade-excellent"
-          >{{ "%.2f"|format(avg) }}</span
-        >
+        <span class="grade-badge grade-excellent">{{ "%.2f"|format(avg) }}</span>
         {% elif avg >= 3.0 %}
         <span class="grade-badge grade-good">{{ "%.2f"|format(avg) }}</span>
         {% elif avg >= 2.5 %}
@@ -318,10 +313,10 @@ endblock %} {% block extra_css %}
         {% endif %}
       </td>
       <td>
-        <span class="stats-badge">{{ prof.student_count }} students</span>
+        <span class="stats-badge stats-badge-students">{{ prof.student_count }} students</span>
       </td>
       <td>
-        <span class="stats-badge">{{ prof.courses_taught }} courses</span>
+        <span class="stats-badge stats-badge-courses">{{ prof.courses_taught }} courses</span>
       </td>
     </tr>
     {% endfor %}
@@ -334,85 +329,32 @@ endblock %} {% block extra_css %}
 </div>
 {% endif %}
 
-<!-- Section 3: Current Enrollments View -->
+<!-- Section 3: Completed Courses View -->
 <div class="section-header">
-  <h2>📚 Part 3: Current Student Enrollments (DATABASE VIEW)</h2>
+  <h2>✅ Completed Student Courses</h2>
 </div>
 
-<div
-  style="
-    margin-bottom: 1rem;
-    padding: 1rem;
-    background: #fff3cd;
-    border-radius: 5px;
-    border-left: 4px solid #ffc107;
-  "
->
-  <strong>SQL Concept:</strong> This section displays data from the
-  <strong>VIEW</strong> <code>current_student_enrollments</code>, which shows
-  all currently enrolled students. Views simplify complex queries and provide
-  consistent data access patterns.
-</div>
-
-{% if current_enrollments %}
-<div style="margin-bottom: 1rem; color: #666">
-  <strong>{{ current_enrollments|length }}</strong> current enrollment records
-  (showing up to 50)
-</div>
-
-<table class="data-table">
-  <thead>
-    <tr>
-      <th>Student ID</th>
-      <th>Student Name</th>
-      <th>Course Title</th>
-      <th>Section</th>
-      <th>Enrolled Date</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for enrollment in current_enrollments %}
-    <tr>
-      <td><span class="course-id">{{ enrollment.studentId }}</span></td>
-      <td style="font-weight: 600">{{ enrollment.name }}</td>
-      <td>{{ enrollment.title }}</td>
-      <td>{{ enrollment.sectionNo }}</td>
-      <td>{{ enrollment.enrolledDate }}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-{% else %}
-<div class="empty-state">
-  <h3>No Current Enrollments</h3>
-  <p>No students are currently enrolled in courses.</p>
-</div>
-{% endif %}
-
-<!-- Section 4: Completed Courses View -->
-<div class="section-header">
-  <h2>✅ Part 4: Completed Student Courses (DATABASE VIEW)</h2>
-</div>
-
-<div
-  style="
-    margin-bottom: 1rem;
-    padding: 1rem;
-    background: #fff3cd;
-    border-radius: 5px;
-    border-left: 4px solid #ffc107;
-  "
->
-  <strong>SQL Concept:</strong> This section displays data from the
-  <strong>VIEW</strong> <code>completed_student_courses</code>, which filters
-  and presents only completed courses with grades. This is the second database
-  view demonstrated on this page.
+<div class="query-description" style="
+    background: #f5f5f5;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    border-left: 4px solid #000;
+  ">
+  <h3 style="margin-top: 0">⚙️ SQL Concept Used</h3>
+  <p>This table demonstrates the use of a pre-defined database view:</p>
+  <ul style="margin-left: 2rem; margin-bottom: 0">
+    <li>
+      <strong>DATABASE VIEW:</strong> The data is selected directly from the <code>completed_student_courses</code>
+      view. This view encapsulates the complexity of joining multiple tables and filtering for completed courses,
+      simplifying the application query to a simple <code>SELECT * FROM completed_student_courses</code>.
+    </li>
+  </ul>
 </div>
 
 {% if completed_courses %}
 <div style="margin-bottom: 1rem; color: #666">
   <strong>{{ completed_courses|length }}</strong> completed course records
-  (showing up to 50)
 </div>
 
 <table class="data-table">
@@ -430,7 +372,7 @@ endblock %} {% block extra_css %}
     {% for course in completed_courses %}
     <tr>
       <td><span class="course-id">{{ course.studentId }}</span></td>
-      <td style="font-weight: 600">{{ course.name }}</td>
+      <td style="font-weight: 600">{{ course.studentName }}</td>
       <td>{{ course.title }}</td>
       <td>{{ course.sectionNo }}</td>
       <td>
@@ -448,106 +390,4 @@ endblock %} {% block extra_css %}
 </div>
 {% endif %}
 
-<div
-  style="
-    margin-top: 2rem;
-    padding: 1.5rem;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  "
->
-  <h3 style="margin-top: 0">📊 Grade Scale Reference</h3>
-  <div
-    style="
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
-    "
-  >
-    <div style="padding: 0.75rem; background: #f5f5f5; border-radius: 5px">
-      <span class="grade-badge grade-excellent">3.70 - 4.33</span>
-      <p style="margin: 0.5rem 0 0 0; color: #666; font-size: 0.9rem">
-        Excellent Performance
-      </p>
-    </div>
-    <div style="padding: 0.75rem; background: #f5f5f5; border-radius: 5px">
-      <span class="grade-badge grade-good">3.00 - 3.69</span>
-      <p style="margin: 0.5rem 0 0 0; color: #666; font-size: 0.9rem">
-        Good Performance
-      </p>
-    </div>
-    <div style="padding: 0.75rem; background: #f5f5f5; border-radius: 5px">
-      <span class="grade-badge grade-average">2.50 - 2.99</span>
-      <p style="margin: 0.5rem 0 0 0; color: #666; font-size: 0.9rem">
-        Average Performance
-      </p>
-    </div>
-    <div style="padding: 0.75rem; background: #f5f5f5; border-radius: 5px">
-      <span class="grade-badge grade-fair">2.00 - 2.49</span>
-      <p style="margin: 0.5rem 0 0 0; color: #666; font-size: 0.9rem">
-        Fair Performance
-      </p>
-    </div>
-    <div style="padding: 0.75rem; background: #f5f5f5; border-radius: 5px">
-      <span class="grade-badge grade-poor">Below 2.00</span>
-      <p style="margin: 0.5rem 0 0 0; color: #666; font-size: 0.9rem">
-        Needs Improvement
-      </p>
-    </div>
-  </div>
-</div>
-
-<div
-  style="
-    margin-top: 2rem;
-    padding: 1rem;
-    background: #e3f2fd;
-    border-radius: 8px;
-    border-left: 4px solid #1976d2;
-  "
->
-  <h4 style="margin-top: 0">ℹ️ Technical Details</h4>
-  <ul style="margin-left: 1.5rem; line-height: 1.8">
-    <li>
-      <strong>Part 1:</strong>
-      <code
-        >SELECT c.courseId, c.title, AVG(CASE e.grade ...) FROM Course c JOIN
-        enrolls_in e ... GROUP BY c.courseId</code
-      >
-    </li>
-    <li>
-      <strong>Part 2:</strong>
-      <code
-        >SELECT p.employeeId, emp.name, AVG(CASE e.grade ...) FROM Professor p
-        JOIN Employee emp JOIN teaches t JOIN enrolls_in e ... GROUP BY
-        p.employeeId</code
-      >
-    </li>
-    <li>
-      <strong>Part 3:</strong>
-      <code>SELECT * FROM current_student_enrollments LIMIT 50</code> (View)
-    </li>
-    <li>
-      <strong>Part 4:</strong>
-      <code>SELECT * FROM completed_student_courses LIMIT 50</code> (View)
-    </li>
-  </ul>
-  <p
-    style="
-      margin-top: 1rem;
-      padding: 1rem;
-      background: #fff9e6;
-      border-left: 4px solid #ffcd00;
-      border-radius: 4px;
-      margin-bottom: 0;
-    "
-  >
-    <strong>💡 Note:</strong> This page demonstrates both database views (<code
-      >current_student_enrollments</code
-    >
-    and <code>completed_student_courses</code>), showcasing how views simplify
-    data access and provide consistent querying patterns.
-  </p>
-</div>
 {% endblock %}
