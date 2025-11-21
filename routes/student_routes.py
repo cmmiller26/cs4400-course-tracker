@@ -7,8 +7,55 @@ student_bp = Blueprint('student', __name__)
 @student_bp.route('/')
 @login_required(role='student')
 def index():
-    """Student dashboard/home page"""
-    return render_template('student/index.html')
+    """Student dashboard/home page with current enrollments"""
+    # Get the logged-in student's ID from session
+    student_id = session.get('student_id')
+
+    if not student_id:
+        flash('Student ID not found in session. Please log in again.', 'error')
+        return redirect(url_for('auth.login'))
+
+    try:
+        # Get current enrollments (enrolled status, not completed)
+        current_enrollments_sql = """
+            SELECT
+                c.title,
+                c.courseId,
+                c.credits,
+                e.sectionNo,
+                (SELECT GROUP_CONCAT(cl2.code SEPARATOR ', ')
+                 FROM cross_lists cl2
+                 WHERE cl2.courseId = c.courseId) AS code,
+                -- Professor name
+                (SELECT prof_emp.name
+                 FROM teaches t
+                 JOIN Professor p ON t.employeeId = p.employeeId
+                 JOIN Employee prof_emp ON p.employeeId = prof_emp.employeeId
+                 WHERE t.courseId = c.courseId
+                 LIMIT 1) AS professor,
+                -- TA names
+                (SELECT GROUP_CONCAT(ta_emp.name SEPARATOR ', ')
+                 FROM assists a
+                 JOIN TA ta ON a.employeeId = ta.employeeId
+                 JOIN Employee ta_emp ON ta.employeeId = ta_emp.employeeId
+                 WHERE a.courseId = c.courseId AND a.sectionNo = e.sectionNo) AS tas
+            FROM enrolls_in e
+            JOIN Course c ON e.courseId = c.courseId
+            WHERE e.studentId = %s AND e.status = 'enrolled'
+            ORDER BY c.title ASC
+        """
+
+        current_enrollments = execute_query(current_enrollments_sql, (student_id,))
+
+        if current_enrollments is None:
+            current_enrollments = []
+
+        return render_template('student/index.html', current_enrollments=current_enrollments)
+
+    except Exception as e:
+        flash('Error loading current enrollments.', 'error')
+        print(f"Error in student index route: {e}")
+        return render_template('student/index.html', current_enrollments=[])
 
 # ============================================================================
 # QUERY 1: Course Listing with Capacity (JOIN)
@@ -77,6 +124,42 @@ def courses():
         import traceback
         traceback.print_exc()
         return render_template('student/courses.html', courses=[])
+
+# ============================================================================
+# Drop Course Route (DELETE)
+# ============================================================================
+@student_bp.route('/drop/<course_id>/<int:section_no>', methods=['POST'])
+@login_required(role='student')
+def drop_course(course_id, section_no):
+    """
+    Drop a course by deleting the enrollment record.
+    """
+    student_id = session.get('student_id')
+
+    if not student_id:
+        flash('Student ID not found in session. Please log in again.', 'error')
+        return redirect(url_for('auth.login'))
+
+    try:
+        # Delete the enrollment record
+        sql = """
+            DELETE FROM enrolls_in
+            WHERE studentId = %s AND courseId = %s AND sectionNo = %s AND status = 'enrolled'
+        """
+
+        execute_update(sql, (student_id, course_id, section_no))
+
+        # Call stored procedure to update open seats
+        call_procedure('update_open_seats', (course_id, section_no))
+
+        flash('✓ Successfully dropped the course.', 'success')
+        return redirect(url_for('student.index'))
+
+    except Exception as e:
+        flash(f'✗ Error dropping course: {str(e)}', 'error')
+        print(f"Error in drop_course route: {e}")
+        return redirect(url_for('student.index'))
+
 # ============================================================================
 # QUERY 2: Student Enrollment (INSERT + Trigger Demo + Procedure)
 # Requirements: INSERT, Demonstrates 3 triggers, Calls stored procedure
