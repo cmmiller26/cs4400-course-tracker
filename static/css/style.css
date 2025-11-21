@@ -243,7 +243,7 @@ main {
   position: relative;
 }
 
-.dropdown>a {
+.dropdown > a {
   display: block;
   padding: 0.5rem 0;
 }

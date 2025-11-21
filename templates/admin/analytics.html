@@ -1,11 +1,18 @@
-{% extends "base.html" %}
-{% block title %}Grade Analytics - Admin Portal{% endblock %}
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/theme-admin.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/analytics.css') }}">
-{% endblock %}
-{% block content %}
+{% extends "base.html" %} {% block title %}Grade Analytics - Admin Portal{%
+endblock %} {% block extra_css %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/components.css') }}"
+/>
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/theme-admin.css') }}"
+/>
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/analytics.css') }}"
+/>
+{% endblock %} {% block content %}
 <div class="page-header">
   <h1>Course Grade Analytics</h1>
   <p>Performance analysis using aggregation and database views</p>
@@ -23,16 +30,19 @@
   <p>This analysis demonstrates the following SQL concepts:</p>
   <ul>
     <li>
-      <strong>AGGREGATION:</strong> The <code>AVG()</code> and <code>COUNT()</code> functions are used with
-      <code>GROUP BY courseId</code> to calculate the average grade and total number of graded students for each course.
+      <strong>AGGREGATION:</strong> The <code>AVG()</code> and
+      <code>COUNT()</code> functions are used with
+      <code>GROUP BY courseId</code> to calculate the average grade and total
+      number of graded students for each course.
     </li>
     <li>
-      <strong>CASE Statement:</strong> Converts letter grades (e.g., 'A', 'B-') into numeric grade points (e.g., 4.0,
-      2.67) within the <code>AVG()</code> function to enable mathematical calculation.
+      <strong>CASE Statement:</strong> Converts letter grades (e.g., 'A', 'B-')
+      into numeric grade points (e.g., 4.0, 2.67) within the
+      <code>AVG()</code> function to enable mathematical calculation.
     </li>
     <li>
-      <strong>JOIN:</strong> The <code>Course</code> table is joined with the <code>enrolls_in</code> table to link
-      grades to course titles.
+      <strong>JOIN:</strong> The <code>Course</code> table is joined with the
+      <code>enrolls_in</code> table to link grades to course titles.
     </li>
   </ul>
 </div>
@@ -58,7 +68,9 @@
       <td class="cell-title">{{ course.title }}</td>
       <td>
         {% set avg = course.avg_grade|float %}
-        <span class="grade-badge {% if avg >= 3.7 %}grade-a{% elif avg >= 2.7 %}grade-b{% elif avg >= 1.7 %}grade-c{% elif avg >= 0.7 %}grade-d{% else %}grade-f{% endif %}">
+        <span
+          class="grade-badge {% if avg >= 3.7 %}grade-a{% elif avg >= 2.7 %}grade-b{% elif avg >= 1.7 %}grade-c{% elif avg >= 0.7 %}grade-d{% else %}grade-f{% endif %}"
+        >
           {{ "%.2f"|format(avg) }}
         </span>
       </td>
@@ -83,16 +95,20 @@
 
 <div class="query-description">
   <h3>SQL Concepts Used</h3>
-  <p>This analysis demonstrates a more complex query involving multiple tables:</p>
+  <p>
+    This analysis demonstrates a more complex query involving multiple tables:
+  </p>
   <ul>
     <li>
-      <strong>Multi-Table JOIN:</strong> Combines data from <code>Professor</code>, <code>Employee</code>,
-      <code>teaches</code>, and <code>enrolls_in</code> to link professors to the grades given in the courses they
-      teach.
+      <strong>Multi-Table JOIN:</strong> Combines data from
+      <code>Professor</code>, <code>Employee</code>, <code>teaches</code>, and
+      <code>enrolls_in</code> to link professors to the grades given in the
+      courses they teach.
     </li>
     <li>
-      <strong>AGGREGATION:</strong> Uses <code>AVG()</code> to calculate the average grade and
-      <code>COUNT(DISTINCT)</code> to count unique students and courses, all grouped by professor.
+      <strong>AGGREGATION:</strong> Uses <code>AVG()</code> to calculate the
+      average grade and <code>COUNT(DISTINCT)</code> to count unique students
+      and courses, all grouped by professor.
     </li>
   </ul>
 </div>
@@ -119,15 +135,21 @@
       <td class="cell-title">{{ prof.name }}</td>
       <td>
         {% set avg = prof.avg_grade|float %}
-        <span class="grade-badge {% if avg >= 3.7 %}grade-a{% elif avg >= 2.7 %}grade-b{% elif avg >= 1.7 %}grade-c{% elif avg >= 0.7 %}grade-d{% else %}grade-f{% endif %}">
+        <span
+          class="grade-badge {% if avg >= 3.7 %}grade-a{% elif avg >= 2.7 %}grade-b{% elif avg >= 1.7 %}grade-c{% elif avg >= 0.7 %}grade-d{% else %}grade-f{% endif %}"
+        >
           {{ "%.2f"|format(avg) }}
         </span>
       </td>
       <td>
-        <span class="stats-badge stats-badge-students">{{ prof.student_count }} students</span>
+        <span class="stats-badge stats-badge-students"
+          >{{ prof.student_count }} students</span
+        >
       </td>
       <td>
-        <span class="stats-badge stats-badge-courses">{{ prof.courses_taught }} courses</span>
+        <span class="stats-badge stats-badge-courses"
+          >{{ prof.courses_taught }} courses</span
+        >
       </td>
     </tr>
     {% endfor %}
@@ -150,9 +172,11 @@
   <p>This table demonstrates the use of a pre-defined database view:</p>
   <ul>
     <li>
-      <strong>DATABASE VIEW:</strong> The data is selected directly from the <code>completed_student_courses</code>
-      view. This view encapsulates the complexity of joining multiple tables and filtering for completed courses,
-      simplifying the application query to a simple <code>SELECT * FROM completed_student_courses</code>.
+      <strong>DATABASE VIEW:</strong> The data is selected directly from the
+      <code>completed_student_courses</code> view. This view encapsulates the
+      complexity of joining multiple tables and filtering for completed courses,
+      simplifying the application query to a simple
+      <code>SELECT * FROM completed_student_courses</code>.
     </li>
   </ul>
 </div>
@@ -181,7 +205,9 @@
       <td>{{ course.title }}</td>
       <td>{{ course.sectionNo }}</td>
       <td>
-        <span class="grade-badge grade-{{ course.grade[0]|lower }}">{{ course.grade }}</span>
+        <span class="grade-badge grade-{{ course.grade[0]|lower }}"
+          >{{ course.grade }}</span
+        >
       </td>
       <td>{{ course.enrolledDate }}</td>
     </tr>
@@ -193,6 +219,4 @@
   <h3>No Completed Courses</h3>
   <p>No students have completed courses yet.</p>
 </div>
-{% endif %}
-
-{% endblock %}
+{% endif %} {% endblock %}

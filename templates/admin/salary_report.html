@@ -1,11 +1,18 @@
-{% extends "base.html" %}
-{% block title %}Salary Report - Admin Portal{% endblock %}
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/theme-admin.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/salary_report.css') }}">
-{% endblock %}
-{% block content %}
+{% extends "base.html" %} {% block title %}Salary Report - Admin Portal{%
+endblock %} {% block extra_css %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/components.css') }}"
+/>
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/theme-admin.css') }}"
+/>
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/salary_report.css') }}"
+/>
+{% endblock %} {% block content %}
 <div class="page-header">
   <h1>Employee Salary Analysis Report</h1>
   <p>Comprehensive salary comparison using subqueries and stored functions</p>
@@ -23,16 +30,19 @@
   <p>This analysis demonstrates the following SQL concepts:</p>
   <ul>
     <li>
-      <strong>SUBQUERY:</strong> A nested <code>SELECT</code> statement calculates the average salary for each role.
-      This subquery is treated like a temporary table.
+      <strong>SUBQUERY:</strong> A nested <code>SELECT</code> statement
+      calculates the average salary for each role. This subquery is treated like
+      a temporary table.
     </li>
     <li>
-      <strong>AGGREGATION:</strong> The <code>AVG()</code> function is used within the subquery with
-      <code>GROUP BY role</code> to compute the average salary for each distinct role.
+      <strong>AGGREGATION:</strong> The <code>AVG()</code> function is used
+      within the subquery with <code>GROUP BY role</code> to compute the average
+      salary for each distinct role.
     </li>
     <li>
-      <strong>JOIN:</strong> The main <code>Employee</code> table is joined with the results of the subquery on the
-      <code>role</code> column to compare each employee's salary against their role's average.
+      <strong>JOIN:</strong> The main <code>Employee</code> table is joined with
+      the results of the subquery on the <code>role</code> column to compare
+      each employee's salary against their role's average.
     </li>
   </ul>
 </div>
@@ -74,10 +84,11 @@
       <td>
         {% set diff = emp.difference %} {% if diff > 0 %}
         <span class="salary-positive">+${{ "{:,.2f}".format(diff) }}</span>
-        {% elif diff < 0 %} <span class="salary-negative">-${{ "{:,.2f}".format(diff|abs) }}</span>
-          {% else %}
-          <span class="salary-neutral">$0.00</span>
-          {% endif %}
+        {% elif diff < 0 %}
+        <span class="salary-negative">-${{ "{:,.2f}".format(diff|abs) }}</span>
+        {% else %}
+        <span class="salary-neutral">$0.00</span>
+        {% endif %}
       </td>
     </tr>
     {% endfor %}
@@ -99,9 +110,11 @@
   <p>This analysis demonstrates a powerful database feature:</p>
   <ul>
     <li>
-      <strong>STORED FUNCTION:</strong> The Python backend calls the custom SQL function
-      <code>average_department_salary(deptId)</code> for each department. This function encapsulates the logic to
-      calculate and return the average salary for a given department ID, promoting code reuse and abstraction.
+      <strong>STORED FUNCTION:</strong> The Python backend calls the custom SQL
+      function <code>average_department_salary(deptId)</code> for each
+      department. This function encapsulates the logic to calculate and return
+      the average salary for a given department ID, promoting code reuse and
+      abstraction.
     </li>
   </ul>
 </div>
@@ -138,6 +151,4 @@
 <div class="empty-state">
   <h3>No Department Data Available</h3>
 </div>
-{% endif %}
-
-{% endblock %}
+{% endif %} {% endblock %}

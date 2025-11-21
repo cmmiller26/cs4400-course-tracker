@@ -1,11 +1,15 @@
-{% extends "base.html" %}
-{% block title %}My GPA - Course Tracker{% endblock %}
+{% extends "base.html" %} {% block title %}My GPA - Course Tracker{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/theme-student.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/gpa.css') }}">
-{% endblock %}
-{% block content %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/components.css') }}"
+/>
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/theme-student.css') }}"
+/>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/gpa.css') }}" />
+{% endblock %} {% block content %}
 <div class="page-header">
   <h1>My GPA Dashboard</h1>
   <p>Your weighted GPA based on completed courses</p>
@@ -97,17 +101,16 @@
         <td class="cell-title">{{ course.title }}</td>
         <td>
           <span class="id-badge">
-            {% if course.code and ',' in course.code %}
-            ({{ course.code }})
-            {%- else -%}
-            {{ course.code or course.courseId }}
-            {%- endif -%}
-            :{{ course.sectionNo }}
+            {% if course.code and ',' in course.code %} ({{ course.code }}) {%-
+            else -%} {{ course.code or course.courseId }} {%- endif -%} :{{
+            course.sectionNo }}
           </span>
         </td>
         <td><span class="credits-badge">{{ course.credits }} credits</span></td>
         <td>
-          <span class="grade-badge grade-{{ course.grade[0]|lower }}">{{ course.grade }}</span>
+          <span class="grade-badge grade-{{ course.grade[0]|lower }}"
+            >{{ course.grade }}</span
+          >
         </td>
         <td>{{ course.enrolledDate }}</td>
       </tr>
@@ -117,28 +120,38 @@
   <div class="info-box">
     <h4>Database View</h4>
     <p>
-      This table is populated using the <code>completed_student_courses</code>
-      database view,
-      which joins <code>Student</code>, <code>enrolls_in</code>, <code>Section</code>, and <code>Course</code> tables
-      to display all completed courses with credits, grades, and completion dates.
+      This table is populated using the
+      <code>completed_student_courses</code> database view, which joins
+      <code>Student</code>, <code>enrolls_in</code>, <code>Section</code>, and
+      <code>Course</code> tables to display all completed courses with credits,
+      grades, and completion dates.
     </p>
   </div>
 </div>
-{% endif %}
-
-{% else %}
+{% endif %} {% else %}
 <div class="empty-state">
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-      d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+    />
   </svg>
   <h3>No GPA Data Available</h3>
   <p>You haven't completed any courses with grades yet.</p>
   <p style="margin-top: 1rem">
-    <a href="{{ url_for('student.enroll') }}" style="color: #1976d2; font-weight: 600">Enroll in courses</a>
+    <a
+      href="{{ url_for('student.enroll') }}"
+      style="color: #1976d2; font-weight: 600"
+      >Enroll in courses</a
+    >
     to start building your academic record.
   </p>
 </div>
-{% endif %}
-
-{% endblock %}
+{% endif %} {% endblock %}

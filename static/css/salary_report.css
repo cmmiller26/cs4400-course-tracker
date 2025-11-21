@@ -1,47 +1,47 @@
 /* Styles specific to the Salary Report page */
 
 .salary-positive {
-    color: #4caf50;
-    font-weight: 600;
+  color: #4caf50;
+  font-weight: 600;
 }
 
 .salary-negative {
-    color: #f44336;
-    font-weight: 600;
+  color: #f44336;
+  font-weight: 600;
 }
 
 .salary-neutral {
-    color: #666;
-    font-weight: 600;
+  color: #666;
+  font-weight: 600;
 }
 
 .role-badge {
-    background: #e3f2fd;
-    color: #1976d2;
-    padding: 0.3rem 0.8rem;
-    border-radius: 12px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    text-transform: capitalize;
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 0.3rem 0.8rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: capitalize;
 }
 
 .role-professor {
-    background: #fff0f0;
-    color: #c62828;
+  background: #fff0f0;
+  color: #c62828;
 }
 
 .role-ta {
-    background: #e8f5e9;
-    color: #2e7d32;
+  background: #e8f5e9;
+  color: #2e7d32;
 }
 
 .role-advisor {
-    background: #e3f2fd;
-    color: #1565c0;
+  background: #e3f2fd;
+  color: #1565c0;
 }
 
 /* Fallback for any other roles */
 .role-badge:not(.role-professor):not(.role-ta):not(.role-advisor) {
-    background: #f3e5f5;
-    color: #6a1b9a;
+  background: #f3e5f5;
+  color: #6a1b9a;
 }

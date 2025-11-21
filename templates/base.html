@@ -1,62 +1,67 @@
 <!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Course Tracker{% endblock %}</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+    {% block extra_css %}{% endblock %}
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{% block title %}Course Tracker{% endblock %}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
-  {% block extra_css %}{% endblock %}
-</head>
+  <body>
+    <header>
+      <nav>
+        <div class="container">
+          <h1>
+            <a
+              href="{% if session.get('user_id') %}{% if session.get('role') == 'student' %}{{ url_for('student.index') }}{% else %}{{ url_for('admin.index') }}{% endif %}{% else %}{{ url_for('index') }}{% endif %}"
+            >
+              Course Tracker
+            </a>
+          </h1>
+          <ul class="nav-links">
+            {% if session.get('user_id') %}
+            <li class="nav-user">
+              {{ session.get('student_name') or session.get('username') }}
+            </li>
+            <li>
+              <a href="{{ url_for('auth.logout') }}" class="nav-btn">Logout</a>
+            </li>
+            {% else %}
+            <li>
+              <a
+                href="{{ url_for('auth.login') }}"
+                class="nav-btn nav-btn-primary"
+                >Login</a
+              >
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </nav>
+    </header>
 
-<body>
-  <header>
-    <nav>
-      <div class="container">
-        <h1>
-          <a href="{% if session.get('user_id') %}{% if session.get('role') == 'student' %}{{ url_for('student.index') }}{% else %}{{ url_for('admin.index') }}{% endif %}{% else %}{{ url_for('index') }}{% endif %}">
-            Course Tracker
-          </a>
-        </h1>
-        <ul class="nav-links">
-          {% if session.get('user_id') %}
-          <li class="nav-user">
-            {{ session.get('student_name') or session.get('username') }}
-          </li>
-          <li>
-            <a href="{{ url_for('auth.logout') }}" class="nav-btn">Logout</a>
-          </li>
-          {% else %}
-          <li>
-            <a href="{{ url_for('auth.login') }}" class="nav-btn nav-btn-primary">Login</a>
-          </li>
-          {% endif %}
-        </ul>
+    <main class="container">
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %}
+      <div class="flash-messages">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
       </div>
-    </nav>
-  </header>
+      {% endif %} {% endwith %} {% block content %}{% endblock %}
+    </main>
 
-  <main class="container">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-    <div class="flash-messages">
-      {% for category, message in messages %}
-      <div class="alert alert-{{ category }}">{{ message }}</div>
-      {% endfor %}
-    </div>
-    {% endif %}
-    {% endwith %}
-    {% block content %}{% endblock %}
-  </main>
+    <footer>
+      <div class="container">
+        <p>&copy; 2025 CS:4400 Database Systems - Course Tracker</p>
+        <p>Team: Colin Miller, Manthan Shah, Jack Janik</p>
+      </div>
+    </footer>
 
-  <footer>
-    <div class="container">
-      <p>&copy; 2025 CS:4400 Database Systems - Course Tracker</p>
-      <p>Team: Colin Miller, Manthan Shah, Jack Janik</p>
-    </div>
-  </footer>
-
-  {% block extra_js %}{% endblock %}
-</body>
-
+    {% block extra_js %}{% endblock %}
+  </body>
 </html>

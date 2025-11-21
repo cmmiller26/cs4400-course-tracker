@@ -1,10 +1,18 @@
-{% extends "base.html" %}
-{% block title %}Student Portal - Course Tracker{% endblock %}
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/theme-student.css') }}">
-{% endblock %}
-{% block content %}
+{% extends "base.html" %} {% block title %}Student Portal - Course Tracker{%
+endblock %} {% block extra_css %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/components.css') }}"
+/>
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/theme-student.css') }}"
+/>
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/admin_dashboard.css') }}"
+/>
+{% endblock %} {% block content %}
 <div class="dashboard-header">
   <h1>Student Portal</h1>
   <p>
@@ -20,7 +28,9 @@
     <p>
       View all available course sections with capacity and credit information.
     </p>
-    <a href="{{ url_for('student.courses') }}" class="btn btn-primary">View Course Catalog</a>
+    <a href="{{ url_for('student.courses') }}" class="btn btn-primary"
+      >View Course Catalog</a
+    >
   </div>
 
   <!-- Enroll in Course Card -->
@@ -30,7 +40,9 @@
       Enroll in a course section with automatic validation of prerequisites and
       capacity.
     </p>
-    <a href="{{ url_for('student.enroll') }}" class="btn btn-primary">Enroll Now</a>
+    <a href="{{ url_for('student.enroll') }}" class="btn btn-primary"
+      >Enroll Now</a
+    >
   </div>
 
   <!-- My GPA Card -->
@@ -40,13 +52,16 @@
       View your weighted GPA and completed courses with detailed grade
       breakdown.
     </p>
-    <a href="{{ url_for('student.gpa') }}" class="btn btn-primary">View My GPA</a>
+    <a href="{{ url_for('student.gpa') }}" class="btn btn-primary"
+      >View My GPA</a
+    >
   </div>
 </div>
 
 <!-- Current Enrollments Section -->
-<div class="content-card" style="margin-top: 2rem;">
+<div class="content-card" style="margin-top: 2rem">
   <h2>My Current Enrollments</h2>
+  <p class="section-hint">Click on a row to manage the enrollment.</p>
 
   {% if current_enrollments and current_enrollments|length > 0 %}
   <table class="data-table">
@@ -58,21 +73,17 @@
         <th>TAs</th>
         <th>Credits</th>
         <th>Grade</th>
-        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
       {% for enrollment in current_enrollments %}
-      <tr>
+      <tr class="clickable-row" data-popup-index="{{ loop.index0 }}">
         <td class="cell-title">{{ enrollment.title }}</td>
         <td>
           <span class="id-badge">
-            {% if enrollment.code and ',' in enrollment.code %}
-            ({{ enrollment.code }})
-            {%- else -%}
-            {{ enrollment.code or enrollment.courseId }}
-            {%- endif -%}
-            :{{ enrollment.sectionNo }}
+            {% if enrollment.code and ',' in enrollment.code %} ({{
+            enrollment.code }}) {%- else -%} {{ enrollment.code or
+            enrollment.courseId }} {%- endif -%} :{{ enrollment.sectionNo }}
           </span>
         </td>
         <td class="cell-muted">{{ enrollment.professor or 'TBA' }}</td>
@@ -81,42 +92,83 @@
           <span class="credits-badge">{{ enrollment.credits }} credits</span>
         </td>
         <td>
-          <span class="grade-badge {% if enrollment.grade %}grade-{{ enrollment.grade[0]|lower }}{% else %}grade-none{% endif %}">
+          <span
+            class="grade-badge {% if enrollment.grade %}grade-{{ enrollment.grade[0]|lower }}{% else %}grade-none{% endif %}"
+          >
             {{ enrollment.grade or '--' }}
           </span>
         </td>
-        <td>
-          <form method="POST" action="{{ url_for('student.drop_course', course_id=enrollment.courseId, section_no=enrollment.sectionNo) }}" style="display: inline">
-            <button type="submit" class="btn-drop" onclick="return confirm('Are you sure you want to drop {{ enrollment.title }}?')">
+      </tr>
+      <!-- Hidden popup menu for this row -->
+      <div
+        class="enrollment-popup"
+        id="popup-{{ loop.index0 }}"
+        style="display: none"
+      >
+        <div class="popup-header">
+          <strong>{{ enrollment.title }}</strong>
+          <button class="popup-close" data-popup-index="{{ loop.index0 }}">
+            &times;
+          </button>
+        </div>
+        <div class="popup-content">
+          <form
+            method="POST"
+            action="{{ url_for('student.drop_course', course_id=enrollment.courseId, section_no=enrollment.sectionNo) }}"
+          >
+            <button
+              type="submit"
+              class="btn-drop"
+              onclick="return confirm('Are you sure you want to drop {{ enrollment.title }}?')"
+            >
               Drop Course
             </button>
           </form>
-        </td>
-      </tr>
+        </div>
+      </div>
       {% endfor %}
     </tbody>
   </table>
+  <!-- Popup overlay -->
+  <div class="popup-overlay" id="popup-overlay"></div>
   <div class="info-box">
     <h4>Database View</h4>
     <p>
-      This table is populated using the <code>current_student_enrollments</code> database view,
-      which joins <code>Student</code>, <code>enrolls_in</code>, <code>Section</code>, and <code>Course</code> tables
-      to display your active enrollments with professor and TA information.
+      This table is populated using the
+      <code>current_student_enrollments</code> database view, which joins
+      <code>Student</code>, <code>enrolls_in</code>, <code>Section</code>, and
+      <code>Course</code> tables to display your active enrollments with
+      professor and TA information.
     </p>
   </div>
   {% else %}
   <div class="empty-state">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+      />
     </svg>
     <h3>No Current Enrollments</h3>
     <p>You are not currently enrolled in any courses.</p>
     <p style="margin-top: 1rem">
-      <a href="{{ url_for('student.enroll') }}" style="color: #1976d2; font-weight: 600">Enroll in a course</a>
+      <a
+        href="{{ url_for('student.enroll') }}"
+        style="color: #1976d2; font-weight: 600"
+        >Enroll in a course</a
+      >
       to get started.
     </p>
   </div>
   {% endif %}
 </div>
+{% endblock %} {% block extra_js %}
+<script src="{{ url_for('static', filename='js/enrollment-popup.js') }}"></script>
 {% endblock %}

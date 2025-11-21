@@ -1,10 +1,14 @@
-{% extends "base.html" %}
-{% block title %}Browse Courses - Course Tracker{% endblock %}
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/theme-student.css') }}">
-{% endblock %}
-{% block content %}
+{% extends "base.html" %} {% block title %}Browse Courses - Course Tracker{%
+endblock %} {% block extra_css %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/components.css') }}"
+/>
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/theme-student.css') }}"
+/>
+{% endblock %} {% block content %}
 <div class="page-header">
   <h1>Browse Available Courses</h1>
   <p>
@@ -29,9 +33,17 @@
       <strong>Correlated Subqueries</strong> to fetch dynamic, row-specific data
       for each section:
       <ul style="padding-left: 20px; margin-top: 0.5rem">
-        <li>From <code>cross_lists</code> to find all associated course codes.</li>
-        <li>From <code>teaches</code> & <code>assists</code> to retrieve professor and TA names.</li>
-        <li>From <code>enrolls_in</code> to calculate the current enrollment count.</li>
+        <li>
+          From <code>cross_lists</code> to find all associated course codes.
+        </li>
+        <li>
+          From <code>teaches</code> & <code>assists</code> to retrieve professor
+          and TA names.
+        </li>
+        <li>
+          From <code>enrolls_in</code> to calculate the current enrollment
+          count.
+        </li>
       </ul>
     </li>
   </ul>
@@ -54,24 +66,26 @@
     </tr>
   </thead>
   <tbody>
-    {% for course in courses %}
-    <tr>
+    {% for course in courses %} {% set is_full = course.num_enrolled >=
+    course.capacity %}
+    <tr class="{{ 'section-full' if is_full else '' }}">
       <td class="cell-title">{{ course.title }}</td>
       <td>
         <span class="id-badge">
-          {% if course.code and ',' in course.code %}
-          ({{ course.code }})
-          {%- else -%}
-          {{ course.code }}
-          {%- endif -%}
-          :{{ course.sectionNo }}
+          {% if course.code and ',' in course.code %} ({{ course.code }}) {%-
+          else -%} {{ course.code }} {%- endif -%} :{{ course.sectionNo }}
         </span>
       </td>
       <td>{{ course.professor }}</td>
       <td class="cell-muted">
         {% if course.tas %}{{ course.tas }}{% else %}N/A{% endif %}
       </td>
-      <td><span class="capacity-badge">{{ course.num_enrolled }}/{{ course.capacity }}</span></td>
+      <td>
+        <span class="capacity-badge{% if is_full %} capacity-full{% endif %}">
+          {{ course.num_enrolled }}/{{ course.capacity }}{% if is_full %}
+          (FULL){% endif %}
+        </span>
+      </td>
       <td><span class="credits-badge">{{ course.credits }} credits</span></td>
     </tr>
     {% endfor %}
@@ -79,20 +93,33 @@
 </table>
 {% else %}
 <div class="empty-state">
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+    />
   </svg>
   <h3>No Courses Available</h3>
   <p>There are currently no course sections in the system.</p>
 </div>
 {% endif %}
 
-<div class="info-box" style="margin-top: 2rem;">
+<div class="info-box" style="margin-top: 2rem">
   <h4>Next Steps</h4>
   <p>
     Ready to enroll? Visit the
-    <a href="{{ url_for('student.enroll') }}" style="color: #1976d2; font-weight: 600">Enrollment Page</a>
+    <a
+      href="{{ url_for('student.enroll') }}"
+      style="color: #1976d2; font-weight: 600"
+      >Enrollment Page</a
+    >
     to register for a course section.
   </p>
 </div>

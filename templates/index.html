@@ -1,9 +1,10 @@
-{% extends "base.html" %}
-{% block title %}Home - Course Tracker{% endblock %}
+{% extends "base.html" %} {% block title %}Home - Course Tracker{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
-{% endblock %}
-{% block content %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/components.css') }}"
+/>
+{% endblock %} {% block content %}
 <div class="hero-home">
   <h1>Welcome to Course Tracker</h1>
   <p>University Course Management System</p>
@@ -46,7 +47,11 @@
 
 <div class="er-diagram-section">
   <h2 class="er-diagram-title">Database Design</h2>
-  <img src="{{ url_for('static', filename='images/er-diagram.svg') }}" alt="ER Diagram" class="er-diagram">
+  <img
+    src="{{ url_for('static', filename='images/er-diagram.svg') }}"
+    alt="ER Diagram"
+    class="er-diagram"
+  />
 </div>
 
 {% endblock %}
