@@ -72,10 +72,11 @@ def courses():
                 JOIN TA ta2 ON a2.employeeId = ta2.employeeId
                 JOIN Employee ta_emp2 ON ta2.employeeId = ta_emp2.employeeId
                 WHERE a2.courseId = s.courseId AND a2.sectionNo = s.sectionNo) AS tas,
-                -- Enrolled students count
-                (SELECT COUNT(*) 
-                FROM enrolls_in e2 
-                WHERE e2.courseId = s.courseId AND e2.sectionNo = s.sectionNo) AS num_enrolled
+                -- Enrolled students count (only currently enrolled, not completed/withdrawn)
+                (SELECT COUNT(*)
+                FROM enrolls_in e2
+                WHERE e2.courseId = s.courseId AND e2.sectionNo = s.sectionNo
+                AND e2.status = 'enrolled') AS num_enrolled
             FROM Section s
             JOIN Course c ON c.courseId = s.courseId
             ORDER BY c.title ASC, s.sectionNo ASC
@@ -228,16 +229,29 @@ def enroll():
         student_sql = "SELECT studentId, name, year FROM Student WHERE studentId = %s"
         student = execute_query(student_sql, (student_id,), fetch_one=True)
 
-        # Load all courses
-        courses_sql = "SELECT courseId, title, credits FROM Course ORDER BY title"
+        # Load all courses with cross-listed codes
+        courses_sql = """
+            SELECT c.courseId, c.title, c.credits,
+                (SELECT GROUP_CONCAT(cl.code SEPARATOR ', ')
+                FROM cross_lists cl
+                WHERE cl.courseId = c.courseId) AS code
+            FROM Course c
+            ORDER BY c.title
+        """
         courses = execute_query(courses_sql)
 
-        # Load all sections with current capacity info
+        # Load all sections with capacity, professor, and enrolled counts
         sections_sql = """
-            SELECT s.courseId, s.sectionNo, s.capacity, c.title
+            SELECT s.courseId, s.sectionNo, s.capacity,
+                -- Enrolled student count
+                (SELECT COUNT(*)
+                FROM enrolls_in ei
+                WHERE ei.courseId = s.courseId
+                    AND ei.sectionNo = s.sectionNo
+                    AND ei.status = 'enrolled') AS num_enrolled
             FROM Section s
-            JOIN Course c ON s.courseId = c.courseId
-            ORDER BY c.title, s.sectionNo
+            JOIN Course c ON c.courseId = s.courseId
+            ORDER BY s.courseId, s.sectionNo
         """
         sections = execute_query(sections_sql)
 

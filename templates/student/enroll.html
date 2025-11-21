@@ -1,10 +1,14 @@
-{% extends "base.html" %}
-{% block title %}Enroll in Course - Course Tracker{% endblock %}
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/theme-student.css') }}">
-{% endblock %}
-{% block content %}
+{% extends "base.html" %} {% block title %}Enroll in Course - Course Tracker{%
+endblock %} {% block extra_css %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/components.css') }}"
+/>
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/theme-student.css') }}"
+/>
+{% endblock %} {% block content %}
 <div class="page-header">
   <h1>Enroll in Course Section</h1>
   <p>Demonstrates triggers, stored procedures, and data validation</p>
@@ -19,8 +23,7 @@
   <ul>
     <li><strong>INSERT</strong> statement to add enrollment records</li>
     <li>
-      <strong>3 Triggers</strong> that fire on INSERT to validate business
-      rules
+      <strong>3 Triggers</strong> that fire on INSERT to validate business rules
     </li>
     <li>
       <strong>Stored Procedure</strong>
@@ -37,9 +40,8 @@
   </p>
   <ul class="trigger-list">
     <li>
-      <strong>1. prereq_check:</strong> Validates that all prerequisite
-      courses have been completed with passing grades before allowing
-      enrollment
+      <strong>1. prereq_check:</strong> Validates that all prerequisite courses
+      have been completed with passing grades before allowing enrollment
     </li>
     <li>
       <strong>2. section_capacity_check:</strong> Prevents enrollment when the
@@ -51,21 +53,26 @@
     </li>
   </ul>
   <div class="tip-box">
-    <strong>Demo Tip:</strong> Try enrolling in different courses to see
-    these triggers validate your enrollment! The system will automatically
-    check prerequisites, capacity, and completion status.
+    <strong>Demo Tip:</strong> Try enrolling in different courses to see these
+    triggers validate your enrollment! The system will automatically check
+    prerequisites, capacity, and completion status.
   </div>
 </div>
 
 <form method="POST" class="enrollment-form">
   <div class="form-group">
     <label for="course_id">Select Course:</label>
-    <select name="course_id" id="course_id" required onchange="filterSections()">
+    <select
+      name="course_id"
+      id="course_id"
+      required
+    >
       <option value="">-- Choose a course --</option>
       {% for course in courses %}
       <option value="{{ course.courseId }}">
-        {{ course.courseId }} - {{ course.title }} ({{ course.credits }}
-        credits)
+        {% if course.code and ',' in course.code %}({{ course.code }}){% elif
+        course.code %}{{ course.code }}{% else %}{{ course.courseId }}{% endif
+        %} - {{ course.title }} ({{ course.credits }} credits)
       </option>
       {% endfor %}
     </select>
@@ -74,22 +81,26 @@
 
   <div class="form-group">
     <label for="section_no">Select Section:</label>
-    <select name="section_no" id="section_no" required>
+    <select
+      name="section_no"
+      id="section_no"
+      required
+      data-sections='{{ sections|tojson|safe }}'
+    >
       <option value="">-- First select a course --</option>
-      {% for section in sections %}
-      <option value="{{ section.sectionNo }}" data-course="{{ section.courseId }}"
-        data-capacity="{{ section.capacity }}" data-title="{{ section.title }}" style="display: none">
-        Section {{ section.sectionNo }} - {{ section.title }} (Capacity: {{
-        section.capacity }} students)
-      </option>
-      {% endfor %}
     </select>
     <small>Choose a section (capacity will be validated by triggers)</small>
   </div>
 
   <div style="display: flex; gap: 1rem; margin-top: 2rem">
-    <button type="submit" class="btn-submit" style="flex: 1;">Enroll in Course</button>
-    <a href="{{ url_for('student.courses') }}" class="btn-cancel" style="flex: 1;">
+    <button type="submit" class="btn-submit" style="flex: 1">
+      Enroll in Course
+    </button>
+    <a
+      href="{{ url_for('student.courses') }}"
+      class="btn-cancel"
+      style="flex: 1"
+    >
       Cancel
     </a>
   </div>
@@ -103,8 +114,8 @@
       <code>enrolls_in</code> table
     </li>
     <li>
-      Three triggers fire automatically to validate prerequisites, capacity,
-      and completion status
+      Three triggers fire automatically to validate prerequisites, capacity, and
+      completion status
     </li>
     <li>
       If any validation fails, the enrollment is rejected with a descriptive
@@ -117,57 +128,8 @@
   </ol>
 </div>
 
-<script>
-  // Store all sections data on page load
-  let allSectionsData = [];
+{% endblock %}
 
-  document.addEventListener("DOMContentLoaded", function () {
-    // Capture all section options before any filtering
-    const sectionOptions = document.querySelectorAll(
-      "#section_no option[data-course]",
-    );
-    sectionOptions.forEach((option) => {
-      allSectionsData.push({
-        value: option.value,
-        courseId: option.dataset.course,
-        capacity: option.dataset.capacity,
-        title: option.dataset.title,
-        text: option.textContent,
-      });
-    });
-  });
-
-  function filterSections() {
-    const courseSelect = document.getElementById("course_id");
-    const sectionSelect = document.getElementById("section_no");
-    const selectedCourse = courseSelect.value;
-
-    // Reset section dropdown
-    sectionSelect.innerHTML =
-      '<option value="">-- Select a section --</option>';
-
-    if (!selectedCourse) {
-      return;
-    }
-
-    // Filter sections from stored data
-    let sectionsAdded = 0;
-    allSectionsData.forEach((sectionData) => {
-      if (sectionData.courseId === selectedCourse) {
-        const newOption = document.createElement("option");
-        newOption.value = sectionData.value;
-        newOption.textContent = sectionData.text;
-        newOption.dataset.course = sectionData.courseId;
-        newOption.dataset.capacity = sectionData.capacity;
-        sectionSelect.appendChild(newOption);
-        sectionsAdded++;
-      }
-    });
-
-    if (sectionsAdded === 0) {
-      sectionSelect.innerHTML =
-        '<option value="">-- No sections available for this course --</option>';
-    }
-  }
-</script>
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/enroll.js') }}"></script>
 {% endblock %}

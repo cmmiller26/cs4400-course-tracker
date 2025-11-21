@@ -1,9 +1,10 @@
-{% extends "base.html" %}
-{% block title %}Login - Course Tracker{% endblock %}
+{% extends "base.html" %} {% block title %}Login - Course Tracker{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
-{% endblock %}
-{% block content %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/components.css') }}"
+/>
+{% endblock %} {% block content %}
 <div class="login-container">
   <div class="login-card">
     <!-- Header -->
@@ -42,7 +43,7 @@
       </div>
 
       <!-- Submit Button -->
-      <button type="submit" class="btn-submit" style="width: 100%;">
+      <button type="submit" class="btn-submit" style="width: 100%">
         Log In
       </button>
     </form>
@@ -68,21 +69,8 @@
     </div>
   </div>
 </div>
+{% endblock %}
 
-<script>
-  // Auto-focus on username field when page loads
-  document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("username").focus();
-  });
-
-  // Enter key in username field moves to password
-  document
-    .getElementById("username")
-    .addEventListener("keypress", function (e) {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        document.getElementById("password").focus();
-      }
-    });
-</script>
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/login.js') }}"></script>
 {% endblock %}
