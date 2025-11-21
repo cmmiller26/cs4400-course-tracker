@@ -108,6 +108,30 @@ endblock %} {% block extra_css %}
     text-transform: capitalize;
   }
 
+  .role-professor {
+    background: #fff0f0;
+    color: #c62828;
+  }
+
+  .role-ta {
+    background: #e8f5e9;
+    color: #2e7d32;
+  }
+
+  .role-advisor {
+    background: #e3f2fd;
+    color: #1565c0;
+  }
+
+  /* Fallback for any other roles */
+  .role-badge:not(.role-professor):not(.role-ta):not(.role-advisor) {
+    background: #f3e5f5;
+    color: #6a1b9a;
+  }
+
+
+
+
   .employee-id {
     font-family: monospace;
     background: #f0f0f0;
@@ -139,61 +163,38 @@ endblock %} {% block extra_css %}
 <div class="page-header">
   <h1>💰 Employee Salary Analysis Report</h1>
   <p>Comprehensive salary comparison using subqueries and stored functions</p>
-  <span class="sql-badge">SQL QUERY #4: SUBQUERY</span>
-  <span class="sql-badge">AGGREGATION</span>
+  <span class="sql-badge">QUERY: SUBQUERY, AGGREGATION, & JOIN</span>
   <span class="sql-badge">FUNCTION</span>
 </div>
 
-<div
-  class="query-description"
-  style="
+<!-- Section 1: Employee Salary vs Role Average -->
+<div class="section-header">
+  <h2>📊 Employee Salaries vs Role Average</h2>
+</div>
+
+<div class="query-description" style="
     background: #f5f5f5;
     padding: 1.5rem;
     border-radius: 8px;
     margin-bottom: 2rem;
     border-left: 4px solid #000;
-  "
->
-  <h3 style="margin-top: 0">📊 Query Description</h3>
-  <p>This report demonstrates multiple advanced SQL concepts:</p>
-  <ul style="margin-left: 2rem">
+  ">
+  <h3 style="margin-top: 0">⚙️ SQL Concepts Used</h3>
+  <p>This analysis demonstrates the following SQL concepts:</p>
+  <ul style="margin-left: 2rem; margin-bottom: 0">
     <li>
-      <strong>SUBQUERY:</strong> Calculates average salary per role using a
-      nested SELECT with GROUP BY
+      <strong>SUBQUERY:</strong> A nested <code>SELECT</code> statement calculates the average salary for each role.
+      This subquery is treated like a temporary table.
     </li>
     <li>
-      <strong>AGGREGATION:</strong> Uses AVG() function to compute role and
-      department averages
+      <strong>AGGREGATION:</strong> The <code>AVG()</code> function is used within the subquery with
+      <code>GROUP BY role</code> to compute the average salary for each distinct role.
     </li>
     <li>
-      <strong>STORED FUNCTION:</strong> Calls
-      <code>average_department_salary(deptId)</code> to calculate department
-      averages
-    </li>
-    <li>
-      <strong>JOIN:</strong> Joins Employee table with subquery results on role
+      <strong>JOIN:</strong> The main <code>Employee</code> table is joined with the results of the subquery on the
+      <code>role</code> column to compare each employee's salary against their role's average.
     </li>
   </ul>
-</div>
-
-<!-- Section 1: Employee Salary vs Role Average -->
-<div class="section-header">
-  <h2>📊 Part 1: Employee Salaries vs Role Average (SUBQUERY + AGGREGATION)</h2>
-</div>
-
-<div
-  style="
-    margin-bottom: 1rem;
-    padding: 1rem;
-    background: #fff3cd;
-    border-radius: 5px;
-    border-left: 4px solid #ffc107;
-  "
->
-  <strong>SQL Concept:</strong> This table uses a <strong>SUBQUERY</strong> to
-  calculate the average salary for each role, then <strong>JOINs</strong> that
-  result with the Employee table to show how each employee's salary compares to
-  their role average.
 </div>
 
 {% if employees %}
@@ -204,9 +205,9 @@ endblock %} {% block extra_css %}
 <table class="data-table">
   <thead>
     <tr>
+      <th>Role</th>
       <th>Employee ID</th>
       <th>Name</th>
-      <th>Role</th>
       <th>Salary</th>
       <th>Role Average</th>
       <th>Difference</th>
@@ -215,19 +216,28 @@ endblock %} {% block extra_css %}
   <tbody>
     {% for emp in employees %}
     <tr>
+      <td>
+        {% if emp.role|lower == 'professor' %}
+        <span class="role-badge role-professor">{{ emp.role }}</span>
+        {% elif emp.role|lower == 'ta' %}
+        <span class="role-badge role-ta">{{ emp.role }}</span>
+        {% elif emp.role|lower == 'advisor' %}
+        <span class="role-badge role-advisor">{{ emp.role }}</span>
+        {% else %}
+        <span class="role-badge">{{ emp.role }}</span>
+        {% endif %}
+      </td>
       <td><span class="employee-id">{{ emp.employeeId }}</span></td>
       <td style="font-weight: 600">{{ emp.name }}</td>
-      <td><span class="role-badge">{{ emp.role }}</span></td>
       <td>${{ "{:,.2f}".format(emp.salary) }}</td>
       <td>${{ "{:,.2f}".format(emp.average_salary) }}</td>
       <td>
         {% set diff = emp.difference %} {% if diff > 0 %}
         <span class="salary-positive">+${{ "{:,.2f}".format(diff) }}</span>
-        {% elif diff < 0 %}
-        <span class="salary-negative">-${{ "{:,.2f}".format(diff|abs) }}</span>
-        {% else %}
-        <span class="salary-neutral">$0.00</span>
-        {% endif %}
+        {% elif diff < 0 %} <span class="salary-negative">-${{ "{:,.2f}".format(diff|abs) }}</span>
+          {% else %}
+          <span class="salary-neutral">$0.00</span>
+          {% endif %}
       </td>
     </tr>
     {% endfor %}
@@ -239,24 +249,27 @@ endblock %} {% block extra_css %}
 </div>
 {% endif %}
 
-<!-- Section 2: Department Average Salaries (Using Function) -->
+<!-- Section 2: Department Average Salaries -->
 <div class="section-header">
-  <h2>🏢 Part 2: Department Average Salaries (STORED FUNCTION)</h2>
+  <h2>🏢 Department Average Salaries</h2>
 </div>
 
-<div
-  style="
-    margin-bottom: 1rem;
-    padding: 1rem;
-    background: #fff3cd;
-    border-radius: 5px;
-    border-left: 4px solid #ffc107;
-  "
->
-  <strong>SQL Concept:</strong> This section demonstrates the use of a
-  <strong>STORED FUNCTION</strong>
-  <code>average_department_salary(deptId)</code> which calculates the average
-  salary for all employees working in each department.
+<div class="query-description" style="
+    background: #f5f5f5;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    border-left: 4px solid #000;
+  ">
+  <h3 style="margin-top: 0">⚙️ SQL Concept Used</h3>
+  <p>This analysis demonstrates a powerful database feature:</p>
+  <ul style="margin-left: 2rem; margin-bottom: 0">
+    <li>
+      <strong>STORED FUNCTION:</strong> The Python backend calls the custom SQL function
+      <code>average_department_salary(deptId)</code> for each department. This function encapsulates the logic to
+      calculate and return the average salary for a given department ID, promoting code reuse and abstraction.
+    </li>
+  </ul>
 </div>
 
 {% if department_averages %}
@@ -293,44 +306,4 @@ endblock %} {% block extra_css %}
 </div>
 {% endif %}
 
-<div
-  style="
-    margin-top: 2rem;
-    padding: 1rem;
-    background: #e3f2fd;
-    border-radius: 8px;
-    border-left: 4px solid #1976d2;
-  "
->
-  <h4 style="margin-top: 0">ℹ️ Technical Details</h4>
-  <ul style="margin-left: 1.5rem; line-height: 1.8">
-    <li>
-      <strong>Part 1</strong> uses a subquery:
-      <code>SELECT role, AVG(salary) FROM Employee GROUP BY role</code>
-    </li>
-    <li>
-      <strong>Part 2</strong> calls function:
-      <code>SELECT average_department_salary(deptId)</code>
-    </li>
-  </ul>
-  <p
-    style="
-      margin-top: 1rem;
-      padding: 1rem;
-      background: #fff9e6;
-      border-left: 4px solid #ffcd00;
-      border-radius: 4px;
-      margin-bottom: 0;
-    "
-  >
-    <strong>💡 Note:</strong> Database views are demonstrated in the
-    <a
-      href="{{ url_for('admin.analytics') }}"
-      style="color: #1976d2; font-weight: 600"
-      >Grade Analytics</a
-    >
-    page, which shows both <code>current_student_enrollments</code> and
-    <code>completed_student_courses</code> views.
-  </p>
-</div>
 {% endblock %}

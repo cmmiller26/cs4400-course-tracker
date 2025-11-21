@@ -7,6 +7,7 @@ USE CourseTracker;
 -- current_student_enrollments: Shows the current enrollments of all students.
 -- completed_student_courses: Shows the completed courses of all students.
 -- Both views are created from the admin's perspective.
+-- Students can query these views to see their own data.
 
 CREATE VIEW current_student_enrollments AS
 SELECT

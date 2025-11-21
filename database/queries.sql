@@ -31,8 +31,8 @@ JOIN Course c ON c.courseId = s.courseId
 ORDER BY c.title ASC, s.sectionNo ASC;
 
 -- Insert query for enrollment
-INSERT INTO enrolls_in (studentId, courseId, sectionNo, status, grade, enrolledDate) VALUES
-(4005, 5003, '0001', 'enrolled', NULL, CURRENT_DATE);
+INSERT INTO enrolls_in (studentId, courseId, sectionNo, status, grade, enrolledDate)
+VALUES (%s, %s, %s, 'enrolled', NULL, CURDATE());
 
 -- Delete query for dropping a course
 DELETE FROM enrolls_in
@@ -59,14 +59,20 @@ WHERE s.studentId = %s AND e.status = 'completed' AND e.grade IS NOT NULL
 GROUP BY s.studentId, s.name;
 
 -- Aggregate to show individual and average salary
-SELECT e.name, e.role, e.salary, S.average_salary
-FROM (
+SELECT
+	e.employeeId,
+	e.name,
+	e.role,
+	e.salary,
+	role_avg.average_salary,
+	(e.salary - role_avg.average_salary) AS difference
+FROM Employee e
+JOIN (
 	SELECT role, AVG(salary) AS average_salary
-    FROM employee
-    GROUP BY role
-    ) AS S
-JOIN Employee e
-ON S.role = e.role;
+	FROM Employee
+	GROUP BY role
+) AS role_avg ON e.role = role_avg.role
+ORDER BY e.role, e.salary DESC;
 
 -- Aggregate to show average grade per class
 SELECT  DISTINCT c.title, S.average_grade
