@@ -123,12 +123,6 @@ A university course tracking system built for CS:4400 Database Systems at the Un
    python run.py
    ```
 
-   Or alternatively:
-
-   ```bash
-   python app.py
-   ```
-
 7. **Access the application**:
    - Homepage: `http://localhost:5001`
    - Login: `http://localhost:5001/auth/login`

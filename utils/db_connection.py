@@ -63,36 +63,46 @@ def execute_query(sql, params=None, fetch_one=False):
 def execute_update(sql, params=None):
     """
     Execute an INSERT, UPDATE, or DELETE query.
-    
+
     Args:
         sql (str): SQL query string with %s placeholders
         params (tuple/list): Parameters for the query
-    
+
     Returns:
-        int: Number of affected rows, or -1 if query fails
+        int: Number of affected rows
+
+    Raises:
+        mysql.connector.Error: Re-raises database errors (including trigger errors) for handling by caller
     """
     connection = None
     cursor = None
     try:
         connection = get_connection()
         if not connection:
-            return -1
-        
+            raise Error("Failed to establish database connection")
+
         cursor = connection.cursor()
+
+        # Execute the query - triggers will fire during execution
+        # If a trigger raises an error, this will raise mysql.connector.Error
         cursor.execute(sql, params or ())
+
+        # Only commit if execute succeeded (no trigger errors)
         connection.commit()
-        
+
         affected_rows = cursor.rowcount
         return affected_rows
-    
+
     except Error as e:
+        # Rollback on any error (including trigger errors)
         if connection:
             connection.rollback()
         print(f"Error executing update: {e}")
         print(f"SQL: {sql}")
         print(f"Params: {params}")
-        return -1
-    
+        # Re-raise the exception so calling code can handle it with specific error messages
+        raise
+
     finally:
         if cursor:
             cursor.close()

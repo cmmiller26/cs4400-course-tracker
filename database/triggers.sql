@@ -6,54 +6,33 @@ USE CourseTracker;
 -- There are 3 triggers created in this file:
 -- prereq_check: Checks if the prerequisite for a course has been met.
 -- section_capacity_check: Checks if the section is full.
--- student_already_completed_check: Checks if the student has already completed the course.
+-- student_enrollment_status_check: Checks if the student is already enrolled or has completed the course.
 
 DELIMITER //
 CREATE TRIGGER prereq_check
 BEFORE INSERT ON enrolls_in
 FOR EACH ROW
 BEGIN
-    DECLARE prereq_met BOOLEAN;
-    DECLARE prereq_course_id INTEGER;
-    DECLARE prereq_section_no CHAR(4);
-    DECLARE prereq_course_title VARCHAR(255);
-    DECLARE prereq_course_credits TINYINT UNSIGNED;
-    DECLARE prereq_course_building VARCHAR(255);
+    DECLARE missing_prereqs INT;
 
-    SELECT prerequisite_of.prereqCourseId
-    INTO prereq_course_id
-    FROM prerequisite_of
-    WHERE prerequisite_of.targetCourseId = NEW.courseId;
+    -- Check if student has completed all prerequisites for this course
+    -- Count how many prerequisites exist that the student has NOT completed
+    SELECT COUNT(*)
+    INTO missing_prereqs
+    FROM prerequisite_of p
+    WHERE p.targetCourseId = NEW.courseId
+    AND NOT EXISTS (
+        SELECT 1
+        FROM enrolls_in e
+        WHERE e.studentId = NEW.studentId
+        AND e.courseId = p.prereqCourseId
+        AND e.status = 'completed'
+    );
 
-    IF prereq_course_id IS NOT NULL THEN
-        SELECT section.sectionNo INTO prereq_section_no
-        FROM Section
-        WHERE Section.courseId = prereq_course_id;
-
-        SELECT Course.title INTO prereq_course_title
-        FROM Course
-        WHERE Course.courseId = prereq_course_id;
-
-        SELECT Course.credits INTO prereq_course_credits
-        FROM Course
-        WHERE Course.courseId = prereq_course_id;
-
-        SELECT Course.building INTO prereq_course_building
-        FROM Course
-        WHERE Course.courseId = prereq_course_id;
-
-        IF prereq_section_no IS NOT NULL THEN
-            SELECT COUNT(*) INTO prereq_met
-            FROM enrolls_in
-            WHERE enrolls_in.courseId = prereq_course_id
-            AND enrolls_in.sectionNo = prereq_section_no
-            AND enrolls_in.status = 'completed';
-
-            IF prereq_met = 0 THEN
-                SIGNAL SQLSTATE '45000'
-                SET MESSAGE_TEXT = 'Prerequisite(s) not met';
-            END IF;
-        END IF;
+    -- If any prerequisites are missing, block the enrollment
+    IF missing_prereqs > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Prerequisite(s) not met';
     END IF;
 END //
 DELIMITER ;
@@ -85,21 +64,28 @@ DELIMITER ;
 
 --
 DELIMITER //
-CREATE TRIGGER student_already_completed_check
+CREATE TRIGGER student_enrollment_status_check
 BEFORE INSERT ON enrolls_in
 FOR EACH ROW
 BEGIN
-    DECLARE student_already_completed BOOLEAN;
-    SELECT COUNT(*) INTO student_already_completed
+    DECLARE existing_status VARCHAR(20);
+
+    -- Check if student has any existing enrollment for this course
+    SELECT enrolls_in.status INTO existing_status
     FROM enrolls_in
     WHERE enrolls_in.studentId = NEW.studentId
     AND enrolls_in.courseId = NEW.courseId
-    AND enrolls_in.sectionNo = NEW.sectionNo
-    AND enrolls_in.status = 'completed';
+    LIMIT 1;
 
-    IF student_already_completed > 0 THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Student already completed this course!';
+    -- If a record exists, throw appropriate error based on status
+    IF existing_status IS NOT NULL THEN
+        IF existing_status = 'enrolled' THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Student already enrolled in this course!';
+        ELSEIF existing_status = 'completed' THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Student already completed this course!';
+        END IF;
     END IF;
 END //
 DELIMITER ;

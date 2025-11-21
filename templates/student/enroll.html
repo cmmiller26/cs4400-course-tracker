@@ -138,168 +138,134 @@ endblock %} {% block extra_css %}
   }
 </style>
 {% endblock %} {% block content %}
-<div style="max-width: 900px; margin: 0 auto">
-  <div class="page-header">
-    <h1>📝 Enroll in Course Section</h1>
-    <p>Demonstrates triggers, stored procedures, and data validation</p>
-    <span class="sql-badge">SQL QUERY #2: INSERT</span>
-    <span class="sql-badge">3 TRIGGERS</span>
-    <span class="sql-badge">STORED PROCEDURE</span>
-  </div>
+<div class="page-header">
+  <h1>📝 Enroll in Course Section</h1>
+  <p>Demonstrates triggers, stored procedures, and data validation</p>
+  <span class="sql-badge">SQL QUERY #2: INSERT</span>
+  <span class="sql-badge">3 TRIGGERS</span>
+  <span class="sql-badge">STORED PROCEDURE</span>
+</div>
 
-  <div
-    class="query-description"
-    style="
+<div class="query-description" style="
       background: #f5f5f5;
       padding: 1.5rem;
       border-radius: 8px;
       margin-bottom: 2rem;
       border-left: 4px solid #ffcd00;
-    "
-  >
-    <h3 style="margin-top: 0">📊 Query Description</h3>
-    <p>This enrollment process demonstrates multiple database concepts:</p>
-    <ul style="margin-left: 2rem">
-      <li><strong>INSERT</strong> statement to add enrollment records</li>
-      <li>
-        <strong>Stored Procedure</strong>
-        <code>update_open_seats(courseId, sectionNo)</code> to manage capacity
-      </li>
-      <li>
-        <strong>3 Triggers</strong> that fire on INSERT to validate business
-        rules
-      </li>
-    </ul>
-  </div>
+    ">
+  <h3 style="margin-top: 0">📊 Query Description</h3>
+  <p>This enrollment process demonstrates multiple database concepts:</p>
+  <ul style="margin-left: 2rem">
+    <li><strong>INSERT</strong> statement to add enrollment records</li>
+    <li>
+      <strong>3 Triggers</strong> that fire on INSERT to validate business
+      rules
+    </li>
+    <li>
+      <strong>Stored Procedure</strong>
+      <code>update_open_seats(courseId, sectionNo)</code> to manage capacity
+    </li>
+  </ul>
+</div>
 
-  <div class="info-box">
-    <h3>🎯 Database Triggers in Action</h3>
-    <p style="margin-bottom: 1rem">
-      This form demonstrates <strong>3 database triggers</strong> that
-      automatically enforce business rules:
-    </p>
-    <ul class="trigger-list">
-      <li>
-        <strong>1. prereq_check:</strong> Validates that all prerequisite
-        courses have been completed with passing grades before allowing
-        enrollment
-      </li>
-      <li>
-        <strong>2. section_capacity_check:</strong> Prevents enrollment when the
-        section has reached maximum capacity
-      </li>
-      <li>
-        <strong>3. student_already_completed_check:</strong> Blocks
-        re-enrollment in courses that have already been completed
-      </li>
-    </ul>
-    <div
-      style="
+<div class="info-box">
+  <h3>🎯 Database Triggers in Action</h3>
+  <p style="margin-bottom: 1rem">
+    This form demonstrates <strong>3 database triggers</strong> that
+    automatically enforce business rules:
+  </p>
+  <ul class="trigger-list">
+    <li>
+      <strong>1. prereq_check:</strong> Validates that all prerequisite
+      courses have been completed with passing grades before allowing
+      enrollment
+    </li>
+    <li>
+      <strong>2. section_capacity_check:</strong> Prevents enrollment when the
+      section has reached maximum capacity
+    </li>
+    <li>
+      <strong>3. student_enrollment_status_check:</strong> Blocks duplicate
+      enrollments and re-enrollment in courses that have already been completed
+    </li>
+  </ul>
+  <div style="
         margin-top: 1rem;
         padding: 0.75rem;
         background: #fff9e6;
         border-left: 4px solid #ffcd00;
         border-radius: 4px;
-      "
-    >
-      <strong>💡 Demo Tip:</strong> Try enrolling in different courses to see
-      these triggers validate your enrollment! The system will automatically
-      check prerequisites, capacity, and completion status.
-    </div>
+      ">
+    <strong>💡 Demo Tip:</strong> Try enrolling in different courses to see
+    these triggers validate your enrollment! The system will automatically
+    check prerequisites, capacity, and completion status.
+  </div>
+</div>
+
+<form method="POST" class="enrollment-form">
+  <div class="form-group">
+    <label for="course_id">Select Course:</label>
+    <select name="course_id" id="course_id" required onchange="filterSections()">
+      <option value="">-- Choose a course --</option>
+      {% for course in courses %}
+      <option value="{{ course.courseId }}">
+        {{ course.courseId }} - {{ course.title }} ({{ course.credits }}
+        credits)
+      </option>
+      {% endfor %}
+    </select>
+    <small>Select the course you want to enroll in</small>
   </div>
 
-  <form method="POST" class="enrollment-form">
-    {% if student %}
-    <div
-      style="
-        background: #e3f2fd;
-        padding: 1rem;
-        border-radius: 8px;
-        margin-bottom: 1.5rem;
-        border-left: 4px solid #1976d2;
-      "
-    >
-      <strong>Enrolling as:</strong> {{ student.name }} (ID: {{
-      student.studentId }}, Year: {{ student.year }})
-    </div>
-    {% endif %}
+  <div class="form-group">
+    <label for="section_no">Select Section:</label>
+    <select name="section_no" id="section_no" required>
+      <option value="">-- First select a course --</option>
+      {% for section in sections %}
+      <option value="{{ section.sectionNo }}" data-course="{{ section.courseId }}"
+        data-capacity="{{ section.capacity }}" data-title="{{ section.title }}" style="display: none">
+        Section {{ section.sectionNo }} - {{ section.title }} (Capacity: {{
+        section.capacity }} students)
+      </option>
+      {% endfor %}
+    </select>
+    <small>Choose a section (capacity will be validated by triggers)</small>
+  </div>
 
-    <div class="form-group">
-      <label for="course_id">Select Course:</label>
-      <select
-        name="course_id"
-        id="course_id"
-        required
-        onchange="filterSections()"
-      >
-        <option value="">-- Choose a course --</option>
-        {% for course in courses %}
-        <option value="{{ course.courseId }}">
-          {{ course.courseId }} - {{ course.title }} ({{ course.credits }}
-          credits)
-        </option>
-        {% endfor %}
-      </select>
-      <small>Select the course you want to enroll in</small>
-    </div>
+  <div style="display: flex; gap: 1rem; margin-top: 2rem">
+    <button type="submit" class="btn-submit">✓ Enroll in Course</button>
+    <a href="{{ url_for('student.courses') }}" class="btn-cancel">
+      ✗ Cancel
+    </a>
+  </div>
+</form>
 
-    <div class="form-group">
-      <label for="section_no">Select Section:</label>
-      <select name="section_no" id="section_no" required>
-        <option value="">-- First select a course --</option>
-        {% for section in sections %}
-        <option
-          value="{{ section.sectionNo }}"
-          data-course="{{ section.courseId }}"
-          data-capacity="{{ section.capacity }}"
-          data-title="{{ section.title }}"
-          style="display: none"
-        >
-          Section {{ section.sectionNo }} - {{ section.title }} (Capacity: {{
-          section.capacity }} students)
-        </option>
-        {% endfor %}
-      </select>
-      <small>Choose a section (capacity will be validated by triggers)</small>
-    </div>
-
-    <div style="display: flex; gap: 1rem; margin-top: 2rem">
-      <button type="submit" class="btn-submit">✓ Enroll in Course</button>
-      <a href="{{ url_for('student.courses') }}" class="btn-cancel">
-        ✗ Cancel
-      </a>
-    </div>
-  </form>
-
-  <div
-    style="
+<div style="
       margin-top: 2rem;
       padding: 1rem;
       background: #e3f2fd;
       border-radius: 8px;
       border-left: 4px solid #1976d2;
-    "
-  >
-    <h4 style="margin-top: 0">ℹ️ How It Works</h4>
-    <ol style="margin-left: 1.5rem; line-height: 1.8">
-      <li>
-        The <code>update_open_seats</code> stored procedure is called to update
-        available capacity
-      </li>
-      <li>
-        An INSERT statement adds the enrollment record to the
-        <code>enrolls_in</code> table
-      </li>
-      <li>
-        Three triggers fire automatically to validate prerequisites, capacity,
-        and completion status
-      </li>
-      <li>
-        If any validation fails, the enrollment is rejected with a descriptive
-        error message
-      </li>
-    </ol>
-  </div>
+    ">
+  <h4 style="margin-top: 0">ℹ️ How It Works</h4>
+  <ol style="margin-left: 1.5rem; line-height: 1.8">
+    <li>
+      An INSERT statement adds the enrollment record to the
+      <code>enrolls_in</code> table
+    </li>
+    <li>
+      Three triggers fire automatically to validate prerequisites, capacity,
+      and completion status
+    </li>
+    <li>
+      If any validation fails, the enrollment is rejected with a descriptive
+      error message
+    </li>
+    <li>
+      The <code>update_open_seats</code> stored procedure is called to update
+      available capacity
+    </li>
+  </ol>
 </div>
 
 <script>

@@ -120,33 +120,42 @@ def enroll():
             proc_result = call_procedure('update_open_seats', (course_id, section_no))
 
             # Step 2: Insert enrollment record for the logged-in student
-            # This will trigger all three validation triggers
+            # This will trigger all 3 validation triggers (prereq, capacity, enrollment status)
             sql = """
                 INSERT INTO enrolls_in (studentId, courseId, sectionNo, status, grade, enrolledDate)
                 VALUES (%s, %s, %s, 'enrolled', NULL, CURDATE())
             """
 
-            result = execute_update(sql, (student_id, course_id, section_no))
-
-            if result > 0:
-                flash('✓ Successfully enrolled in course! All prerequisites met and seat reserved.', 'success')
-            else:
-                flash('✗ Enrollment failed. This may be due to: unmet prerequisites, section at capacity, or course already completed.', 'error')
-
+            # If this succeeds, the enrollment was successful (all triggers passed)
+            # If any trigger fails, an exception will be raised and caught below
+            execute_update(sql, (student_id, course_id, section_no))
+            flash('✓ Successfully enrolled in course! All prerequisites met and seat reserved.', 'success')
             return redirect(url_for('student.enroll'))
 
         except Exception as e:
             error_msg = str(e)
+            course_id = request.form.get('course_id')
+            section_no = request.form.get('section_no')
 
-            # Parse trigger error messages for user-friendly display
-            if 'prereq' in error_msg.lower():
+            # Parse trigger error messages for user-friendly display with specific details
+            if 'already enrolled' in error_msg.lower() or 'Student already enrolled' in error_msg or 'Duplicate entry' in error_msg:
+                # Student is already enrolled in this section
+                flash('✗ Enrollment failed: You are already enrolled in this course section.', 'error')
+
+            elif 'prereq' in error_msg.lower() or 'Prerequisite(s) not met' in error_msg:
+                # Student has not met prerequisites
                 flash('✗ Enrollment failed: Prerequisites not met for this course.', 'error')
-            elif 'capacity' in error_msg.lower() or 'full' in error_msg.lower():
+
+            elif 'full' in error_msg.lower() or 'Section is full!' in error_msg:
+                # Section is at full capacity
                 flash('✗ Enrollment failed: Section is at full capacity.', 'error')
-            elif 'completed' in error_msg.lower():
+
+            elif 'completed' in error_msg.lower() or 'Student already completed this course!' in error_msg:
+                # Student has already completed the course
                 flash('✗ Enrollment failed: You have already completed this course.', 'error')
             else:
-                flash('✗ Enrollment failed. Please check the course requirements and try again.', 'error')
+                # Unknown error - show the raw message for debugging
+                flash(f'✗ Enrollment failed: {error_msg}', 'error')
 
             print(f"Error in enroll route: {e}")
             return redirect(url_for('student.enroll'))
