@@ -2,91 +2,264 @@
 
 {% block title %}Enroll in Course - Course Tracker{% endblock %}
 
-{% block content %}
-<div style="max-width: 800px; margin: 0 auto;">
-    <h2 style="color: #000; margin-bottom: 1.5rem;">Enroll in Course Section</h2>
+{% block extra_css %}
+<style>
+    .page-header {
+        background: linear-gradient(135deg, #FFCD00 0%, #FFB700 100%);
+        color: #000;
+        padding: 2rem;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
 
-    <div class="info-box" style="background: #fff; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-        <h3 style="color: #FFCD00; background: #000; padding: 0.5rem 1rem; margin: -1.5rem -1.5rem 1rem -1.5rem; border-radius: 8px 8px 0 0;">🎯 Trigger Demonstration</h3>
-        <p style="margin-bottom: 1rem;">This enrollment form demonstrates <strong>3 database triggers</strong> that automatically enforce business rules:</p>
-        <ul style="margin-left: 2rem; line-height: 2;">
-            <li><strong>Prerequisite Validation:</strong> Prevents enrollment if prerequisites haven't been completed</li>
-            <li><strong>Capacity Enforcement:</strong> Blocks enrollment when section is at maximum capacity</li>
-            <li><strong>Duplicate Prevention:</strong> Ensures students can't enroll in courses they've already completed</li>
-        </ul>
-        <p style="margin-top: 1rem; padding: 0.75rem; background: #FFF9E6; border-left: 4px solid #FFCD00; border-radius: 4px;">
-            <strong>💡 Try it out:</strong> Attempt to enroll in various courses to see these triggers in action!
-        </p>
+    .page-header h1 {
+        margin: 0 0 0.5rem 0;
+        font-size: 2rem;
+    }
+
+    .page-header p {
+        margin: 0;
+        opacity: 0.9;
+        font-size: 1rem;
+    }
+
+    .sql-badge {
+        display: inline-block;
+        background: #000;
+        color: #FFCD00;
+        padding: 0.3rem 0.8rem;
+        border-radius: 5px;
+        font-size: 0.85rem;
+        font-weight: bold;
+        margin-top: 0.5rem;
+        margin-right: 0.5rem;
+    }
+
+    .info-box {
+        background: #fff;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .info-box h3 {
+        color: #FFCD00;
+        background: #000;
+        padding: 0.5rem 1rem;
+        margin: -1.5rem -1.5rem 1rem -1.5rem;
+        border-radius: 8px 8px 0 0;
+    }
+
+    .enrollment-form {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #333;
+    }
+
+    .form-group select {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid #ddd;
+        border-radius: 5px;
+        font-size: 1rem;
+        background: white;
+        transition: border-color 0.3s ease;
+    }
+
+    .form-group select:focus {
+        outline: none;
+        border-color: #FFCD00;
+    }
+
+    .form-group small {
+        color: #666;
+        display: block;
+        margin-top: 0.25rem;
+        font-size: 0.9rem;
+    }
+
+    .btn-submit {
+        flex: 1;
+        padding: 0.875rem 2rem;
+        background: #FFCD00;
+        color: #000;
+        border: none;
+        border-radius: 5px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .btn-submit:hover {
+        background: #E6B800;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .btn-cancel {
+        flex: 1;
+        padding: 0.875rem 2rem;
+        background: #000;
+        color: #FFCD00;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 1rem;
+        font-weight: 600;
+        display: block;
+        transition: all 0.3s;
+    }
+
+    .btn-cancel:hover {
+        background: #333;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .trigger-list {
+        margin-left: 2rem;
+        line-height: 2;
+    }
+
+    .trigger-list li {
+        margin-bottom: 0.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto;">
+    <div class="page-header">
+        <h1>📝 Enroll in Course Section</h1>
+        <p>Demonstrates triggers, stored procedures, and data validation</p>
+        <span class="sql-badge">SQL QUERY #2: INSERT</span>
+        <span class="sql-badge">3 TRIGGERS</span>
+        <span class="sql-badge">STORED PROCEDURE</span>
     </div>
 
-    <form method="POST" style="background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-        <div style="margin-bottom: 1.5rem;">
-            <label for="student_id" style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #333;">
-                Select Student:
-            </label>
-            <select name="student_id" id="student_id" required
-                    style="width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem; background: white;">
-                {% for student in students %}
-                    <option value="{{ student.studentId }}">
-                        {{ student.studentId }} - {{ student.name }} ({{ student.year }})
-                    </option>
-                {% endfor %}
-            </select>
-            <small style="color: #666; display: block; margin-top: 0.25rem;">Choose which student is enrolling</small>
-        </div>
+    <div class="query-description" style="background: #f5f5f5; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; border-left: 4px solid #FFCD00;">
+        <h3 style="margin-top: 0;">📊 Query Description</h3>
+        <p>
+            This enrollment process demonstrates multiple database concepts:
+        </p>
+        <ul style="margin-left: 2rem;">
+            <li><strong>INSERT</strong> statement to add enrollment records</li>
+            <li><strong>Stored Procedure</strong> <code>update_open_seats(courseId, sectionNo)</code> to manage capacity</li>
+            <li><strong>3 Triggers</strong> that fire on INSERT to validate business rules</li>
+        </ul>
+    </div>
 
-        <div style="margin-bottom: 1.5rem;">
-            <label for="course_id" style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #333;">
-                Select Course:
-            </label>
-            <select name="course_id" id="course_id" required
-                    style="width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem; background: white;"
-                    onchange="filterSections()">
+    <div class="info-box">
+        <h3>🎯 Database Triggers in Action</h3>
+        <p style="margin-bottom: 1rem;">This form demonstrates <strong>3 database triggers</strong> that automatically enforce business rules:</p>
+        <ul class="trigger-list">
+            <li>
+                <strong>1. prereq_check:</strong> Validates that all prerequisite courses have been completed with passing grades before allowing enrollment
+            </li>
+            <li>
+                <strong>2. section_capacity_check:</strong> Prevents enrollment when the section has reached maximum capacity
+            </li>
+            <li>
+                <strong>3. student_already_completed_check:</strong> Blocks re-enrollment in courses that have already been completed
+            </li>
+        </ul>
+        <div style="margin-top: 1rem; padding: 0.75rem; background: #FFF9E6; border-left: 4px solid #FFCD00; border-radius: 4px;">
+            <strong>💡 Demo Tip:</strong> Try enrolling in different courses to see these triggers validate your enrollment!
+            The system will automatically check prerequisites, capacity, and completion status.
+        </div>
+    </div>
+
+    <form method="POST" class="enrollment-form">
+        {% if student %}
+        <div style="background: #e3f2fd; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 4px solid #1976d2;">
+            <strong>Enrolling as:</strong> {{ student.name }} (ID: {{ student.studentId }}, Year: {{ student.year }})
+        </div>
+        {% endif %}
+
+        <div class="form-group">
+            <label for="course_id">Select Course:</label>
+            <select name="course_id" id="course_id" required onchange="filterSections()">
                 <option value="">-- Choose a course --</option>
                 {% for course in courses %}
-                    <option value="{{ course.courseId }}"
-                            data-title="{{ course.title }}"
-                            data-credits="{{ course.credits }}">
+                    <option value="{{ course.courseId }}">
                         {{ course.courseId }} - {{ course.title }} ({{ course.credits }} credits)
                     </option>
                 {% endfor %}
             </select>
-            <small style="color: #666; display: block; margin-top: 0.25rem;">Select the course you want to enroll in</small>
+            <small>Select the course you want to enroll in</small>
         </div>
 
-        <div style="margin-bottom: 1.5rem;">
-            <label for="section_no" style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #333;">
-                Select Section:
-            </label>
-            <select name="section_no" id="section_no" required
-                    style="width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem; background: white;">
+        <div class="form-group">
+            <label for="section_no">Select Section:</label>
+            <select name="section_no" id="section_no" required>
                 <option value="">-- First select a course --</option>
                 {% for section in sections %}
                     <option value="{{ section.sectionNo }}"
                             data-course="{{ section.courseId }}"
                             data-capacity="{{ section.capacity }}"
+                            data-title="{{ section.title }}"
                             style="display: none;">
-                        Section {{ section.sectionNo }} (Capacity: {{ section.capacity }} students)
+                        Section {{ section.sectionNo }} - {{ section.title }} (Capacity: {{ section.capacity }} students)
                     </option>
                 {% endfor %}
             </select>
-            <small style="color: #666; display: block; margin-top: 0.25rem;">Choose a section with available capacity</small>
+            <small>Choose a section (capacity will be validated by triggers)</small>
         </div>
 
         <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-            <button type="submit"
-                    style="flex: 1; padding: 0.875rem 2rem; background: #FFCD00; color: #000; border: none; border-radius: 5px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s;">
-                Enroll in Course
+            <button type="submit" class="btn-submit">
+                ✓ Enroll in Course
             </button>
-            <a href="{{ url_for('student.view_courses') }}"
-               style="flex: 1; padding: 0.875rem 2rem; background: #000; color: #FFCD00; text-align: center; text-decoration: none; border-radius: 5px; font-size: 1rem; font-weight: 600; display: block; transition: all 0.3s;">
-                Cancel
+            <a href="{{ url_for('student.courses') }}" class="btn-cancel">
+                ✗ Cancel
             </a>
         </div>
     </form>
+
+    <div style="margin-top: 2rem; padding: 1rem; background: #e3f2fd; border-radius: 8px; border-left: 4px solid #1976d2;">
+        <h4 style="margin-top: 0;">ℹ️ How It Works</h4>
+        <ol style="margin-left: 1.5rem; line-height: 1.8;">
+            <li>The <code>update_open_seats</code> stored procedure is called to update available capacity</li>
+            <li>An INSERT statement adds the enrollment record to the <code>enrolls_in</code> table</li>
+            <li>Three triggers fire automatically to validate prerequisites, capacity, and completion status</li>
+            <li>If any validation fails, the enrollment is rejected with a descriptive error message</li>
+        </ol>
+    </div>
 </div>
 
 <script>
+// Store all sections data on page load
+let allSectionsData = [];
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Capture all section options before any filtering
+    const sectionOptions = document.querySelectorAll('#section_no option[data-course]');
+    sectionOptions.forEach(option => {
+        allSectionsData.push({
+            value: option.value,
+            courseId: option.dataset.course,
+            capacity: option.dataset.capacity,
+            title: option.dataset.title,
+            text: option.textContent
+        });
+    });
+});
+
 function filterSections() {
     const courseSelect = document.getElementById('course_id');
     const sectionSelect = document.getElementById('section_no');
@@ -99,42 +272,23 @@ function filterSections() {
         return;
     }
 
-    // Show only sections for the selected course
-    const allOptions = document.querySelectorAll('#section_no option[data-course]');
-    allOptions.forEach(option => {
-        if (option.dataset.course === selectedCourse) {
-            const newOption = option.cloneNode(true);
-            newOption.style.display = 'block';
+    // Filter sections from stored data
+    let sectionsAdded = 0;
+    allSectionsData.forEach(sectionData => {
+        if (sectionData.courseId === selectedCourse) {
+            const newOption = document.createElement('option');
+            newOption.value = sectionData.value;
+            newOption.textContent = sectionData.text;
+            newOption.dataset.course = sectionData.courseId;
+            newOption.dataset.capacity = sectionData.capacity;
             sectionSelect.appendChild(newOption);
+            sectionsAdded++;
         }
     });
+
+    if (sectionsAdded === 0) {
+        sectionSelect.innerHTML = '<option value="">-- No sections available for this course --</option>';
+    }
 }
-
-// Hover effects
-document.querySelectorAll('button[type="submit"]').forEach(btn => {
-    btn.addEventListener('mouseenter', function() {
-        this.style.background = '#E6B800';
-        this.style.transform = 'translateY(-2px)';
-        this.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
-    });
-    btn.addEventListener('mouseleave', function() {
-        this.style.background = '#FFCD00';
-        this.style.transform = 'translateY(0)';
-        this.style.boxShadow = 'none';
-    });
-});
-
-document.querySelectorAll('a[href*="cancel"]').forEach(link => {
-    link.addEventListener('mouseenter', function() {
-        this.style.background = '#333';
-        this.style.transform = 'translateY(-2px)';
-        this.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
-    });
-    link.addEventListener('mouseleave', function() {
-        this.style.background = '#000';
-        this.style.transform = 'translateY(0)';
-        this.style.boxShadow = 'none';
-    });
-});
 </script>
 {% endblock %}

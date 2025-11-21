@@ -5,93 +5,89 @@
 {% block content %}
 <div style="margin-bottom: 2rem;">
     <h1 style="color: #000; margin-bottom: 0.5rem;">Student Portal</h1>
-    <p style="color: #666; font-size: 1.1rem;">Welcome! Use the navigation cards below to get started.</p>
+    <p style="color: #666; font-size: 1.1rem;">Welcome! Use the navigation below to manage your courses and view your academic progress.</p>
 </div>
 
 <div class="dashboard" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
     <!-- Browse Courses Card -->
-    <div class="portal-card">
+    <div class="portal-card" style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
         <h2 style="color: #000; margin-bottom: 1rem;">📚 Browse Courses</h2>
         <p style="color: #666; margin-bottom: 1.5rem;">
-            View all available courses with their sections, departments, and details.
+            View all available course sections with capacity and credit information.
         </p>
-        <a href="{{ url_for('student.view_courses') }}" class="btn btn-primary">View Course Catalog</a>
+        <div style="margin-bottom: 1rem; padding: 0.5rem; background: #f5f5f5; border-radius: 5px; font-size: 0.85rem;">
+            <strong>SQL Concepts:</strong> JOIN
+        </div>
+        <a href="{{ url_for('student.courses') }}" class="btn btn-primary" style="display: inline-block; padding: 0.75rem 1.5rem; background: #FFCD00; color: #000; text-decoration: none; border-radius: 5px; font-weight: 600;">View Course Catalog</a>
     </div>
 
     <!-- Enroll in Course Card -->
-    <div class="portal-card">
+    <div class="portal-card" style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
         <h2 style="color: #000; margin-bottom: 1rem;">✏️ Enroll in Course</h2>
         <p style="color: #666; margin-bottom: 1.5rem;">
-            Enroll in a course section. System validates prerequisites, capacity, and more!
+            Enroll in a course section with automatic validation of prerequisites and capacity.
         </p>
-        <a href="{{ url_for('student.enroll') }}" class="btn btn-primary">Enroll Now</a>
+        <div style="margin-bottom: 1rem; padding: 0.5rem; background: #f5f5f5; border-radius: 5px; font-size: 0.85rem;">
+            <strong>SQL Concepts:</strong> INSERT, TRIGGERS, PROCEDURE
+        </div>
+        <a href="{{ url_for('student.enroll') }}" class="btn btn-primary" style="display: inline-block; padding: 0.75rem 1.5rem; background: #FFCD00; color: #000; text-decoration: none; border-radius: 5px; font-weight: 600;">Enroll Now</a>
     </div>
 
-    <!-- My Courses Card -->
-    <div class="portal-card">
-        <h2 style="color: #000; margin-bottom: 1rem;">🎓 My Courses</h2>
+    <!-- My GPA Card -->
+    <div class="portal-card" style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+        <h2 style="color: #000; margin-bottom: 1rem;">📊 My GPA</h2>
         <p style="color: #666; margin-bottom: 1.5rem;">
-            View your enrolled and completed courses, grades, and academic progress.
+            View your weighted GPA and completed courses with detailed grade breakdown.
         </p>
-        <a href="{{ url_for('student.my_courses') }}" class="btn btn-primary">View My Courses</a>
+        <div style="margin-bottom: 1rem; padding: 0.5rem; background: #f5f5f5; border-radius: 5px; font-size: 0.85rem;">
+            <strong>SQL Concepts:</strong> JOIN, AGGREGATION, GROUP BY
+        </div>
+        <a href="{{ url_for('student.gpa') }}" class="btn btn-primary" style="display: inline-block; padding: 0.75rem 1.5rem; background: #FFCD00; color: #000; text-decoration: none; border-radius: 5px; font-weight: 600;">View My GPA</a>
     </div>
 </div>
 
-<div class="info-box">
-    <h3 style="color: #FFCD00; background: #000; padding: 0.5rem 1rem; margin: -1.5rem -1.5rem 1rem -1.5rem; border-radius: 8px 8px 0 0;">
+<div class="info-box" style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+    <h3 style="color: #FFCD00; background: #000; padding: 0.5rem 1rem; margin: -2rem -2rem 1rem -2rem; border-radius: 10px 10px 0 0;">
         ℹ️ About the Student Portal
     </h3>
     <p style="margin-bottom: 1rem;">
         Welcome to the Course Tracker student portal. Here you can:
     </p>
     <ul style="margin-left: 2rem; line-height: 1.8;">
-        <li>Browse available courses and sections across all departments</li>
-        <li>Enroll in course sections with automatic validation</li>
-        <li>View your current and completed courses</li>
-        <li>Check your grades and academic progress</li>
+        <li><strong>Browse Courses:</strong> View all available course sections with JOIN queries across Course and Section tables</li>
+        <li><strong>Enroll in Courses:</strong> Register for courses with automatic validation using database triggers and stored procedures</li>
+        <li><strong>View Your GPA:</strong> See your weighted GPA calculated using aggregation functions and joins</li>
     </ul>
+    <p style="margin-top: 1.5rem; padding: 1rem; background: #FFF9E6; border-left: 4px solid #FFCD00; border-radius: 4px;">
+        <strong>💡 Note:</strong> All pages demonstrate SQL concepts required for the CS:4400 Database Systems project.
+    </p>
 </div>
 
 <style>
-    .dashboard {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
-    }
-
-    .dashboard-section {
-        background: white;
-        padding: 2rem;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    .dashboard-section h2 {
-        color: #000;
-        margin-bottom: 1rem;
-    }
-
-    .link-list {
-        list-style: none;
-    }
-
-    .link-list li {
-        margin: 1rem 0;
-    }
-
-    .link-list a {
-        display: block;
-        padding: 0.75rem 1rem;
-        background-color: #FFCD00;
+    .btn-primary {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        background: #FFCD00;
         color: #000;
         text-decoration: none;
         border-radius: 5px;
-        transition: background-color 0.3s;
         font-weight: 600;
+        transition: all 0.3s;
     }
 
-    .link-list a:hover {
-        background-color: #E6B800;
+    .btn-primary:hover {
+        background: #E6B800;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .portal-card {
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .portal-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
     }
 </style>
 {% endblock %}

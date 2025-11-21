@@ -24,9 +24,9 @@
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li><a href="{{ url_for('student.index') }}">Dashboard</a></li>
-                                    <li><a href="{{ url_for('student.view_courses') }}">Browse Courses</a></li>
+                                    <li><a href="{{ url_for('student.courses') }}">Browse Courses</a></li>
                                     <li><a href="{{ url_for('student.enroll') }}">Enroll in Course</a></li>
-                                    <li><a href="{{ url_for('student.my_courses') }}">My Courses</a></li>
+                                    <li><a href="{{ url_for('student.gpa') }}">My GPA</a></li>
                                 </ul>
                             </li>
                         {% endif %}
@@ -38,16 +38,8 @@
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li><a href="{{ url_for('admin.index') }}">Dashboard</a></li>
-                                    <li><a href="{{ url_for('admin.view_students') }}">Students</a></li>
-                                    <li><a href="{{ url_for('admin.manage_courses') }}">Courses</a></li>
-                                    <li><a href="{{ url_for('admin.statistics') }}">Statistics</a></li>
-                                    <li style="border-top: 1px solid #333; margin-top: 0.5rem; padding-top: 0.5rem;">
-                                        <a href="{{ url_for('admin.current_enrollments') }}">Current Enrollments (View)</a>
-                                    </li>
-                                    <li><a href="{{ url_for('admin.completed_courses') }}">Completed Courses (View)</a></li>
-                                    <li style="border-top: 1px solid #333; margin-top: 0.5rem; padding-top: 0.5rem;">
-                                        <a href="{{ url_for('admin.queries') }}">SQL Queries Showcase</a>
-                                    </li>
+                                    <li><a href="{{ url_for('admin.salary_report') }}">Salary Report</a></li>
+                                    <li><a href="{{ url_for('admin.analytics') }}">Grade Analytics</a></li>
                                 </ul>
                             </li>
                         {% endif %}

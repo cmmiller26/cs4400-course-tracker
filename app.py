@@ -36,20 +36,3 @@ def create_app():
         return render_template('500.html'), 500
 
     return app
-
-if __name__ == '__main__':
-    app = create_app()
-    
-    # Test database connection on startup
-    print("\n" + "="*50)
-    print("Testing database connection...")
-    print("="*50)
-    from utils.db_connection import test_connection
-    if test_connection():
-        print("Database connection successful!")
-    else:
-        print("WARNING: Database connection failed!")
-    print("="*50 + "\n")
-    
-    # Run the app
-    app.run(debug=True, host='0.0.0.0', port=5001)

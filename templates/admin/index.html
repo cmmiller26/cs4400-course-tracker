@@ -5,134 +5,79 @@
 {% block content %}
 <div style="margin-bottom: 2rem;">
     <h1 style="color: #000; margin-bottom: 0.5rem;">Admin Portal</h1>
-    <p style="color: #666; font-size: 1.1rem;">Administrative dashboard for managing students, courses, and viewing reports.</p>
+    <p style="color: #666; font-size: 1.1rem;">Administrative dashboard for viewing salary reports and grade analytics.</p>
 </div>
 
 <div style="margin-bottom: 2rem;">
-    <h2 style="color: #000; border-bottom: 2px solid #FFCD00; padding-bottom: 0.5rem; margin-bottom: 1rem;">📊 Data Management</h2>
+    <h2 style="color: #000; border-bottom: 2px solid #FFCD00; padding-bottom: 0.5rem; margin-bottom: 1rem;">📊 SQL Query Demonstrations</h2>
     <div class="dashboard" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
-        <!-- Students Card -->
-        <div class="portal-card">
-            <h3 style="color: #000; margin-bottom: 0.75rem;">👥 Students</h3>
+        <!-- Salary Report Card -->
+        <div class="portal-card" style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+            <h3 style="color: #000; margin-bottom: 0.75rem;">💰 Salary Report</h3>
             <p style="color: #666; margin-bottom: 1.25rem; font-size: 0.95rem;">
-                View all students with their majors and advisors.
+                Employee salary analysis with subqueries and stored functions for department averages.
             </p>
-            <a href="{{ url_for('admin.view_students') }}" class="btn btn-secondary">View Students</a>
+            <div style="margin-bottom: 1rem; padding: 0.5rem; background: #f5f5f5; border-radius: 5px; font-size: 0.85rem;">
+                <strong>SQL Concepts:</strong> SUBQUERY, AGGREGATION, FUNCTION
+            </div>
+            <a href="{{ url_for('admin.salary_report') }}" class="btn btn-primary" style="display: inline-block; padding: 0.75rem 1.5rem; background: #FFCD00; color: #000; text-decoration: none; border-radius: 5px; font-weight: 600;">View Report</a>
         </div>
 
-        <!-- Courses Card -->
-        <div class="portal-card">
-            <h3 style="color: #000; margin-bottom: 0.75rem;">📚 Courses</h3>
+        <!-- Grade Analytics Card -->
+        <div class="portal-card" style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+            <h3 style="color: #000; margin-bottom: 0.75rem;">📈 Grade Analytics</h3>
             <p style="color: #666; margin-bottom: 1.25rem; font-size: 0.95rem;">
-                Manage all courses and their assigned professors.
+                Course and professor performance analysis using aggregation and both database views (current enrollments & completed courses).
             </p>
-            <a href="{{ url_for('admin.manage_courses') }}" class="btn btn-secondary">Manage Courses</a>
-        </div>
-
-        <!-- Statistics Card -->
-        <div class="portal-card">
-            <h3 style="color: #000; margin-bottom: 0.75rem;">📈 Statistics</h3>
-            <p style="color: #666; margin-bottom: 1.25rem; font-size: 0.95rem;">
-                View enrollment statistics by department.
-            </p>
-            <a href="{{ url_for('admin.statistics') }}" class="btn btn-secondary">View Statistics</a>
+            <div style="margin-bottom: 1rem; padding: 0.5rem; background: #f5f5f5; border-radius: 5px; font-size: 0.85rem;">
+                <strong>SQL Concepts:</strong> AGGREGATION, JOIN, 2 VIEWS
+            </div>
+            <a href="{{ url_for('admin.analytics') }}" class="btn btn-primary" style="display: inline-block; padding: 0.75rem 1.5rem; background: #FFCD00; color: #000; text-decoration: none; border-radius: 5px; font-weight: 600;">View Analytics</a>
         </div>
     </div>
 </div>
 
-<div style="margin-bottom: 2rem;">
-    <h2 style="color: #000; border-bottom: 2px solid #FFCD00; padding-bottom: 0.5rem; margin-bottom: 1rem;">🔍 Database Views</h2>
-    <div class="dashboard" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
-        <!-- Current Enrollments Card -->
-        <div class="portal-card">
-            <h3 style="color: #000; margin-bottom: 0.75rem;">✓ Current Enrollments</h3>
-            <p style="color: #666; margin-bottom: 1.25rem; font-size: 0.95rem;">
-                View all currently enrolled students (demonstrates database view).
-            </p>
-            <a href="{{ url_for('admin.current_enrollments') }}" class="btn btn-primary">View Enrollments</a>
-        </div>
-
-        <!-- Completed Courses Card -->
-        <div class="portal-card">
-            <h3 style="color: #000; margin-bottom: 0.75rem;">🎓 Completed Courses</h3>
-            <p style="color: #666; margin-bottom: 1.25rem; font-size: 0.95rem;">
-                View all completed courses with grades (demonstrates database view).
-            </p>
-            <a href="{{ url_for('admin.completed_courses') }}" class="btn btn-primary">View Completed</a>
-        </div>
-    </div>
-</div>
-
-<div style="margin-bottom: 2rem;">
-    <h2 style="color: #000; border-bottom: 2px solid #FFCD00; padding-bottom: 0.5rem; margin-bottom: 1rem;">💻 SQL Demonstrations</h2>
-    <div class="dashboard" style="display: grid; grid-template-columns: 1fr;">
-        <!-- Queries Showcase Card -->
-        <div class="portal-card" style="background: linear-gradient(135deg, #FFCD00 0%, #FFD633 100%);">
-            <h3 style="color: #000; margin-bottom: 0.75rem;">⚡ SQL Queries Showcase</h3>
-            <p style="color: #000; margin-bottom: 1.25rem; font-size: 0.95rem; font-weight: 500;">
-                View demonstrations of complex SQL queries including JOINs, aggregations, subqueries, and views.
-            </p>
-            <a href="{{ url_for('admin.queries') }}" class="btn" style="background: #000; color: #FFCD00; display: inline-block; padding: 0.75rem 1.5rem; text-decoration: none; border-radius: 5px; font-weight: 600;">View Queries</a>
-        </div>
-    </div>
-</div>
-
-<div class="info-box">
-    <h3 style="color: #FFCD00; background: #000; padding: 0.5rem 1rem; margin: -1.5rem -1.5rem 1rem -1.5rem; border-radius: 8px 8px 0 0;">
+<div class="info-box" style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+    <h3 style="color: #FFCD00; background: #000; padding: 0.5rem 1rem; margin: -2rem -2rem 1rem -2rem; border-radius: 10px 10px 0 0;">
         ℹ️ About the Admin Portal
     </h3>
     <p style="margin-bottom: 1rem;">
-        As an administrator, you can:
+        As an administrator, you have access to:
     </p>
     <ul style="margin-left: 2rem; line-height: 1.8;">
-        <li>View and manage student records with their majors and advisors</li>
-        <li>Manage courses, sections, and professor assignments</li>
-        <li>View enrollment statistics and reports with aggregations</li>
-        <li>Access database views for current enrollments and completed courses</li>
-        <li>Explore SQL query demonstrations for the project requirements</li>
+        <li><strong>Salary Report:</strong> Compare employee salaries to role averages using subqueries and call stored functions to calculate department averages</li>
+        <li><strong>Grade Analytics:</strong> Analyze average grades by course and professor using aggregation functions, and explore enrollment data through both database views (<code>current_student_enrollments</code> and <code>completed_student_courses</code>)</li>
     </ul>
+    <p style="margin-top: 1.5rem; padding: 1rem; background: #FFF9E6; border-left: 4px solid #FFCD00; border-radius: 4px;">
+        <strong>💡 Demo Note:</strong> These pages showcase the 5 required SQL queries for the CS:4400 project, demonstrating JOINs, aggregations, subqueries, triggers, stored procedures, functions, and views.
+    </p>
 </div>
 
 <style>
-    .dashboard {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
-    }
-
-    .dashboard-section {
-        background: white;
-        padding: 2rem;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    .dashboard-section h2 {
+    .btn-primary {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        background: #FFCD00;
         color: #000;
-        margin-bottom: 1rem;
-    }
-
-    .link-list {
-        list-style: none;
-    }
-
-    .link-list li {
-        margin: 1rem 0;
-    }
-
-    .link-list a {
-        display: block;
-        padding: 0.75rem 1rem;
-        background-color: #000;
-        color: #FFCD00;
         text-decoration: none;
         border-radius: 5px;
-        transition: background-color 0.3s;
         font-weight: 600;
+        transition: all 0.3s;
     }
 
-    .link-list a:hover {
-        background-color: #333;
+    .btn-primary:hover {
+        background: #E6B800;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .portal-card {
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .portal-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
     }
 </style>
 {% endblock %}
