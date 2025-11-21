@@ -1,92 +1,157 @@
-{% extends "base.html" %}
-
-{% block title %}Completed Courses - Course Tracker{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %}Completed Courses - Course Tracker{%
+endblock %} {% block content %}
 <div>
-    <div style="margin-bottom: 2rem;">
-        <h2 style="color: #000; margin-bottom: 0.5rem;">Completed Student Courses</h2>
-        <p style="color: #666; font-size: 1.1rem;">
-            This page displays data from the <code
-                style="background: #f4f4f4; padding: 0.2rem 0.5rem; border-radius: 3px; color: #000;">completed_student_courses</code>
-            view.
-        </p>
-    </div>
+  <div style="margin-bottom: 2rem">
+    <h2 style="color: #000; margin-bottom: 0.5rem">
+      Completed Student Courses
+    </h2>
+    <p style="color: #666; font-size: 1.1rem">
+      This page displays data from the
+      <code
+        style="
+          background: #f4f4f4;
+          padding: 0.2rem 0.5rem;
+          border-radius: 3px;
+          color: #000;
+        "
+        >completed_student_courses</code
+      >
+      view.
+    </p>
+  </div>
 
-    <div
-        style="background: #fff; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-        <h3
-            style="color: #FFCD00; background: #000; padding: 0.5rem 1rem; margin: -1.5rem -1.5rem 1rem -1.5rem; border-radius: 8px 8px 0 0;">
-            📊 Database View Demo
-        </h3>
-        <p style="margin-bottom: 1rem;">
-            This view combines data from multiple tables to show all completed courses with grades:
-        </p>
-        <ul style="margin-left: 2rem; line-height: 1.8;">
-            <li><strong>Student</strong> - Student information</li>
-            <li><strong>enrolls_in</strong> - Enrollment records (filtered by status = 'completed')</li>
-            <li><strong>Course</strong> - Course details</li>
-            <li><strong>Section</strong> - Section information</li>
-        </ul>
-        <p
-            style="margin-top: 1rem; padding: 0.75rem; background: #FFF9E6; border-left: 4px solid #FFCD00; border-radius: 4px;">
-            <strong>💡 SQL View:</strong> Views are particularly useful for filtering data based on specific conditions,
-            like showing only completed courses.
-        </p>
-    </div>
+  <div
+    style="
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    "
+  >
+    <h3
+      style="
+        color: #ffcd00;
+        background: #000;
+        padding: 0.5rem 1rem;
+        margin: -1.5rem -1.5rem 1rem -1.5rem;
+        border-radius: 8px 8px 0 0;
+      "
+    >
+      📊 Database View Demo
+    </h3>
+    <p style="margin-bottom: 1rem">
+      This view combines data from multiple tables to show all completed courses
+      with grades:
+    </p>
+    <ul style="margin-left: 2rem; line-height: 1.8">
+      <li><strong>Student</strong> - Student information</li>
+      <li>
+        <strong>enrolls_in</strong> - Enrollment records (filtered by status =
+        'completed')
+      </li>
+      <li><strong>Course</strong> - Course details</li>
+      <li><strong>Section</strong> - Section information</li>
+    </ul>
+    <p
+      style="
+        margin-top: 1rem;
+        padding: 0.75rem;
+        background: #fff9e6;
+        border-left: 4px solid #ffcd00;
+        border-radius: 4px;
+      "
+    >
+      <strong>💡 SQL View:</strong> Views are particularly useful for filtering
+      data based on specific conditions, like showing only completed courses.
+    </p>
+  </div>
 
-    {% if courses %}
-    <div style="background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-        <table class="data-table" style="margin: 0;">
-            <thead>
-                <tr>
-                    <th style="padding: 1rem;">Student ID</th>
-                    <th style="padding: 1rem;">Name</th>
-                    <th style="padding: 1rem;">Course</th>
-                    <th style="padding: 1rem;">Section</th>
-                    <th style="padding: 1rem;">Grade</th>
-                    <th style="padding: 1rem;">Credits</th>
-                    <th style="padding: 1rem;">Enrolled Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for course in courses %}
-                <tr>
-                    <td style="padding: 1rem;">{{ course.studentId }}</td>
-                    <td style="padding: 1rem;">{{ course.name }}</td>
-                    <td style="padding: 1rem;">{{ course.title }}</td>
-                    <td style="padding: 1rem; text-align: center;">{{ course.sectionNo }}</td>
-                    <td style="padding: 1rem; text-align: center;">
-                        {% if course.grade in ['A+', 'A', 'A-', 'B+', 'B'] %}
-                            <span style="color: #28a745; font-weight: 600;">{{ course.grade }}</span>
-                        {% elif course.grade in ['B-', 'C+', 'C'] %}
-                            <span style="color: #ffc107; font-weight: 600;">{{ course.grade }}</span>
-                        {% elif course.grade %}
-                            <span style="color: #dc3545; font-weight: 600;">{{ course.grade }}</span>
-                        {% else %}
-                            <span style="color: #666;">N/A</span>
-                        {% endif %}
-                    </td>
-                    <td style="padding: 1rem; text-align: center;">{{ course.credits }}</td>
-                    <td style="padding: 1rem;">{{ course.enrolledDate }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+  {% if courses %}
+  <div
+    style="
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    "
+  >
+    <table class="data-table" style="margin: 0">
+      <thead>
+        <tr>
+          <th style="padding: 1rem">Student ID</th>
+          <th style="padding: 1rem">Name</th>
+          <th style="padding: 1rem">Course</th>
+          <th style="padding: 1rem">Section</th>
+          <th style="padding: 1rem">Grade</th>
+          <th style="padding: 1rem">Credits</th>
+          <th style="padding: 1rem">Enrolled Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for course in courses %}
+        <tr>
+          <td style="padding: 1rem">{{ course.studentId }}</td>
+          <td style="padding: 1rem">{{ course.name }}</td>
+          <td style="padding: 1rem">{{ course.title }}</td>
+          <td style="padding: 1rem; text-align: center">
+            {{ course.sectionNo }}
+          </td>
+          <td style="padding: 1rem; text-align: center">
+            {% if course.grade in ['A+', 'A', 'A-', 'B+', 'B'] %}
+            <span style="color: #28a745; font-weight: 600"
+              >{{ course.grade }}</span
+            >
+            {% elif course.grade in ['B-', 'C+', 'C'] %}
+            <span style="color: #ffc107; font-weight: 600"
+              >{{ course.grade }}</span
+            >
+            {% elif course.grade %}
+            <span style="color: #dc3545; font-weight: 600"
+              >{{ course.grade }}</span
+            >
+            {% else %}
+            <span style="color: #666">N/A</span>
+            {% endif %}
+          </td>
+          <td style="padding: 1rem; text-align: center">
+            {{ course.credits }}
+          </td>
+          <td style="padding: 1rem">{{ course.enrolledDate }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 
-    <div style="margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 5px;">
-        <strong>📈 Total Records:</strong> {{ courses|length }} completed course(s)
-    </div>
-    {% else %}
-    <div
-        style="background: white; padding: 3rem; text-align: center; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-        <p style="color: #666; font-size: 1.2rem;">No completed courses found.</p>
-    </div>
-    {% endif %}
+  <div
+    style="
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #f8f9fa;
+      border-radius: 5px;
+    "
+  >
+    <strong>📈 Total Records:</strong> {{ courses|length }} completed course(s)
+  </div>
+  {% else %}
+  <div
+    style="
+      background: white;
+      padding: 3rem;
+      text-align: center;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    "
+  >
+    <p style="color: #666; font-size: 1.2rem">No completed courses found.</p>
+  </div>
+  {% endif %}
 
-    <div style="margin-top: 2rem;">
-        <a href="{{ url_for('admin.index') }}" class="btn btn-secondary">← Back to Admin Dashboard</a>
-    </div>
+  <div style="margin-top: 2rem">
+    <a href="{{ url_for('admin.index') }}" class="btn btn-secondary"
+      >← Back to Admin Dashboard</a
+    >
+  </div>
 </div>
 {% endblock %}

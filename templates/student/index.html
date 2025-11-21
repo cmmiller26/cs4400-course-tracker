@@ -1,93 +1,226 @@
-{% extends "base.html" %}
-
-{% block title %}Student Portal - Course Tracker{% endblock %}
-
-{% block content %}
-<div style="margin-bottom: 2rem;">
-    <h1 style="color: #000; margin-bottom: 0.5rem;">Student Portal</h1>
-    <p style="color: #666; font-size: 1.1rem;">Welcome! Use the navigation below to manage your courses and view your academic progress.</p>
+{% extends "base.html" %} {% block title %}Student Portal - Course Tracker{%
+endblock %} {% block content %}
+<div style="margin-bottom: 2rem">
+  <h1 style="color: #000; margin-bottom: 0.5rem">Student Portal</h1>
+  <p style="color: #666; font-size: 1.1rem">
+    Welcome! Use the navigation below to manage your courses and view your
+    academic progress.
+  </p>
 </div>
 
-<div class="dashboard" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
-    <!-- Browse Courses Card -->
-    <div class="portal-card" style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-        <h2 style="color: #000; margin-bottom: 1rem;">📚 Browse Courses</h2>
-        <p style="color: #666; margin-bottom: 1.5rem;">
-            View all available course sections with capacity and credit information.
-        </p>
-        <div style="margin-bottom: 1rem; padding: 0.5rem; background: #f5f5f5; border-radius: 5px; font-size: 0.85rem;">
-            <strong>SQL Concepts:</strong> JOIN
-        </div>
-        <a href="{{ url_for('student.courses') }}" class="btn btn-primary" style="display: inline-block; padding: 0.75rem 1.5rem; background: #FFCD00; color: #000; text-decoration: none; border-radius: 5px; font-weight: 600;">View Course Catalog</a>
-    </div>
-
-    <!-- Enroll in Course Card -->
-    <div class="portal-card" style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-        <h2 style="color: #000; margin-bottom: 1rem;">✏️ Enroll in Course</h2>
-        <p style="color: #666; margin-bottom: 1.5rem;">
-            Enroll in a course section with automatic validation of prerequisites and capacity.
-        </p>
-        <div style="margin-bottom: 1rem; padding: 0.5rem; background: #f5f5f5; border-radius: 5px; font-size: 0.85rem;">
-            <strong>SQL Concepts:</strong> INSERT, TRIGGERS, PROCEDURE
-        </div>
-        <a href="{{ url_for('student.enroll') }}" class="btn btn-primary" style="display: inline-block; padding: 0.75rem 1.5rem; background: #FFCD00; color: #000; text-decoration: none; border-radius: 5px; font-weight: 600;">Enroll Now</a>
-    </div>
-
-    <!-- My GPA Card -->
-    <div class="portal-card" style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-        <h2 style="color: #000; margin-bottom: 1rem;">📊 My GPA</h2>
-        <p style="color: #666; margin-bottom: 1.5rem;">
-            View your weighted GPA and completed courses with detailed grade breakdown.
-        </p>
-        <div style="margin-bottom: 1rem; padding: 0.5rem; background: #f5f5f5; border-radius: 5px; font-size: 0.85rem;">
-            <strong>SQL Concepts:</strong> JOIN, AGGREGATION, GROUP BY
-        </div>
-        <a href="{{ url_for('student.gpa') }}" class="btn btn-primary" style="display: inline-block; padding: 0.75rem 1.5rem; background: #FFCD00; color: #000; text-decoration: none; border-radius: 5px; font-weight: 600;">View My GPA</a>
-    </div>
-</div>
-
-<div class="info-box" style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-    <h3 style="color: #FFCD00; background: #000; padding: 0.5rem 1rem; margin: -2rem -2rem 1rem -2rem; border-radius: 10px 10px 0 0;">
-        ℹ️ About the Student Portal
-    </h3>
-    <p style="margin-bottom: 1rem;">
-        Welcome to the Course Tracker student portal. Here you can:
+<div
+  class="dashboard"
+  style="
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+  "
+>
+  <!-- Browse Courses Card -->
+  <div
+    class="portal-card"
+    style="
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    "
+  >
+    <h2 style="color: #000; margin-bottom: 1rem">📚 Browse Courses</h2>
+    <p style="color: #666; margin-bottom: 1.5rem">
+      View all available course sections with capacity and credit information.
     </p>
-    <ul style="margin-left: 2rem; line-height: 1.8;">
-        <li><strong>Browse Courses:</strong> View all available course sections with JOIN queries across Course and Section tables</li>
-        <li><strong>Enroll in Courses:</strong> Register for courses with automatic validation using database triggers and stored procedures</li>
-        <li><strong>View Your GPA:</strong> See your weighted GPA calculated using aggregation functions and joins</li>
-    </ul>
-    <p style="margin-top: 1.5rem; padding: 1rem; background: #FFF9E6; border-left: 4px solid #FFCD00; border-radius: 4px;">
-        <strong>💡 Note:</strong> All pages demonstrate SQL concepts required for the CS:4400 Database Systems project.
-    </p>
-</div>
-
-<style>
-    .btn-primary {
+    <div
+      style="
+        margin-bottom: 1rem;
+        padding: 0.5rem;
+        background: #f5f5f5;
+        border-radius: 5px;
+        font-size: 0.85rem;
+      "
+    >
+      <strong>SQL Concepts:</strong> JOIN
+    </div>
+    <a
+      href="{{ url_for('student.courses') }}"
+      class="btn btn-primary"
+      style="
         display: inline-block;
         padding: 0.75rem 1.5rem;
-        background: #FFCD00;
+        background: #ffcd00;
         color: #000;
         text-decoration: none;
         border-radius: 5px;
         font-weight: 600;
-        transition: all 0.3s;
-    }
+      "
+      >View Course Catalog</a
+    >
+  </div>
 
-    .btn-primary:hover {
-        background: #E6B800;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
+  <!-- Enroll in Course Card -->
+  <div
+    class="portal-card"
+    style="
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    "
+  >
+    <h2 style="color: #000; margin-bottom: 1rem">✏️ Enroll in Course</h2>
+    <p style="color: #666; margin-bottom: 1.5rem">
+      Enroll in a course section with automatic validation of prerequisites and
+      capacity.
+    </p>
+    <div
+      style="
+        margin-bottom: 1rem;
+        padding: 0.5rem;
+        background: #f5f5f5;
+        border-radius: 5px;
+        font-size: 0.85rem;
+      "
+    >
+      <strong>SQL Concepts:</strong> INSERT, TRIGGERS, PROCEDURE
+    </div>
+    <a
+      href="{{ url_for('student.enroll') }}"
+      class="btn btn-primary"
+      style="
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        background: #ffcd00;
+        color: #000;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: 600;
+      "
+      >Enroll Now</a
+    >
+  </div>
 
-    .portal-card {
-        transition: transform 0.3s, box-shadow 0.3s;
-    }
+  <!-- My GPA Card -->
+  <div
+    class="portal-card"
+    style="
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    "
+  >
+    <h2 style="color: #000; margin-bottom: 1rem">📊 My GPA</h2>
+    <p style="color: #666; margin-bottom: 1.5rem">
+      View your weighted GPA and completed courses with detailed grade
+      breakdown.
+    </p>
+    <div
+      style="
+        margin-bottom: 1rem;
+        padding: 0.5rem;
+        background: #f5f5f5;
+        border-radius: 5px;
+        font-size: 0.85rem;
+      "
+    >
+      <strong>SQL Concepts:</strong> JOIN, AGGREGATION, GROUP BY
+    </div>
+    <a
+      href="{{ url_for('student.gpa') }}"
+      class="btn btn-primary"
+      style="
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        background: #ffcd00;
+        color: #000;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: 600;
+      "
+      >View My GPA</a
+    >
+  </div>
+</div>
 
-    .portal-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    }
+<div
+  class="info-box"
+  style="
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  "
+>
+  <h3
+    style="
+      color: #ffcd00;
+      background: #000;
+      padding: 0.5rem 1rem;
+      margin: -2rem -2rem 1rem -2rem;
+      border-radius: 10px 10px 0 0;
+    "
+  >
+    ℹ️ About the Student Portal
+  </h3>
+  <p style="margin-bottom: 1rem">
+    Welcome to the Course Tracker student portal. Here you can:
+  </p>
+  <ul style="margin-left: 2rem; line-height: 1.8">
+    <li>
+      <strong>Browse Courses:</strong> View all available course sections with
+      JOIN queries across Course and Section tables
+    </li>
+    <li>
+      <strong>Enroll in Courses:</strong> Register for courses with automatic
+      validation using database triggers and stored procedures
+    </li>
+    <li>
+      <strong>View Your GPA:</strong> See your weighted GPA calculated using
+      aggregation functions and joins
+    </li>
+  </ul>
+  <p
+    style="
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: #fff9e6;
+      border-left: 4px solid #ffcd00;
+      border-radius: 4px;
+    "
+  >
+    <strong>💡 Note:</strong> All pages demonstrate SQL concepts required for
+    the CS:4400 Database Systems project.
+  </p>
+</div>
+
+<style>
+  .btn-primary {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background: #ffcd00;
+    color: #000;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: 600;
+    transition: all 0.3s;
+  }
+
+  .btn-primary:hover {
+    background: #e6b800;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .portal-card {
+    transition:
+      transform 0.3s,
+      box-shadow 0.3s;
+  }
+
+  .portal-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
 </style>
 {% endblock %}

@@ -1,97 +1,112 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}Course Tracker{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
     {% block extra_css %}{% endblock %}
-</head>
+  </head>
 
-<body>
+  <body>
     <header>
-        <nav>
-            <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
-                <h1><a href="{{ url_for('index') }}">Course Tracker</a></h1>
-                <ul class="nav-links" style="display: flex; list-style: none; margin: 0; gap: 2rem; align-items: center;">
-                    {% if session.get('user_id') %}
-                        <!-- User is logged in - show portal links -->
-                        {% if session.get('role') == 'student' %}
-                            <li class="dropdown">
-                                <a href="{{ url_for('student.index') }}" style="color: white; text-decoration: none; font-weight: 500;">
-                                    Student Portal ▾
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="{{ url_for('student.index') }}">Dashboard</a></li>
-                                    <li><a href="{{ url_for('student.courses') }}">Browse Courses</a></li>
-                                    <li><a href="{{ url_for('student.enroll') }}">Enroll in Course</a></li>
-                                    <li><a href="{{ url_for('student.gpa') }}">My GPA</a></li>
-                                </ul>
-                            </li>
-                        {% endif %}
+      <nav>
+        <div
+          class="container"
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          "
+        >
+          <h1>
+            <a
+              href="{% if session.get('user_id') %}{% if session.get('role') == 'student' %}{{ url_for('student.index') }}{% else %}{{ url_for('admin.index') }}{% endif %}{% else %}{{ url_for('index') }}{% endif %}"
+            >
+              Course Tracker
+            </a>
+          </h1>
+          <ul
+            class="nav-links"
+            style="
+              display: flex;
+              list-style: none;
+              margin: 0;
+              gap: 2rem;
+              align-items: center;
+            "
+          >
+            {% if session.get('user_id') %}
+            <!-- User is logged in - show portal links -->
 
-                        {% if session.get('role') == 'admin' %}
-                            <li class="dropdown">
-                                <a href="{{ url_for('admin.index') }}" style="color: white; text-decoration: none; font-weight: 500;">
-                                    Admin Portal ▾
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="{{ url_for('admin.index') }}">Dashboard</a></li>
-                                    <li><a href="{{ url_for('admin.salary_report') }}">Salary Report</a></li>
-                                    <li><a href="{{ url_for('admin.analytics') }}">Grade Analytics</a></li>
-                                </ul>
-                            </li>
-                        {% endif %}
+            <!-- Logged in user info -->
+            <li style="color: white; font-weight: 500">
+              👤 {{ session.get('student_name') or session.get('username') }}
+            </li>
 
-                        <!-- Logged in user info -->
-                        <li style="color: white; font-weight: 500;">
-                            👤 {{ session.get('student_name') or session.get('username') }}
-                        </li>
-
-                        <!-- Logout link -->
-                        <li>
-                            <a href="{{ url_for('auth.logout') }}" style="color: white; text-decoration: none; font-weight: 500; padding: 0.5rem 1rem; background: rgba(255, 255, 255, 0.1); border-radius: 5px; transition: all 0.3s;">
-                                Logout
-                            </a>
-                        </li>
-                    {% else %}
-                        <!-- User is not logged in - show login link -->
-                        <li>
-                            <a href="{{ url_for('auth.login') }}" style="color: white; text-decoration: none; font-weight: 500; padding: 0.5rem 1.5rem; background: #FFCD00; color: #000; border-radius: 5px; transition: all 0.3s;">
-                                Login
-                            </a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
-        </nav>
+            <!-- Logout link -->
+            <li>
+              <a
+                href="{{ url_for('auth.logout') }}"
+                style="
+                  color: white;
+                  text-decoration: none;
+                  font-weight: 500;
+                  padding: 0.5rem 1rem;
+                  background: rgba(255, 255, 255, 0.1);
+                  border-radius: 5px;
+                  transition: all 0.3s;
+                "
+              >
+                Logout
+              </a>
+            </li>
+            {% else %}
+            <!-- User is not logged in - show login link -->
+            <li>
+              <a
+                href="{{ url_for('auth.login') }}"
+                style="
+                  color: white;
+                  text-decoration: none;
+                  font-weight: 500;
+                  padding: 0.5rem 1.5rem;
+                  background: #ffcd00;
+                  color: #000;
+                  border-radius: 5px;
+                  transition: all 0.3s;
+                "
+              >
+                Login
+              </a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </nav>
     </header>
 
     <main class="container">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        <div class="flash-messages">
-            {% for category, message in messages %}
-            <div class="alert alert-{{ category }}">
-                {{ message }}
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
-        {% endwith %}
-
-        {% block content %}{% endblock %}
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %}
+      <div class="flash-messages">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %} {% endwith %} {% block content %}{% endblock %}
     </main>
 
     <footer>
-        <div class="container">
-            <p>&copy; 2024 CS:4400 Database Systems - Course Tracker</p>
-            <p>Team: Colin Miller, Manthan Shah, Jack Janik</p>
-        </div>
+      <div class="container">
+        <p>&copy; 2024 CS:4400 Database Systems - Course Tracker</p>
+        <p>Team: Colin Miller, Manthan Shah, Jack Janik</p>
+      </div>
     </footer>
 
     {% block extra_js %}{% endblock %}
-</body>
-
+  </body>
 </html>

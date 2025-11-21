@@ -80,7 +80,7 @@ The application will run on `http://localhost:5001`
 3. Enter password: `student123`
 4. Click "Log In"
 5. **Expected**: Redirected to Student Portal with welcome message showing student name
-6. **Verify**: Can access all student routes (/student/*)
+6. **Verify**: Can access all student routes (/student/\*)
 7. **Verify**: Cannot access admin routes (redirected with error message)
 
 #### Test Admin Login
@@ -91,7 +91,7 @@ The application will run on `http://localhost:5001`
 4. Enter password: `admin123`
 5. Click "Log In"
 6. **Expected**: Redirected to Admin Portal with welcome message
-7. **Verify**: Can access all admin routes (/admin/*)
+7. **Verify**: Can access all admin routes (/admin/\*)
 8. **Verify**: Cannot access student routes (redirected with error message)
 
 ### 3. Test Protected Routes

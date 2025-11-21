@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, session, redirect, url_for
 from config import Config
 
 # Import blueprints
@@ -24,6 +24,12 @@ def create_app():
     # Home route
     @app.route('/')
     def index():
+        if 'user_id' in session:
+            role = session.get('role')
+            if role == 'student':
+                return redirect(url_for('student.index'))
+            elif role == 'admin':
+                return redirect(url_for('admin.index'))
         return render_template('index.html')
 
     # Error handlers

@@ -1,275 +1,336 @@
-{% extends "base.html" %}
-
-{% block title %}Salary Report - Admin Portal{% endblock %}
-
-{% block extra_css %}
+{% extends "base.html" %} {% block title %}Salary Report - Admin Portal{%
+endblock %} {% block extra_css %}
 <style>
-    .page-header {
-        background: linear-gradient(135deg, #000 0%, #333 100%);
-        color: #FFCD00;
-        padding: 2rem;
-        border-radius: 10px;
-        margin-bottom: 2rem;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
+  .page-header {
+    background: linear-gradient(135deg, #000 0%, #333 100%);
+    color: #ffcd00;
+    padding: 2rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
 
-    .page-header h1 {
-        margin: 0 0 0.5rem 0;
-        font-size: 2rem;
-    }
+  .page-header h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2rem;
+  }
 
-    .page-header p {
-        margin: 0;
-        opacity: 0.9;
-        font-size: 1rem;
-    }
+  .page-header p {
+    margin: 0;
+    opacity: 0.9;
+    font-size: 1rem;
+  }
 
-    .sql-badge {
-        display: inline-block;
-        background: #FFCD00;
-        color: #000;
-        padding: 0.3rem 0.8rem;
-        border-radius: 5px;
-        font-size: 0.85rem;
-        font-weight: bold;
-        margin-top: 0.5rem;
-        margin-right: 0.5rem;
-    }
+  .sql-badge {
+    display: inline-block;
+    background: #ffcd00;
+    color: #000;
+    padding: 0.3rem 0.8rem;
+    border-radius: 5px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-top: 0.5rem;
+    margin-right: 0.5rem;
+  }
 
-    .section-header {
-        background: #f5f5f5;
-        padding: 1rem 1.5rem;
-        border-radius: 8px;
-        margin: 2rem 0 1rem 0;
-        border-left: 4px solid #FFCD00;
-    }
+  .section-header {
+    background: #f5f5f5;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    margin: 2rem 0 1rem 0;
+    border-left: 4px solid #ffcd00;
+  }
 
-    .section-header h2 {
-        margin: 0;
-        color: #000;
-        font-size: 1.5rem;
-    }
+  .section-header h2 {
+    margin: 0;
+    color: #000;
+    font-size: 1.5rem;
+  }
 
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .data-table thead {
+    background: #000;
+    color: #ffcd00;
+  }
+
+  .data-table th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: bold;
+    border-bottom: 2px solid #ffcd00;
+  }
+
+  .data-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .data-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
+  .data-table tbody tr:hover {
+    background-color: #fff8e1;
+    transition: background-color 0.3s ease;
+  }
+
+  .salary-positive {
+    color: #4caf50;
+    font-weight: 600;
+  }
+
+  .salary-negative {
+    color: #f44336;
+    font-weight: 600;
+  }
+
+  .salary-neutral {
+    color: #666;
+    font-weight: 600;
+  }
+
+  .role-badge {
+    background: #e3f2fd;
+    color: #1976d2;
+    padding: 0.3rem 0.8rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: capitalize;
+  }
+
+  .employee-id {
+    font-family: monospace;
+    background: #f0f0f0;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    font-size: 0.9rem;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: #666;
+    background: white;
+    border-radius: 8px;
+  }
+
+  @media (max-width: 768px) {
     .data-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 1rem;
-        background: white;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
-        overflow: hidden;
+      font-size: 0.9rem;
     }
 
-    .data-table thead {
-        background: #000;
-        color: #FFCD00;
-    }
-
-    .data-table th {
-        padding: 1rem;
-        text-align: left;
-        font-weight: bold;
-        border-bottom: 2px solid #FFCD00;
-    }
-
+    .data-table th,
     .data-table td {
-        padding: 1rem;
-        border-bottom: 1px solid #e0e0e0;
+      padding: 0.75rem 0.5rem;
     }
-
-    .data-table tbody tr:nth-child(even) {
-        background-color: #f9f9f9;
-    }
-
-    .data-table tbody tr:hover {
-        background-color: #fff8e1;
-        transition: background-color 0.3s ease;
-    }
-
-    .salary-positive {
-        color: #4caf50;
-        font-weight: 600;
-    }
-
-    .salary-negative {
-        color: #f44336;
-        font-weight: 600;
-    }
-
-    .salary-neutral {
-        color: #666;
-        font-weight: 600;
-    }
-
-    .role-badge {
-        background: #e3f2fd;
-        color: #1976d2;
-        padding: 0.3rem 0.8rem;
-        border-radius: 12px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        text-transform: capitalize;
-    }
-
-    .employee-id {
-        font-family: monospace;
-        background: #f0f0f0;
-        padding: 0.2rem 0.5rem;
-        border-radius: 3px;
-        font-size: 0.9rem;
-    }
-
-    .empty-state {
-        text-align: center;
-        padding: 3rem;
-        color: #666;
-        background: white;
-        border-radius: 8px;
-    }
-
-    @media (max-width: 768px) {
-        .data-table {
-            font-size: 0.9rem;
-        }
-
-        .data-table th,
-        .data-table td {
-            padding: 0.75rem 0.5rem;
-        }
-    }
+  }
 </style>
-{% endblock %}
-
-{% block content %}
+{% endblock %} {% block content %}
 <div class="page-header">
-    <h1>💰 Employee Salary Analysis Report</h1>
-    <p>Comprehensive salary comparison using subqueries and stored functions</p>
-    <span class="sql-badge">SQL QUERY #4: SUBQUERY</span>
-    <span class="sql-badge">AGGREGATION</span>
-    <span class="sql-badge">FUNCTION</span>
+  <h1>💰 Employee Salary Analysis Report</h1>
+  <p>Comprehensive salary comparison using subqueries and stored functions</p>
+  <span class="sql-badge">SQL QUERY #4: SUBQUERY</span>
+  <span class="sql-badge">AGGREGATION</span>
+  <span class="sql-badge">FUNCTION</span>
 </div>
 
-<div class="query-description" style="background: #f5f5f5; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; border-left: 4px solid #000;">
-    <h3 style="margin-top: 0;">📊 Query Description</h3>
-    <p>
-        This report demonstrates multiple advanced SQL concepts:
-    </p>
-    <ul style="margin-left: 2rem;">
-        <li><strong>SUBQUERY:</strong> Calculates average salary per role using a nested SELECT with GROUP BY</li>
-        <li><strong>AGGREGATION:</strong> Uses AVG() function to compute role and department averages</li>
-        <li><strong>STORED FUNCTION:</strong> Calls <code>average_department_salary(deptId)</code> to calculate department averages</li>
-        <li><strong>JOIN:</strong> Joins Employee table with subquery results on role</li>
-    </ul>
+<div
+  class="query-description"
+  style="
+    background: #f5f5f5;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    border-left: 4px solid #000;
+  "
+>
+  <h3 style="margin-top: 0">📊 Query Description</h3>
+  <p>This report demonstrates multiple advanced SQL concepts:</p>
+  <ul style="margin-left: 2rem">
+    <li>
+      <strong>SUBQUERY:</strong> Calculates average salary per role using a
+      nested SELECT with GROUP BY
+    </li>
+    <li>
+      <strong>AGGREGATION:</strong> Uses AVG() function to compute role and
+      department averages
+    </li>
+    <li>
+      <strong>STORED FUNCTION:</strong> Calls
+      <code>average_department_salary(deptId)</code> to calculate department
+      averages
+    </li>
+    <li>
+      <strong>JOIN:</strong> Joins Employee table with subquery results on role
+    </li>
+  </ul>
 </div>
 
 <!-- Section 1: Employee Salary vs Role Average -->
 <div class="section-header">
-    <h2>📊 Part 1: Employee Salaries vs Role Average (SUBQUERY + AGGREGATION)</h2>
+  <h2>📊 Part 1: Employee Salaries vs Role Average (SUBQUERY + AGGREGATION)</h2>
 </div>
 
-<div style="margin-bottom: 1rem; padding: 1rem; background: #fff3cd; border-radius: 5px; border-left: 4px solid #ffc107;">
-    <strong>SQL Concept:</strong> This table uses a <strong>SUBQUERY</strong> to calculate the average salary for each role,
-    then <strong>JOINs</strong> that result with the Employee table to show how each employee's salary compares to their role average.
+<div
+  style="
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: #fff3cd;
+    border-radius: 5px;
+    border-left: 4px solid #ffc107;
+  "
+>
+  <strong>SQL Concept:</strong> This table uses a <strong>SUBQUERY</strong> to
+  calculate the average salary for each role, then <strong>JOINs</strong> that
+  result with the Employee table to show how each employee's salary compares to
+  their role average.
 </div>
 
 {% if employees %}
-    <div style="margin-bottom: 1rem; color: #666;">
-        <strong>{{ employees|length }}</strong> employees analyzed
-    </div>
+<div style="margin-bottom: 1rem; color: #666">
+  <strong>{{ employees|length }}</strong> employees analyzed
+</div>
 
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th>Employee ID</th>
-                <th>Name</th>
-                <th>Role</th>
-                <th>Salary</th>
-                <th>Role Average</th>
-                <th>Difference</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for emp in employees %}
-            <tr>
-                <td><span class="employee-id">{{ emp.employeeId }}</span></td>
-                <td style="font-weight: 600;">{{ emp.name }}</td>
-                <td><span class="role-badge">{{ emp.role }}</span></td>
-                <td>${{ "{:,.2f}".format(emp.salary) }}</td>
-                <td>${{ "{:,.2f}".format(emp.average_salary) }}</td>
-                <td>
-                    {% set diff = emp.difference %}
-                    {% if diff > 0 %}
-                        <span class="salary-positive">+${{ "{:,.2f}".format(diff) }}</span>
-                    {% elif diff < 0 %}
-                        <span class="salary-negative">-${{ "{:,.2f}".format(diff|abs) }}</span>
-                    {% else %}
-                        <span class="salary-neutral">$0.00</span>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Employee ID</th>
+      <th>Name</th>
+      <th>Role</th>
+      <th>Salary</th>
+      <th>Role Average</th>
+      <th>Difference</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for emp in employees %}
+    <tr>
+      <td><span class="employee-id">{{ emp.employeeId }}</span></td>
+      <td style="font-weight: 600">{{ emp.name }}</td>
+      <td><span class="role-badge">{{ emp.role }}</span></td>
+      <td>${{ "{:,.2f}".format(emp.salary) }}</td>
+      <td>${{ "{:,.2f}".format(emp.average_salary) }}</td>
+      <td>
+        {% set diff = emp.difference %} {% if diff > 0 %}
+        <span class="salary-positive">+${{ "{:,.2f}".format(diff) }}</span>
+        {% elif diff < 0 %}
+        <span class="salary-negative">-${{ "{:,.2f}".format(diff|abs) }}</span>
+        {% else %}
+        <span class="salary-neutral">$0.00</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% else %}
-    <div class="empty-state">
-        <h3>No Employee Data Available</h3>
-    </div>
+<div class="empty-state">
+  <h3>No Employee Data Available</h3>
+</div>
 {% endif %}
 
 <!-- Section 2: Department Average Salaries (Using Function) -->
 <div class="section-header">
-    <h2>🏢 Part 2: Department Average Salaries (STORED FUNCTION)</h2>
+  <h2>🏢 Part 2: Department Average Salaries (STORED FUNCTION)</h2>
 </div>
 
-<div style="margin-bottom: 1rem; padding: 1rem; background: #fff3cd; border-radius: 5px; border-left: 4px solid #ffc107;">
-    <strong>SQL Concept:</strong> This section demonstrates the use of a <strong>STORED FUNCTION</strong>
-    <code>average_department_salary(deptId)</code> which calculates the average salary for all employees
-    working in each department.
+<div
+  style="
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: #fff3cd;
+    border-radius: 5px;
+    border-left: 4px solid #ffc107;
+  "
+>
+  <strong>SQL Concept:</strong> This section demonstrates the use of a
+  <strong>STORED FUNCTION</strong>
+  <code>average_department_salary(deptId)</code> which calculates the average
+  salary for all employees working in each department.
 </div>
 
 {% if department_averages %}
-    <div style="margin-bottom: 1rem; color: #666;">
-        <strong>{{ department_averages|length }}</strong> departments analyzed
-    </div>
+<div style="margin-bottom: 1rem; color: #666">
+  <strong>{{ department_averages|length }}</strong> departments analyzed
+</div>
 
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th>Department ID</th>
-                <th>Department Name</th>
-                <th>Average Salary</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for dept in department_averages %}
-            <tr>
-                <td><span class="employee-id">{{ dept.deptId }}</span></td>
-                <td style="font-weight: 600;">{{ dept.name }}</td>
-                <td>
-                    {% if dept.average_salary %}
-                        ${{ "{:,.2f}".format(dept.average_salary) }}
-                    {% else %}
-                        <span style="color: #999;">No employees</span>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Department ID</th>
+      <th>Department Name</th>
+      <th>Average Salary</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for dept in department_averages %}
+    <tr>
+      <td><span class="employee-id">{{ dept.deptId }}</span></td>
+      <td style="font-weight: 600">{{ dept.name }}</td>
+      <td>
+        {% if dept.average_salary %} ${{ "{:,.2f}".format(dept.average_salary)
+        }} {% else %}
+        <span style="color: #999">No employees</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% else %}
-    <div class="empty-state">
-        <h3>No Department Data Available</h3>
-    </div>
+<div class="empty-state">
+  <h3>No Department Data Available</h3>
+</div>
 {% endif %}
 
-<div style="margin-top: 2rem; padding: 1rem; background: #e3f2fd; border-radius: 8px; border-left: 4px solid #1976d2;">
-    <h4 style="margin-top: 0;">ℹ️ Technical Details</h4>
-    <ul style="margin-left: 1.5rem; line-height: 1.8;">
-        <li><strong>Part 1</strong> uses a subquery: <code>SELECT role, AVG(salary) FROM Employee GROUP BY role</code></li>
-        <li><strong>Part 2</strong> calls function: <code>SELECT average_department_salary(deptId)</code></li>
-    </ul>
-    <p style="margin-top: 1rem; padding: 1rem; background: #FFF9E6; border-left: 4px solid #FFCD00; border-radius: 4px; margin-bottom: 0;">
-        <strong>💡 Note:</strong> Database views are demonstrated in the <a href="{{ url_for('admin.analytics') }}" style="color: #1976d2; font-weight: 600;">Grade Analytics</a> page, which shows both <code>current_student_enrollments</code> and <code>completed_student_courses</code> views.
-    </p>
+<div
+  style="
+    margin-top: 2rem;
+    padding: 1rem;
+    background: #e3f2fd;
+    border-radius: 8px;
+    border-left: 4px solid #1976d2;
+  "
+>
+  <h4 style="margin-top: 0">ℹ️ Technical Details</h4>
+  <ul style="margin-left: 1.5rem; line-height: 1.8">
+    <li>
+      <strong>Part 1</strong> uses a subquery:
+      <code>SELECT role, AVG(salary) FROM Employee GROUP BY role</code>
+    </li>
+    <li>
+      <strong>Part 2</strong> calls function:
+      <code>SELECT average_department_salary(deptId)</code>
+    </li>
+  </ul>
+  <p
+    style="
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #fff9e6;
+      border-left: 4px solid #ffcd00;
+      border-radius: 4px;
+      margin-bottom: 0;
+    "
+  >
+    <strong>💡 Note:</strong> Database views are demonstrated in the
+    <a
+      href="{{ url_for('admin.analytics') }}"
+      style="color: #1976d2; font-weight: 600"
+      >Grade Analytics</a
+    >
+    page, which shows both <code>current_student_enrollments</code> and
+    <code>completed_student_courses</code> views.
+  </p>
 </div>
 {% endblock %}

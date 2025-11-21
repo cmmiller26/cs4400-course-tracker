@@ -1,83 +1,193 @@
-{% extends "base.html" %}
-
-{% block title %}Admin Portal - Course Tracker{% endblock %}
-
-{% block content %}
-<div style="margin-bottom: 2rem;">
-    <h1 style="color: #000; margin-bottom: 0.5rem;">Admin Portal</h1>
-    <p style="color: #666; font-size: 1.1rem;">Administrative dashboard for viewing salary reports and grade analytics.</p>
+{% extends "base.html" %} {% block title %}Admin Portal - Course Tracker{%
+endblock %} {% block content %}
+<div style="margin-bottom: 2rem">
+  <h1 style="color: #000; margin-bottom: 0.5rem">Admin Portal</h1>
+  <p style="color: #666; font-size: 1.1rem">
+    Administrative dashboard for viewing salary reports and grade analytics.
+  </p>
 </div>
 
-<div style="margin-bottom: 2rem;">
-    <h2 style="color: #000; border-bottom: 2px solid #FFCD00; padding-bottom: 0.5rem; margin-bottom: 1rem;">📊 SQL Query Demonstrations</h2>
-    <div class="dashboard" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
-        <!-- Salary Report Card -->
-        <div class="portal-card" style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-            <h3 style="color: #000; margin-bottom: 0.75rem;">💰 Salary Report</h3>
-            <p style="color: #666; margin-bottom: 1.25rem; font-size: 0.95rem;">
-                Employee salary analysis with subqueries and stored functions for department averages.
-            </p>
-            <div style="margin-bottom: 1rem; padding: 0.5rem; background: #f5f5f5; border-radius: 5px; font-size: 0.85rem;">
-                <strong>SQL Concepts:</strong> SUBQUERY, AGGREGATION, FUNCTION
-            </div>
-            <a href="{{ url_for('admin.salary_report') }}" class="btn btn-primary" style="display: inline-block; padding: 0.75rem 1.5rem; background: #FFCD00; color: #000; text-decoration: none; border-radius: 5px; font-weight: 600;">View Report</a>
-        </div>
-
-        <!-- Grade Analytics Card -->
-        <div class="portal-card" style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-            <h3 style="color: #000; margin-bottom: 0.75rem;">📈 Grade Analytics</h3>
-            <p style="color: #666; margin-bottom: 1.25rem; font-size: 0.95rem;">
-                Course and professor performance analysis using aggregation and both database views (current enrollments & completed courses).
-            </p>
-            <div style="margin-bottom: 1rem; padding: 0.5rem; background: #f5f5f5; border-radius: 5px; font-size: 0.85rem;">
-                <strong>SQL Concepts:</strong> AGGREGATION, JOIN, 2 VIEWS
-            </div>
-            <a href="{{ url_for('admin.analytics') }}" class="btn btn-primary" style="display: inline-block; padding: 0.75rem 1.5rem; background: #FFCD00; color: #000; text-decoration: none; border-radius: 5px; font-weight: 600;">View Analytics</a>
-        </div>
+<div style="margin-bottom: 2rem">
+  <h2
+    style="
+      color: #000;
+      border-bottom: 2px solid #ffcd00;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    "
+  >
+    📊 SQL Query Demonstrations
+  </h2>
+  <div
+    class="dashboard"
+    style="
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    "
+  >
+    <!-- Salary Report Card -->
+    <div
+      class="portal-card"
+      style="
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      "
+    >
+      <h3 style="color: #000; margin-bottom: 0.75rem">💰 Salary Report</h3>
+      <p style="color: #666; margin-bottom: 1.25rem; font-size: 0.95rem">
+        Employee salary analysis with subqueries and stored functions for
+        department averages.
+      </p>
+      <div
+        style="
+          margin-bottom: 1rem;
+          padding: 0.5rem;
+          background: #f5f5f5;
+          border-radius: 5px;
+          font-size: 0.85rem;
+        "
+      >
+        <strong>SQL Concepts:</strong> SUBQUERY, AGGREGATION, FUNCTION
+      </div>
+      <a
+        href="{{ url_for('admin.salary_report') }}"
+        class="btn btn-primary"
+        style="
+          display: inline-block;
+          padding: 0.75rem 1.5rem;
+          background: #ffcd00;
+          color: #000;
+          text-decoration: none;
+          border-radius: 5px;
+          font-weight: 600;
+        "
+        >View Report</a
+      >
     </div>
+
+    <!-- Grade Analytics Card -->
+    <div
+      class="portal-card"
+      style="
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      "
+    >
+      <h3 style="color: #000; margin-bottom: 0.75rem">📈 Grade Analytics</h3>
+      <p style="color: #666; margin-bottom: 1.25rem; font-size: 0.95rem">
+        Course and professor performance analysis using aggregation and both
+        database views (current enrollments & completed courses).
+      </p>
+      <div
+        style="
+          margin-bottom: 1rem;
+          padding: 0.5rem;
+          background: #f5f5f5;
+          border-radius: 5px;
+          font-size: 0.85rem;
+        "
+      >
+        <strong>SQL Concepts:</strong> AGGREGATION, JOIN, 2 VIEWS
+      </div>
+      <a
+        href="{{ url_for('admin.analytics') }}"
+        class="btn btn-primary"
+        style="
+          display: inline-block;
+          padding: 0.75rem 1.5rem;
+          background: #ffcd00;
+          color: #000;
+          text-decoration: none;
+          border-radius: 5px;
+          font-weight: 600;
+        "
+        >View Analytics</a
+      >
+    </div>
+  </div>
 </div>
 
-<div class="info-box" style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-    <h3 style="color: #FFCD00; background: #000; padding: 0.5rem 1rem; margin: -2rem -2rem 1rem -2rem; border-radius: 10px 10px 0 0;">
-        ℹ️ About the Admin Portal
-    </h3>
-    <p style="margin-bottom: 1rem;">
-        As an administrator, you have access to:
-    </p>
-    <ul style="margin-left: 2rem; line-height: 1.8;">
-        <li><strong>Salary Report:</strong> Compare employee salaries to role averages using subqueries and call stored functions to calculate department averages</li>
-        <li><strong>Grade Analytics:</strong> Analyze average grades by course and professor using aggregation functions, and explore enrollment data through both database views (<code>current_student_enrollments</code> and <code>completed_student_courses</code>)</li>
-    </ul>
-    <p style="margin-top: 1.5rem; padding: 1rem; background: #FFF9E6; border-left: 4px solid #FFCD00; border-radius: 4px;">
-        <strong>💡 Demo Note:</strong> These pages showcase the 5 required SQL queries for the CS:4400 project, demonstrating JOINs, aggregations, subqueries, triggers, stored procedures, functions, and views.
-    </p>
+<div
+  class="info-box"
+  style="
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  "
+>
+  <h3
+    style="
+      color: #ffcd00;
+      background: #000;
+      padding: 0.5rem 1rem;
+      margin: -2rem -2rem 1rem -2rem;
+      border-radius: 10px 10px 0 0;
+    "
+  >
+    ℹ️ About the Admin Portal
+  </h3>
+  <p style="margin-bottom: 1rem">As an administrator, you have access to:</p>
+  <ul style="margin-left: 2rem; line-height: 1.8">
+    <li>
+      <strong>Salary Report:</strong> Compare employee salaries to role averages
+      using subqueries and call stored functions to calculate department
+      averages
+    </li>
+    <li>
+      <strong>Grade Analytics:</strong> Analyze average grades by course and
+      professor using aggregation functions, and explore enrollment data through
+      both database views (<code>current_student_enrollments</code> and
+      <code>completed_student_courses</code>)
+    </li>
+  </ul>
+  <p
+    style="
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: #fff9e6;
+      border-left: 4px solid #ffcd00;
+      border-radius: 4px;
+    "
+  >
+    <strong>💡 Demo Note:</strong> These pages showcase the 5 required SQL
+    queries for the CS:4400 project, demonstrating JOINs, aggregations,
+    subqueries, triggers, stored procedures, functions, and views.
+  </p>
 </div>
 
 <style>
-    .btn-primary {
-        display: inline-block;
-        padding: 0.75rem 1.5rem;
-        background: #FFCD00;
-        color: #000;
-        text-decoration: none;
-        border-radius: 5px;
-        font-weight: 600;
-        transition: all 0.3s;
-    }
+  .btn-primary {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background: #ffcd00;
+    color: #000;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: 600;
+    transition: all 0.3s;
+  }
 
-    .btn-primary:hover {
-        background: #E6B800;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
+  .btn-primary:hover {
+    background: #e6b800;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
 
-    .portal-card {
-        transition: transform 0.3s, box-shadow 0.3s;
-    }
+  .portal-card {
+    transition:
+      transform 0.3s,
+      box-shadow 0.3s;
+  }
 
-    .portal-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    }
+  .portal-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
 </style>
 {% endblock %}

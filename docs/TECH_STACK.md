@@ -176,13 +176,13 @@ This project uses Python with Flask for the web framework, MySQL for the databas
 
 ## Technology Decisions Summary
 
-| Technology | Version | Primary Reason |
-|-----------|---------|----------------|
-| Python | 3.11+ | Course requirement, team experience |
-| Flask | 3.0 | Lightweight, allows raw SQL |
-| MySQL | 8.0 | Course requirement, supports triggers/views |
-| mysql-connector-python | Latest | Official driver, no ORM |
-| Jinja2 | Built-in | Adequate templating, comes with Flask |
+| Technology             | Version  | Primary Reason                              |
+| ---------------------- | -------- | ------------------------------------------- |
+| Python                 | 3.11+    | Course requirement, team experience         |
+| Flask                  | 3.0      | Lightweight, allows raw SQL                 |
+| MySQL                  | 8.0      | Course requirement, supports triggers/views |
+| mysql-connector-python | Latest   | Official driver, no ORM                     |
+| Jinja2                 | Built-in | Adequate templating, comes with Flask       |
 
 ---
 

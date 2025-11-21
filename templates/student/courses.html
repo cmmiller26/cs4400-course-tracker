@@ -1,192 +1,220 @@
-{% extends "base.html" %}
-
-{% block title %}Browse Courses - Course Tracker{% endblock %}
-
-{% block extra_css %}
+{% extends "base.html" %} {% block title %}Browse Courses - Course Tracker{%
+endblock %} {% block extra_css %}
 <style>
-    .page-header {
-        background: linear-gradient(135deg, #FFCD00 0%, #FFB700 100%);
-        color: #000;
-        padding: 2rem;
-        border-radius: 10px;
-        margin-bottom: 2rem;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
+  .page-header {
+    background: linear-gradient(135deg, #ffcd00 0%, #ffb700 100%);
+    color: #000;
+    padding: 2rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
 
-    .page-header h1 {
-        margin: 0 0 0.5rem 0;
-        font-size: 2rem;
-    }
+  .page-header h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2rem;
+  }
 
-    .page-header p {
-        margin: 0;
-        opacity: 0.9;
-        font-size: 1rem;
-    }
+  .page-header p {
+    margin: 0;
+    opacity: 0.9;
+    font-size: 1rem;
+  }
 
-    .sql-badge {
-        display: inline-block;
-        background: #000;
-        color: #FFCD00;
-        padding: 0.3rem 0.8rem;
-        border-radius: 5px;
-        font-size: 0.85rem;
-        font-weight: bold;
-        margin-top: 0.5rem;
-    }
+  .sql-badge {
+    display: inline-block;
+    background: #000;
+    color: #ffcd00;
+    padding: 0.3rem 0.8rem;
+    border-radius: 5px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-top: 0.5rem;
+  }
 
+  .courses-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .courses-table thead {
+    background: #ffcd00;
+    color: #000;
+  }
+
+  .courses-table th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: bold;
+    border-bottom: 2px solid #000;
+  }
+
+  .courses-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .courses-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
+  .courses-table tbody tr:hover {
+    background-color: #fff8e1;
+    transition: background-color 0.3s ease;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: #666;
+  }
+
+  .empty-state svg {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+  }
+
+  .course-title {
+    font-weight: 600;
+    color: #000;
+  }
+
+  .course-id {
+    font-family: monospace;
+    background: #f0f0f0;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    font-size: 0.9rem;
+  }
+
+  .credits-badge {
+    background: #e3f2fd;
+    color: #1976d2;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .capacity-badge {
+    background: #e8f5e9;
+    color: #388e3c;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  @media (max-width: 768px) {
     .courses-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 1rem;
-        background: white;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
-        overflow: hidden;
+      font-size: 0.9rem;
     }
 
-    .courses-table thead {
-        background: #FFCD00;
-        color: #000;
-    }
-
-    .courses-table th {
-        padding: 1rem;
-        text-align: left;
-        font-weight: bold;
-        border-bottom: 2px solid #000;
-    }
-
+    .courses-table th,
     .courses-table td {
-        padding: 1rem;
-        border-bottom: 1px solid #e0e0e0;
+      padding: 0.75rem 0.5rem;
     }
-
-    .courses-table tbody tr:nth-child(even) {
-        background-color: #f9f9f9;
-    }
-
-    .courses-table tbody tr:hover {
-        background-color: #fff8e1;
-        transition: background-color 0.3s ease;
-    }
-
-    .empty-state {
-        text-align: center;
-        padding: 3rem;
-        color: #666;
-    }
-
-    .empty-state svg {
-        width: 64px;
-        height: 64px;
-        margin-bottom: 1rem;
-        opacity: 0.5;
-    }
-
-    .course-title {
-        font-weight: 600;
-        color: #000;
-    }
-
-    .course-id {
-        font-family: monospace;
-        background: #f0f0f0;
-        padding: 0.2rem 0.5rem;
-        border-radius: 3px;
-        font-size: 0.9rem;
-    }
-
-    .credits-badge {
-        background: #e3f2fd;
-        color: #1976d2;
-        padding: 0.2rem 0.6rem;
-        border-radius: 12px;
-        font-size: 0.85rem;
-        font-weight: 600;
-    }
-
-    .capacity-badge {
-        background: #e8f5e9;
-        color: #388e3c;
-        padding: 0.2rem 0.6rem;
-        border-radius: 12px;
-        font-size: 0.85rem;
-        font-weight: 600;
-    }
-
-    @media (max-width: 768px) {
-        .courses-table {
-            font-size: 0.9rem;
-        }
-
-        .courses-table th,
-        .courses-table td {
-            padding: 0.75rem 0.5rem;
-        }
-    }
+  }
 </style>
-{% endblock %}
-
-{% block content %}
+{% endblock %} {% block content %}
 <div class="page-header">
-    <h1>📚 Browse Available Courses</h1>
-    <p>View all available course sections with their capacity and credit hours</p>
-    <span class="sql-badge">SQL QUERY #1: JOIN</span>
+  <h1>📚 Browse Available Courses</h1>
+  <p>View all available course sections with their capacity and credit hours</p>
+  <span class="sql-badge">SQL QUERY #1: JOIN</span>
 </div>
 
-<div class="query-description" style="background: #f5f5f5; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; border-left: 4px solid #FFCD00;">
-    <h3 style="margin-top: 0;">📊 Query Description</h3>
-    <p style="margin-bottom: 0;">
-        This page displays all available course sections using a <strong>JOIN</strong> between the
-        <code>Section</code> and <code>Course</code> tables. The query retrieves course title,
-        course ID, section number, capacity, and credit hours, demonstrating basic relational
-        database operations.
-    </p>
+<div
+  class="query-description"
+  style="
+    background: #f5f5f5;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    border-left: 4px solid #ffcd00;
+  "
+>
+  <h3 style="margin-top: 0">📊 Query Description</h3>
+  <p style="margin-bottom: 0">
+    This page displays all available course sections using a
+    <strong>JOIN</strong> between the <code>Section</code> and
+    <code>Course</code> tables. The query retrieves course title, course ID,
+    section number, capacity, and credit hours, demonstrating basic relational
+    database operations.
+  </p>
 </div>
 
 {% if courses %}
-    <div style="margin-bottom: 1rem; color: #666;">
-        <strong>{{ courses|length }}</strong> course sections available
-    </div>
+<div style="margin-bottom: 1rem; color: #666">
+  <strong>{{ courses|length }}</strong> course sections available
+</div>
 
-    <table class="courses-table">
-        <thead>
-            <tr>
-                <th>Course Title</th>
-                <th>Course ID</th>
-                <th>Section</th>
-                <th>Capacity</th>
-                <th>Credits</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for course in courses %}
-            <tr>
-                <td class="course-title">{{ course.title }}</td>
-                <td><span class="course-id">{{ course.courseId }}</span></td>
-                <td>{{ course.sectionNo }}</td>
-                <td><span class="capacity-badge">{{ course.capacity }} seats</span></td>
-                <td><span class="credits-badge">{{ course.credits }} credits</span></td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<table class="courses-table">
+  <thead>
+    <tr>
+      <th>Course Title</th>
+      <th>Course ID</th>
+      <th>Section</th>
+      <th>Capacity</th>
+      <th>Credits</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for course in courses %}
+    <tr>
+      <td class="course-title">{{ course.title }}</td>
+      <td><span class="course-id">{{ course.courseId }}</span></td>
+      <td>{{ course.sectionNo }}</td>
+      <td><span class="capacity-badge">{{ course.capacity }} seats</span></td>
+      <td><span class="credits-badge">{{ course.credits }} credits</span></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% else %}
-    <div class="empty-state">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-        </svg>
-        <h3>No Courses Available</h3>
-        <p>There are currently no course sections in the system.</p>
-    </div>
+<div class="empty-state">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+    />
+  </svg>
+  <h3>No Courses Available</h3>
+  <p>There are currently no course sections in the system.</p>
+</div>
 {% endif %}
 
-<div style="margin-top: 2rem; padding: 1rem; background: #e3f2fd; border-radius: 8px; border-left: 4px solid #1976d2;">
-    <h4 style="margin-top: 0;">💡 Next Steps</h4>
-    <p style="margin-bottom: 0;">
-        Ready to enroll? Visit the <a href="{{ url_for('student.enroll') }}" style="color: #1976d2; font-weight: 600;">Enrollment Page</a>
-        to register for a course section.
-    </p>
+<div
+  style="
+    margin-top: 2rem;
+    padding: 1rem;
+    background: #e3f2fd;
+    border-radius: 8px;
+    border-left: 4px solid #1976d2;
+  "
+>
+  <h4 style="margin-top: 0">💡 Next Steps</h4>
+  <p style="margin-bottom: 0">
+    Ready to enroll? Visit the
+    <a
+      href="{{ url_for('student.enroll') }}"
+      style="color: #1976d2; font-weight: 600"
+      >Enrollment Page</a
+    >
+    to register for a course section.
+  </p>
 </div>
 {% endblock %}
