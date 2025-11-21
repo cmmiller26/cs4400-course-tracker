@@ -30,9 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const newOption = document.createElement("option");
         newOption.value = sectionData.sectionNo;
-        newOption.textContent = `Section ${sectionData.sectionNo} - ${
-          sectionData.title || ""
-        } (${openSeats} open seats)`;
+        newOption.textContent = `Section ${sectionData.sectionNo} (${openSeats} open seats)`;
         newOption.dataset.course = sectionData.courseId;
         newOption.dataset.capacity = sectionData.capacity;
         newOption.dataset.enrolled = sectionData.num_enrolled;

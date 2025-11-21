@@ -61,19 +61,6 @@ INSERT INTO app_users (username, password_hash, role, linked_id) VALUES (
     NULL
 );
 
--- Verify the data was inserted
-SELECT 
-    userId,
-    username,
-    role,
-    linked_id,
-    CASE 
-        WHEN role = 'student' THEN (SELECT name FROM Student WHERE studentId = linked_id)
-        ELSE 'N/A'
-    END AS linked_student_name
-FROM app_users
-ORDER BY role, username;
-
--- Display confirmation message
-SELECT 'Authentication table created successfully!' AS status,
-       'Two test accounts added: teststudent/student123 and testadmin/admin123' AS message;
+-- Verification queries removed for automated initialization
+-- To verify manually, run:
+-- SELECT userId, username, role, linked_id FROM app_users;
