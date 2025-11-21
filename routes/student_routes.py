@@ -16,33 +16,12 @@ def index():
         return redirect(url_for('auth.login'))
 
     try:
-        # Get current enrollments (enrolled status, not completed)
+        # Get current enrollments using the current_student_enrollments view
         current_enrollments_sql = """
-            SELECT
-                c.title,
-                c.courseId,
-                c.credits,
-                e.sectionNo,
-                (SELECT GROUP_CONCAT(cl2.code SEPARATOR ', ')
-                 FROM cross_lists cl2
-                 WHERE cl2.courseId = c.courseId) AS code,
-                -- Professor name
-                (SELECT prof_emp.name
-                 FROM teaches t
-                 JOIN Professor p ON t.employeeId = p.employeeId
-                 JOIN Employee prof_emp ON p.employeeId = prof_emp.employeeId
-                 WHERE t.courseId = c.courseId
-                 LIMIT 1) AS professor,
-                -- TA names
-                (SELECT GROUP_CONCAT(ta_emp.name SEPARATOR ', ')
-                 FROM assists a
-                 JOIN TA ta ON a.employeeId = ta.employeeId
-                 JOIN Employee ta_emp ON ta.employeeId = ta_emp.employeeId
-                 WHERE a.courseId = c.courseId AND a.sectionNo = e.sectionNo) AS tas
-            FROM enrolls_in e
-            JOIN Course c ON e.courseId = c.courseId
-            WHERE e.studentId = %s AND e.status = 'enrolled'
-            ORDER BY c.title ASC
+            SELECT title, courseId, credits, sectionNo, grade, code, professor, tas
+            FROM current_student_enrollments
+            WHERE studentId = %s
+            ORDER BY title ASC
         """
 
         current_enrollments = execute_query(current_enrollments_sql, (student_id,))
@@ -200,7 +179,7 @@ def enroll():
 
             # Step 1: Call stored procedure to update open seats
             # This demonstrates the use of stored procedures
-            proc_result = call_procedure('update_open_seats', (course_id, section_no))
+            call_procedure('update_open_seats', (course_id, section_no))
 
             # Step 2: Insert enrollment record for the logged-in student
             # This will trigger all 3 validation triggers (prereq, capacity, enrollment status)
@@ -329,30 +308,12 @@ def gpa():
 
         student_data = execute_query(sql, (student_id,), fetch_one=True)
 
-        # Get completed courses for detailed view
+        # Get completed courses using the completed_student_courses view
         completed_courses_sql = """
-            SELECT
-                c.courseId,
-                c.title,
-                c.credits,
-                e.sectionNo,
-                e.grade,
-                e.enrolledDate,
-                (SELECT GROUP_CONCAT(cl2.code SEPARATOR ', ')
-                 FROM cross_lists cl2
-                 WHERE cl2.courseId = c.courseId) AS code,
-                CASE e.grade
-                    WHEN 'A+' THEN 4.33 WHEN 'A' THEN 4.0 WHEN 'A-' THEN 3.67
-                    WHEN 'B+' THEN 3.33 WHEN 'B' THEN 3.0 WHEN 'B-' THEN 2.67
-                    WHEN 'C+' THEN 2.33 WHEN 'C' THEN 2.0 WHEN 'C-' THEN 1.67
-                    WHEN 'D+' THEN 1.33 WHEN 'D' THEN 1.0 WHEN 'D-' THEN 0.67
-                    WHEN 'F' THEN 0.0
-                    ELSE 0.0
-                END AS grade_points
-            FROM enrolls_in e
-            JOIN Course c ON e.courseId = c.courseId
-            WHERE e.studentId = %s AND e.status = 'completed' AND e.grade IS NOT NULL
-            ORDER BY e.enrolledDate DESC
+            SELECT courseId, title, credits, sectionNo, grade, enrolledDate, code, grade_points
+            FROM completed_student_courses
+            WHERE studentId = %s AND grade IS NOT NULL
+            ORDER BY enrolledDate DESC
         """
 
         completed_courses = execute_query(completed_courses_sql, (student_id,))

@@ -109,6 +109,7 @@ endblock %} {% block content %}
         <th style="padding: 1rem; text-align: left; font-weight: bold; border-bottom: 2px solid #000">Professor</th>
         <th style="padding: 1rem; text-align: left; font-weight: bold; border-bottom: 2px solid #000">TAs</th>
         <th style="padding: 1rem; text-align: left; font-weight: bold; border-bottom: 2px solid #000">Credits</th>
+        <th style="padding: 1rem; text-align: left; font-weight: bold; border-bottom: 2px solid #000">Grade</th>
         <th style="padding: 1rem; text-align: left; font-weight: bold; border-bottom: 2px solid #000">Actions</th>
       </tr>
     </thead>
@@ -145,6 +146,20 @@ endblock %} {% block content %}
             ">{{ enrollment.credits }} credits</span>
         </td>
         <td style="padding: 1rem">
+          {% if enrollment.grade %}
+          <span style="
+              background: #e8f5e9;
+              color: #2e7d32;
+              padding: 0.2rem 0.6rem;
+              border-radius: 12px;
+              font-size: 0.85rem;
+              font-weight: 600;
+            ">{{ enrollment.grade }}</span>
+          {% else %}
+          <span style="color: #999; font-style: italic;">--</span>
+          {% endif %}
+        </td>
+        <td style="padding: 1rem">
           <form method="POST" action="{{ url_for('student.drop_course', course_id=enrollment.courseId, section_no=enrollment.sectionNo) }}" style="display: inline">
             <button type="submit" class="btn-drop" onclick="return confirm('Are you sure you want to drop {{ enrollment.title }}?')">
               Drop Course
@@ -155,6 +170,20 @@ endblock %} {% block content %}
       {% endfor %}
     </tbody>
   </table>
+  <div style="
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: #e3f2fd;
+      border-radius: 8px;
+      border-left: 4px solid #1976d2;
+    ">
+    <h4 style="margin-top: 0">🗃️ Database View</h4>
+    <p style="margin-bottom: 0">
+      This table is populated using the <code style="background: #bbdefb; padding: 0.2rem 0.5rem; border-radius: 3px;">current_student_enrollments</code> database view,
+      which joins <code>Student</code>, <code>enrolls_in</code>, <code>Section</code>, and <code>Course</code> tables
+      to display your active enrollments with professor and TA information.
+    </p>
+  </div>
   {% else %}
   <div style="
       text-align: center;

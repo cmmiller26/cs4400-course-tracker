@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from utils.db_connection import execute_query, call_function
+from utils.db_connection import execute_query, execute_update, call_function, call_procedure
 from utils.auth import login_required
 
 admin_bp = Blueprint('admin', __name__)
@@ -7,8 +7,83 @@ admin_bp = Blueprint('admin', __name__)
 @admin_bp.route('/')
 @login_required(role='admin')
 def index():
-    """Admin dashboard/home page"""
-    return render_template('admin/index.html')
+    """Admin dashboard/home page with all current enrollments using database view"""
+    try:
+        # Get all current enrollments using the current_student_enrollments view
+        current_enrollments_sql = """
+            SELECT studentId, studentName, courseId, title, credits, sectionNo, grade, code, professor
+            FROM current_student_enrollments
+            ORDER BY studentName ASC, title ASC
+        """
+
+        current_enrollments = execute_query(current_enrollments_sql)
+
+        if current_enrollments is None:
+            current_enrollments = []
+
+        # Available grades for dropdown
+        grades = ['A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'F']
+
+        return render_template('admin/index.html',
+                             current_enrollments=current_enrollments,
+                             grades=grades)
+
+    except Exception as e:
+        flash('Error loading enrollments.', 'error')
+        print(f"Error in admin index route: {e}")
+        return render_template('admin/index.html',
+                             current_enrollments=[],
+                             grades=[])
+
+
+@admin_bp.route('/drop/<int:student_id>/<course_id>/<int:section_no>', methods=['POST'])
+@login_required(role='admin')
+def drop_enrollment(student_id, course_id, section_no):
+    """Admin drops a student from a course"""
+    try:
+        sql = """
+            DELETE FROM enrolls_in
+            WHERE studentId = %s AND courseId = %s AND sectionNo = %s AND status = 'enrolled'
+        """
+        execute_update(sql, (student_id, course_id, section_no))
+        call_procedure('update_open_seats', (course_id, section_no))
+        flash('Successfully dropped the student from the course.', 'success')
+    except Exception as e:
+        flash(f'Error dropping enrollment: {str(e)}', 'error')
+        print(f"Error in admin drop_enrollment route: {e}")
+
+    return redirect(url_for('admin.index'))
+
+
+@admin_bp.route('/update-grade/<int:student_id>/<course_id>/<int:section_no>', methods=['POST'])
+@login_required(role='admin')
+def update_grade(student_id, course_id, section_no):
+    """Admin updates a student's grade for a course"""
+    try:
+        new_grade = request.form.get('grade')
+
+        # Allow clearing grade by setting to NULL
+        if new_grade == '' or new_grade is None:
+            sql = """
+                UPDATE enrolls_in
+                SET grade = NULL
+                WHERE studentId = %s AND courseId = %s AND sectionNo = %s
+            """
+            execute_update(sql, (student_id, course_id, section_no))
+        else:
+            sql = """
+                UPDATE enrolls_in
+                SET grade = %s
+                WHERE studentId = %s AND courseId = %s AND sectionNo = %s
+            """
+            execute_update(sql, (new_grade, student_id, course_id, section_no))
+
+        flash('Grade updated successfully.', 'success')
+    except Exception as e:
+        flash(f'Error updating grade: {str(e)}', 'error')
+        print(f"Error in admin update_grade route: {e}")
+
+    return redirect(url_for('admin.index'))
 
 # ============================================================================
 # QUERY 4: Salary Analysis with Department Comparison

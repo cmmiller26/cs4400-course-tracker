@@ -271,8 +271,8 @@
       <tr>
         <th>Course</th>
         <th>Code</th>
-        <th>Grade</th>
         <th>Credits</th>
+        <th>Grade</th>
         <th>Completed Date</th>
       </tr>
     </thead>
@@ -291,32 +291,34 @@
             :{{ course.sectionNo }}
           </span>
         </td>
+        <td><span class="credits-badge">{{ course.credits }} credits</span></td>
         <td>
           <span class="grade-badge" style="background: #e3f2fd; color: #1976d2">{{ course.grade }}</span>
         </td>
-        <td><span class="credits-badge">{{ course.credits }} credits</span></td>
         <td>{{ course.enrolledDate }}</td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
   <div style="
-      margin-top: 1.5rem;
-      padding: 1rem;
-      background: #f5f5f5;
-      border-radius: 8px;
-      border-left: 4px solid #ffcd00;
-    ">
-    <h4 style="margin-top: 0">💡 Query Details</h4>
-    <p style="margin-bottom: 0; font-size: 0.9rem">
-      This completed courses table uses a query similar to the one in
-      <a href="{{ url_for('student.courses') }}" style="color: #1976d2; font-weight: 600">Browse Courses</a>,
-      featuring <strong>JOINs</strong> between <code>enrolls_in</code> and <code>Course</code> tables,
-      and <strong>subqueries</strong> to fetch cross-listed course codes. Additionally, it uses a
-      <strong>CASE</strong> statement to calculate grade points from letter grades.
+    margin-top: 2rem;
+    padding: 1rem;
+    background: #e3f2fd;
+    border-radius: 8px;
+    border-left: 4px solid #1976d2;
+  ">
+    <h4 style="margin-top: 0">🗃️ Database View</h4>
+    <p style="margin-bottom: 0">
+      This table is populated using the <code
+        style="background: #bbdefb; padding: 0.2rem 0.5rem; border-radius: 3px;">completed_student_courses</code>
+      database
+      view,
+      which joins <code>Student</code>, <code>enrolls_in</code>, <code>Section</code>, and <code>Course</code> tables
+      to display all completed courses with credits, grades, and completion dates.
     </p>
   </div>
 </div>
+
 {% endif %} {% else %}
 <div class="empty-state">
   <svg xmlns="http://www.w3.org/2000/svg" style="width: 64px; height: 64px; margin-bottom: 1rem; opacity: 0.5"

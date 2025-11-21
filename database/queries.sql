@@ -1,30 +1,3 @@
--- Select query for current enrollments
-SELECT
-	c.title,
-	c.courseId,
-	c.credits,
-	e.sectionNo,
-	(SELECT GROUP_CONCAT(cl2.code SEPARATOR ', ')
-		FROM cross_lists cl2
-		WHERE cl2.courseId = c.courseId) AS code,
-	-- Professor name
-	(SELECT prof_emp.name
-		FROM teaches t
-		JOIN Professor p ON t.employeeId = p.employeeId
-		JOIN Employee prof_emp ON p.employeeId = prof_emp.employeeId
-		WHERE t.courseId = c.courseId
-		LIMIT 1) AS professor,
-	-- TA names
-	(SELECT GROUP_CONCAT(ta_emp.name SEPARATOR ', ')
-		FROM assists a
-		JOIN TA ta ON a.employeeId = ta.employeeId
-		JOIN Employee ta_emp ON ta.employeeId = ta_emp.employeeId
-		WHERE a.courseId = c.courseId AND a.sectionNo = e.sectionNo) AS tas
-FROM enrolls_in e
-JOIN Course c ON e.courseId = c.courseId
-WHERE e.studentId = %s AND e.status = 'enrolled'
-ORDER BY c.title ASC;
-
 -- Select query to look for classes
 SELECT
 	c.title,
@@ -56,32 +29,6 @@ SELECT
 FROM Section s
 JOIN Course c ON c.courseId = s.courseId
 ORDER BY c.title ASC, s.sectionNo ASC;
-
--- Select query for completed courses
-SELECT
-	c.courseId,
-	c.title,
-	c.credits,
-	e.sectionNo,
-	e.grade,
-	e.enrolledDate,
-	-- Cross-listed codes
-	(SELECT GROUP_CONCAT(cl2.code SEPARATOR ', ')
-		FROM cross_lists cl2
-		WHERE cl2.courseId = c.courseId) AS code,
-	-- Grade points
-	CASE e.grade
-		WHEN 'A+' THEN 4.33 WHEN 'A' THEN 4.0 WHEN 'A-' THEN 3.67
-		WHEN 'B+' THEN 3.33 WHEN 'B' THEN 3.0 WHEN 'B-' THEN 2.67
-		WHEN 'C+' THEN 2.33 WHEN 'C' THEN 2.0 WHEN 'C-' THEN 1.67
-		WHEN 'D+' THEN 1.33 WHEN 'D' THEN 1.0 WHEN 'D-' THEN 0.67
-		WHEN 'F' THEN 0.0
-		ELSE 0.0
-	END AS grade_points
-FROM enrolls_in e
-JOIN Course c ON e.courseId = c.courseId
-WHERE e.studentId = %s AND e.status = 'completed' AND e.grade IS NOT NULL
-ORDER BY e.enrolledDate DESC;
 
 -- Insert query for enrollment
 INSERT INTO enrolls_in (studentId, courseId, sectionNo, status, grade, enrolledDate) VALUES

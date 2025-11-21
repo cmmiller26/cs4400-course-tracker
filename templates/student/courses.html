@@ -141,16 +141,25 @@ endblock %} {% block extra_css %}
     border-left: 4px solid #ffcd00;
   ">
   <h3 style="margin-top: 0">📊 Query Description</h3>
-  <p style="margin-bottom: 0">
-    This page displays a detailed list of all available course sections. The
-    query demonstrates a combination of a primary <strong>JOIN</strong> (between
-    <code>Section</code> and <code>Course</code>) and multiple
-    <strong>correlated subqueries</strong> to gather related information like
-    cross-listed codes, professor and TA names, and real-time enrollment
-    counts. This showcases how to aggregate and display data from several
-    different tables (<code>cross_lists</code>, <code>teaches</code>,
-    <code>assists</code>, <code>enrolls_in</code>) for each course section.
+  <p>
+    This page displays a detailed list of all available course sections using
+    several SQL concepts:
   </p>
+  <ul style="margin-bottom: 0; padding-left: 20px">
+    <li>
+      <strong>JOIN</strong> between <code>Section</code> and <code>Course</code>
+      to link section details with course titles and credits.
+    </li>
+    <li>
+      <strong>Correlated Subqueries</strong> to fetch dynamic, row-specific data
+      for each section:
+      <ul style="padding-left: 20px; margin-top: 0.5rem">
+        <li>From <code>cross_lists</code> to find all associated course codes.</li>
+        <li>From <code>teaches</code> & <code>assists</code> to retrieve professor and TA names.</li>
+        <li>From <code>enrolls_in</code> to calculate the current enrollment count.</li>
+      </ul>
+    </li>
+  </ul>
 </div>
 
 {% if courses %}
