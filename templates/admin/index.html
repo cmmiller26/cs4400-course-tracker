@@ -128,13 +128,7 @@ endblock %} {% block extra_css %}
                 {% for g in grades %}
                 <option
                   value="{{ g }}"
-                  {%
-                  if
-                  enrollment.grade=""
-                  ="g"
-                  %}selected{%
-                  endif
-                  %}
+                  {% if enrollment.grade == g %}selected{% endif %}
                 >
                   {{ g }}
                 </option>
