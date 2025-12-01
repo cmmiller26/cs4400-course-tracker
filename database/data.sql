@@ -214,7 +214,6 @@ INSERT INTO enrolls_in (studentId, courseId, sectionNo, status, grade, enrolledD
 
 -- Emma Johnson (4001) - Sophomore, 3 completed courses
 (4001, 5001, '0001', 'completed', 'A',  '2023-08-21'),  -- Intro CS: A
-(4001, 5008, '0001', 'completed', 'B+', '2023-08-21'),  -- Calculus: B+
 (4001, 5003, '0001', 'completed', 'A-', '2024-01-15'),  -- Discrete Math: A-
 (4001, 5002, '0001', 'completed', 'A',  '2024-08-19'),  -- Data Structures: A
 
